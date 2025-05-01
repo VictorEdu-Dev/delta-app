@@ -3,10 +3,13 @@ package org.deltacore.delta.dto;
 import lombok.Builder;
 import lombok.Data;
 
-@Data
+import java.time.LocalDateTime;
+
 @Builder
-public class UserDTO {
-    private String username;
-    private String email;
-    private String passwordHash;
-}
+public record UserDTO(
+        String username,
+        String email,
+        String passwordHash,
+        LocalDateTime createdAt
+) {}
+
