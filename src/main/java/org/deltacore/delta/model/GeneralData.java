@@ -2,6 +2,7 @@ package org.deltacore.delta.model;
 
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Version;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

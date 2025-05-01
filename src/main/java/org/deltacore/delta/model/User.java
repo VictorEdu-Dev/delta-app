@@ -20,9 +20,12 @@ public class User extends GeneralData {
     private String email;
     private String passwordHash;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    private LocalDateTime createdAt;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    private LocalDateTime createdAt;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userMonitor")
+    private Monitor monitor;
 }

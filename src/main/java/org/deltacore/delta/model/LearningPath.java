@@ -21,6 +21,7 @@ public class LearningPath extends GeneralData {
     private Integer recommendedLevel;
     private Float totalScore;
 
-    //private List<String> activities;
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<Activity> activities;
 
 }

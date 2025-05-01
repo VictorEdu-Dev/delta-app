@@ -3,36 +3,29 @@ package org.deltacore.delta.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
-@Builder
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Profile extends GeneralData {
+public class Monitor extends GeneralData {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Embedded
-    private FullName fullName;
-    private byte[] profileImage;
-    private Float totalScore;
-    private String bio;
+
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "user_monitor_id")
+    private User userMonitor;
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Feedback> feedbacks;
-
-    @Data
-    @Embeddable
-    private static class FullName {
-        String firstName;
-        String lastName;
-    }
+    private List<Subject> subjects;
 }
