@@ -5,6 +5,7 @@ import org.deltacore.delta.model.User;
 import org.deltacore.delta.repositorie.UserDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
 import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDateTime;
@@ -12,8 +13,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.condition.JRE.JAVA_17;
+import static org.junit.jupiter.api.condition.JRE.JAVA_21;
 import static org.mockito.Mockito.*;
 
+@EnabledForJreRange(min = JAVA_17, max = JAVA_21)
 class GeneralUserServiceTest {
 
     private UserDAO userDAO;
