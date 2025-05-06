@@ -1,11 +1,10 @@
 package org.deltacore.delta.service;
 
 import org.deltacore.delta.dto.UserDTO;
+import org.deltacore.delta.model.User;
 import org.deltacore.delta.repositorie.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import org.deltacore.delta.model.User;
 
 import java.util.List;
 import java.util.Optional;
