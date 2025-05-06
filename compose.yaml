@@ -1,9 +1,42 @@
 services:
   postgres:
     image: 'postgres:latest'
+    container_name: 'postgres-sgbd-delta'
+    restart: always
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=${POSTGRES_DB}'
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
+      - 'POSTGRES_USER=${POSTGRES_USER}'
     ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+        - postgres_private
+    expose:
       - '5432'
+
+
+  pgadmin:
+    image: 'dpage/pgadmin4:9.3.0'
+    restart: always
+    container_name: 'pgadmin-sgbd-view-delta'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${ADMIN_PASSWORD}
+      PGADMIN_LISTEN_PORT: 80
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_ENHANCED_COOKIE_AUTH: 'False'
+    depends_on:
+      - postgres
+    ports:
+      - '5050:80'
+    networks:
+      - postgres_private
+
+
+volumes:
+  pgdata:
+
+networks:
+  postgres_private:
