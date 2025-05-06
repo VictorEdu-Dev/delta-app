@@ -39,7 +39,7 @@ class GeneralUserServiceTest {
                 .build();
 
         userService.saveUserDB(dto);
-        System.out.println("User saved: " + dto);
+
 
         ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
         verify(userDAO).save(captor.capture());
