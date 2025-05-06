@@ -1,0 +1,163 @@
+package org.deltacore.delta.service;
+
+import org.deltacore.delta.model.Activity;
+import org.deltacore.delta.model.ActivityType;
+import org.deltacore.delta.repositorie.ActivityDAO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+class ActivitiesSectionServiceTest {
+
+    @Mock
+    private ActivityDAO activityDAO;
+
+    @InjectMocks
+    private ActivitiesSectionService activitiesSectionService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testGetLimitedActivitiesWithEmptySearch() {
+        List<Activity> mockActivities = new ArrayList<>();
+        mockActivities.add(Activity.builder()
+                                .id(UUID.randomUUID())
+                                .title("Test Activity 00")
+                                .description("Description 00")
+                                .activityType(ActivityType.CHALLENGE)
+                                .imageUrl("image_00.jpg")
+                                .recommendedLevel(1)
+                                .maxScore(BigDecimal.valueOf(100))
+                                .videoUrl(null)
+                                .subject(null)
+                                .build());
+
+        when(activityDAO.findAllActivities(20)).thenReturn(mockActivities);
+
+        List<Activity> result = activitiesSectionService.getLimitedActivities("");
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+    }
+
+    @Test
+    void testGetLimitedActivitiesWithNullSearch() {
+        List<Activity> mockActivities = new ArrayList<>();
+        mockActivities.add(Activity.builder()
+                                .id(UUID.randomUUID())
+                                .title("Test Activity 01")
+                                .description("Description 01")
+                                .activityType(ActivityType.CHALLENGE)
+                                .imageUrl("image_01.jpg")
+                                .recommendedLevel(3)
+                                .maxScore(BigDecimal.valueOf(100))
+                                .videoUrl(null)
+                                .subject(null)
+                                .build());
+
+        when(activityDAO.findAllActivities(20)).thenReturn(mockActivities);
+
+        List<Activity> result = activitiesSectionService.getLimitedActivities(null);
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+    }
+
+    @Test
+    void testSearchDetailedWithMultipleWords() {
+        List<Activity> mockActivities1 = new ArrayList<>();
+        mockActivities1.add(Activity.builder()
+                                .id(UUID.randomUUID())
+                                .title("Test Activity 02")
+                                .description("Description 02")
+                                .activityType(ActivityType.CHALLENGE)
+                                .imageUrl("image_02.jpg")
+                                .recommendedLevel(1)
+                                .maxScore(BigDecimal.valueOf(100))
+                                .videoUrl(null)
+                                .subject(null)
+                                .build());
+        mockActivities1.add(Activity.builder()
+                                .id(UUID.randomUUID())
+                                .title("Another Test Activity")
+                                .description("Description 03")
+                                .activityType(ActivityType.CHALLENGE)
+                                .imageUrl("image_03.jpg")
+                                .recommendedLevel(2)
+                                .maxScore(BigDecimal.valueOf(150))
+                                .videoUrl(null)
+                                .subject(null)
+                                .build());
+        mockActivities1.add(Activity.builder()
+                                .id(UUID.randomUUID())
+                                .title("Test Activity 04")
+                                .description("Description 04")
+                                .activityType(ActivityType.CHALLENGE)
+                                .imageUrl("image_04.jpg")
+                                .recommendedLevel(3)
+                                .maxScore(BigDecimal.valueOf(200))
+                                .videoUrl(null)
+                                .subject(null)
+                                .build());
+
+        List<Activity> mockActivities2 = new ArrayList<>();
+        mockActivities2.add(Activity.builder()
+                                .id(UUID.randomUUID())
+                                .title("Test Activity 05")
+                                .description("Description 05")
+                                .activityType(ActivityType.CHALLENGE)
+                                .imageUrl("image_05.jpg")
+                                .recommendedLevel(1)
+                                .maxScore(BigDecimal.valueOf(100))
+                                .videoUrl(null)
+                                .subject(null)
+                                .build());
+        mockActivities2.add(Activity.builder()
+                                .id(UUID.randomUUID())
+                                .title("Another Activity 06")
+                                .description("Description 06")
+                                .activityType(ActivityType.CHALLENGE)
+                                .imageUrl("image_06.jpg")
+                                .recommendedLevel(2)
+                                .maxScore(BigDecimal.valueOf(150))
+                                .videoUrl(null)
+                                .subject(null)
+                                .build());
+
+        when(activityDAO.findActivitiesByTitle("Test")).thenReturn(mockActivities1);
+        when(activityDAO.findActivitiesByTitle("Activity")).thenReturn(mockActivities2);
+
+        List<Activity> result = activitiesSectionService.getLimitedActivities("Test Activity");
+
+        result.forEach(System.out::println);
+
+        assertNotNull(result);
+        assertEquals(5, result.size());
+        assertTrue(result.stream().anyMatch(activity -> activity.getTitle().contains("Test Activity")));
+        assertTrue(result.stream().anyMatch(activity -> activity.getTitle().contains("Another Test Activity")));
+    }
+
+    @Test
+    void testSearchDetailedWithNoResults() {
+        when(activityDAO.findActivitiesByTitle("NonExistent")).thenReturn(Collections.emptyList());
+
+        List<Activity> result = activitiesSectionService.getLimitedActivities("NonExistent");
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+}
