@@ -33,10 +33,10 @@ public class ActivitiesSectionService {
                     .ofNullable((List<Activity>) activityDAO
                             .findAllActivities(DEFAULT_LIMIT));
 
-            return activities
+            return activities.map(activityList -> activityList
                     .stream()
-                    .map(activity -> activityMapper.toDTO((Activity) activity))
-                    .distinct().toList();
+                    .map(activityMapper::toDTO)
+                    .toList()).orElse(Collections.emptyList());
         }
         return searchDetailed(search);
     }
