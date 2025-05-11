@@ -15,17 +15,36 @@ import java.util.UUID;
 @Entity
 public class Activity extends GeneralData {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "activity_seq")
+    @SequenceGenerator(
+            name = "activity_seq",
+            sequenceName = "activity_sequence"
+    )
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 100)
     private String title;
+
+    @Column(length = 500, nullable = false)
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ActivityType activityType;
+
+    @Column(nullable = false, length = 100)
     private String imageUrl;
+
+    @Column(nullable = false)
     private Integer recommendedLevel;
+
     @Column(precision = 19, scale = 4)
     private BigDecimal maxScore;
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VideoLesson> videoUrl;
-    @OneToOne(fetch = FetchType.LAZY)
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
 }
