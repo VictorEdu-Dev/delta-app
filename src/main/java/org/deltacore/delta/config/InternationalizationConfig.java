@@ -1,4 +1,4 @@
-package org.deltacore.delta;
+package org.deltacore.delta.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
