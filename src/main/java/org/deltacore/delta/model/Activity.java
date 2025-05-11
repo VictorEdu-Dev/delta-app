@@ -15,11 +15,7 @@ import java.util.UUID;
 @Entity
 public class Activity extends GeneralData {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "activity_seq")
-    @SequenceGenerator(
-            name = "activity_seq",
-            sequenceName = "activity_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true, length = 100)
