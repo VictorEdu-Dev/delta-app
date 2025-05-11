@@ -1,5 +1,6 @@
 package org.deltacore.delta.controller;
 
+import org.deltacore.delta.controller.activity.ActivitiesResource;
 import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.service.ActivitiesSectionService;
 import org.junit.jupiter.api.BeforeEach;
