@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ActivitiesSectionServiceTest {
 
@@ -41,7 +41,7 @@ class ActivitiesSectionServiceTest {
     @Test
     void shouldSaveActivity() {
         ActivityDTO dto = new ActivityDTO(
-                UUID.randomUUID(),
+                10L,
                 "Title",
                 "",
                 ActivityType.CHALLENGE,
@@ -67,6 +67,18 @@ class ActivitiesSectionServiceTest {
 
         Activity entity = new Activity();
         Mockito.when(activityMapper.toEntity(dto)).thenReturn(entity);
+        when(activityMapper.toDTO(any(Activity.class))).thenAnswer(invocation -> {
+            Activity a = invocation.getArgument(0);
+            return new ActivityDTO(
+                    a.getId(),
+                    a.getTitle(),
+                    a.getDescription(),
+                    a.getActivityType(),
+                    a.getImageUrl(),
+                    a.getRecommendedLevel(),
+                    a.getMaxScore()
+            );
+        });
 
         activitiesSectionService.saveActivity(dto);
 
@@ -77,7 +89,7 @@ class ActivitiesSectionServiceTest {
     void testGetLimitedActivitiesWithEmptySearch() {
         List<Activity> mockActivities = new ArrayList<>();
         mockActivities.add(Activity.builder()
-                                .id(UUID.randomUUID())
+                                .id(9L)
                                 .title("Test Activity 00")
                                 .description("Description 00")
                                 .activityType(ActivityType.CHALLENGE)
@@ -89,8 +101,20 @@ class ActivitiesSectionServiceTest {
                                 .build());
 
         when(activityDAO.findAllActivities(20)).thenReturn(mockActivities);
+        when(activityMapper.toDTO(any(Activity.class))).thenAnswer(invocation -> {
+            Activity a = invocation.getArgument(0);
+            return new ActivityDTO(
+                    a.getId(),
+                    a.getTitle(),
+                    a.getDescription(),
+                    a.getActivityType(),
+                    a.getImageUrl(),
+                    a.getRecommendedLevel(),
+                    a.getMaxScore()
+            );
+        });
 
-        List<Activity> result = activitiesSectionService.getLimitedActivities("");
+        List<ActivityDTO> result = activitiesSectionService.getLimitedActivities("");
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
@@ -100,7 +124,7 @@ class ActivitiesSectionServiceTest {
     void testGetLimitedActivitiesWithNullSearch() {
         List<Activity> mockActivities = new ArrayList<>();
         mockActivities.add(Activity.builder()
-                                .id(UUID.randomUUID())
+                                .id(10L)
                                 .title("Test Activity 01")
                                 .description("Description 01")
                                 .activityType(ActivityType.CHALLENGE)
@@ -112,8 +136,20 @@ class ActivitiesSectionServiceTest {
                                 .build());
 
         when(activityDAO.findAllActivities(20)).thenReturn(mockActivities);
+        when(activityMapper.toDTO(any(Activity.class))).thenAnswer(invocation -> {
+            Activity a = invocation.getArgument(0);
+            return new ActivityDTO(
+                    a.getId(),
+                    a.getTitle(),
+                    a.getDescription(),
+                    a.getActivityType(),
+                    a.getImageUrl(),
+                    a.getRecommendedLevel(),
+                    a.getMaxScore()
+            );
+        });
 
-        List<Activity> result = activitiesSectionService.getLimitedActivities(null);
+        List<ActivityDTO> result = activitiesSectionService.getLimitedActivities(null);
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
@@ -123,7 +159,7 @@ class ActivitiesSectionServiceTest {
     void testSearchDetailedWithMultipleWords() {
         List<Activity> mockActivities1 = new ArrayList<>();
         mockActivities1.add(Activity.builder()
-                                .id(UUID.randomUUID())
+                                .id(1L)
                                 .title("Test Activity 02")
                                 .description("Description 02")
                                 .activityType(ActivityType.CHALLENGE)
@@ -134,7 +170,7 @@ class ActivitiesSectionServiceTest {
                                 .subject(null)
                                 .build());
         mockActivities1.add(Activity.builder()
-                                .id(UUID.randomUUID())
+                                .id(2L)
                                 .title("Another Test Activity")
                                 .description("Description 03")
                                 .activityType(ActivityType.CHALLENGE)
@@ -145,7 +181,7 @@ class ActivitiesSectionServiceTest {
                                 .subject(null)
                                 .build());
         mockActivities1.add(Activity.builder()
-                                .id(UUID.randomUUID())
+                                .id(3L)
                                 .title("Test Activity 04")
                                 .description("Description 04")
                                 .activityType(ActivityType.CHALLENGE)
@@ -158,7 +194,7 @@ class ActivitiesSectionServiceTest {
 
         List<Activity> mockActivities2 = new ArrayList<>();
         mockActivities2.add(Activity.builder()
-                                .id(UUID.randomUUID())
+                                .id(4L)
                                 .title("Test Activity 05")
                                 .description("Description 05")
                                 .activityType(ActivityType.CHALLENGE)
@@ -169,7 +205,7 @@ class ActivitiesSectionServiceTest {
                                 .subject(null)
                                 .build());
         mockActivities2.add(Activity.builder()
-                                .id(UUID.randomUUID())
+                                .id(5L)
                                 .title("Another Activity 06")
                                 .description("Description 06")
                                 .activityType(ActivityType.CHALLENGE)
@@ -182,22 +218,44 @@ class ActivitiesSectionServiceTest {
 
         when(activityDAO.findActivitiesByTitle("Test")).thenReturn(mockActivities1);
         when(activityDAO.findActivitiesByTitle("Activity")).thenReturn(mockActivities2);
+        when(activityMapper.toDTO(any(Activity.class))).thenAnswer(invocation -> {
+            Activity a = invocation.getArgument(0);
+            return new ActivityDTO(
+                    a.getId(),
+                    a.getTitle(),
+                    a.getDescription(),
+                    a.getActivityType(),
+                    a.getImageUrl(),
+                    a.getRecommendedLevel(),
+                    a.getMaxScore()
+            );
+        });
 
-        List<Activity> result = activitiesSectionService.getLimitedActivities("Test Activity");
-
-        result.forEach(System.out::println);
+        List<ActivityDTO> result = activitiesSectionService.getLimitedActivities("Test Activity");
 
         assertNotNull(result);
         assertEquals(5, result.size());
-        assertTrue(result.stream().anyMatch(activity -> activity.getTitle().contains("Test Activity")));
-        assertTrue(result.stream().anyMatch(activity -> activity.getTitle().contains("Another Test Activity")));
+        assertTrue(result.stream().anyMatch(activity -> activity.title().contains("Test Activity")));
+        assertTrue(result.stream().anyMatch(activity -> activity.title().contains("Another Test Activity")));
     }
 
     @Test
     void testSearchDetailedWithNoResults() {
         when(activityDAO.findActivitiesByTitle("NonExistent")).thenReturn(Collections.emptyList());
+        when(activityMapper.toDTO(any(Activity.class))).thenAnswer(invocation -> {
+            Activity a = invocation.getArgument(0);
+            return new ActivityDTO(
+                    a.getId(),
+                    a.getTitle(),
+                    a.getDescription(),
+                    a.getActivityType(),
+                    a.getImageUrl(),
+                    a.getRecommendedLevel(),
+                    a.getMaxScore()
+            );
+        });
 
-        List<Activity> result = activitiesSectionService.getLimitedActivities("NonExistent");
+        List<ActivityDTO> result = activitiesSectionService.getLimitedActivities("NonExistent");
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
