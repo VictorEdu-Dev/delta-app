@@ -8,10 +8,10 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.UUID;
 
 public interface ActivityDAO extends CrudRepository<Activity, UUID> {
-    @Query(value = "SELECT * FROM activity WHERE LOWER(TRIM(title)) LIKE LOWER(CONCAT('%', '?1', '%')) LIMIT ?2)", nativeQuery = true)
+    @Query(value = "SELECT * FROM activity WHERE LOWER(TRIM(title)) LIKE LOWER(CONCAT('%', ?1, '%')) LIMIT ?2", nativeQuery = true)
     Iterable<Activity> findActivitiesByTitle(String title, Integer limit);
 
-    @Query(value = "SELECT * FROM activity WHERE LOWER(TRIM(title)) LIKE LOWER(CONCAT('%', '?1', '%')) LIMIT 10)", nativeQuery = true)
+    @Query(value = "SELECT * FROM activity WHERE LOWER(TRIM(title)) LIKE LOWER(CONCAT('%', ?1, '%')) LIMIT 10", nativeQuery = true)
     Iterable<Activity> findActivitiesByTitle(String title);
 
     @Query(value = "SELECT * FROM activity WHERE title LIKE %?1% AND activityType = ?2 LIMIT ?3", nativeQuery = true)
