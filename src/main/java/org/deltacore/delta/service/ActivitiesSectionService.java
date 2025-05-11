@@ -1,6 +1,7 @@
 package org.deltacore.delta.service;
 
 import org.deltacore.delta.dto.ActivityDTO;
+import org.deltacore.delta.dto.ActivityMapper;
 import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,24 +12,18 @@ import java.util.*;
 @Service
 public class ActivitiesSectionService {
     private static final int DEFAULT_LIMIT = 20;
+
+    private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
 
     @Autowired
-    public ActivitiesSectionService(ActivityDAO activityDAO) {
+    public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper) {
+        this.activityMapper = activityMapper;
         this.activityDAO = activityDAO;
     }
 
     public void saveActivity(ActivityDTO activity) {
-        // Usar MapStruct depois pra conversão de DTO pra Entity
-        Activity activityForSave = Activity.builder()
-                .title(activity.title())
-                .description(activity.description())
-                .activityType(activity.activityType())
-                .imageUrl(activity.imageUrl())
-                .recommendedLevel(activity.recommendedLevel())
-                .maxScore(activity.maxScore())
-                .build();
-
+        Activity activityForSave = activityMapper.toEntity(activity);
         activityDAO.save(activityForSave);
     }
 
