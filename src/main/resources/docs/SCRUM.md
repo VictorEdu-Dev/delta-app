@@ -1,0 +1,21 @@
+# Scrum Roles
+
+- **Product Owner**: NEMP
+- **Scrum Master - Sprint 1**: Victor
+
+## Development Team:
+- **Victor** - Backend Developer
+- **Nathan** - Backend Developer
+- **Vander** - Frontend Developer
+- **JGCLeite** -
+- **Bryan** - 
+
+---
+
+# Funções Técnicas
+
+- **Victor** - Backend Developer & Scrum Master
+- **Nathan** - Backend Developer
+- **Vander** - Frontend Developer
+- **JGCLeite** -
+- **Bryan**
