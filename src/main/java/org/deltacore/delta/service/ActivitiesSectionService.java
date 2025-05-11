@@ -22,13 +22,14 @@ public class ActivitiesSectionService {
         this.activityDAO = activityDAO;
     }
 
-    public void saveActivity(ActivityDTO activity) {
+    public ActivityDTO saveActivity(ActivityDTO activity) {
         Activity activityForSave = activityMapper.toEntity(activity);
-        activityDAO.save(activityForSave);
+         return activityMapper.toDTO(activityDAO.save(activityForSave));
     }
 
-    public List<ActivityDTO> getLimitedActivities(String search) { // Busca atividades com 1 a n strings de quaisquer tamanhos
-        if (search == null || search.trim().isEmpty()) { // Ele só executa isso se a string for vazia
+    public List<ActivityDTO> getLimitedActivities(String search) {
+        // Busca atividades com 1 a n strings de quaisquer tamanhos
+        if (search == null || search.trim().isEmpty()) {
             Optional<List<Activity>> activities = Optional
                     .ofNullable((List<Activity>) activityDAO
                             .findAllActivities(DEFAULT_LIMIT));
@@ -38,7 +39,10 @@ public class ActivitiesSectionService {
                     .map(activityMapper::toDTO)
                     .toList()).orElse(Collections.emptyList());
         }
-        return searchDetailed(search);
+
+        List<ActivityDTO> activities = searchDetailed(search);
+        if (activities.isEmpty()) return getLimitedActivities("");
+        return activities;
     }
 
     protected List<ActivityDTO> searchDetailed(String search) {
@@ -52,7 +56,7 @@ public class ActivitiesSectionService {
             found.ifPresent(activities::addAll);
         });
         // Tem que implementar paginação aqui
-        return activities
+        return  activities
                 .stream()
                 .map(activityMapper::toDTO)
                 .toList();
