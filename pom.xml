@@ -14,21 +14,31 @@
     <name>delta-app</name>
     <description>delta-app</description>
     <url/>
-    <licenses>
-        <license/>
-    </licenses>
+
     <developers>
-        <developer/>
+        <developer>
+            <id>victorepc</id>
+            <name>Victor Eduardo Pita Campos</name>
+            <email>victoreduardodev@gmail.com</email>
+            <organization>UFC - Engenharia de Computação</organization>
+            <roles>
+                <role>Desenvolvedor</role>
+            </roles>
+        </developer>
     </developers>
+
     <scm>
         <connection/>
         <developerConnection/>
         <tag/>
         <url/>
     </scm>
+
     <properties>
         <java.version>21</java.version>
+        <org.mapstruct.version>1.6.3</org.mapstruct.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -91,6 +101,11 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.3</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -103,6 +118,10 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
