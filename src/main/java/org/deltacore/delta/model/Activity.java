@@ -40,7 +40,7 @@ public class Activity extends GeneralData {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VideoLesson> videoUrl;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "subject_id")
     private Subject subject;
 }
