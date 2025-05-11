@@ -1,5 +1,11 @@
 package org.deltacore.delta.service;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.deltacore.delta.dto.ActivityDTO;
+import org.deltacore.delta.dto.ActivityMapper;
 import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.model.ActivityType;
 import org.deltacore.delta.repositorie.ActivityDAO;
@@ -7,13 +13,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -23,12 +27,50 @@ class ActivitiesSectionServiceTest {
     @Mock
     private ActivityDAO activityDAO;
 
+    @Mock
+    private ActivityMapper activityMapper;
+
     @InjectMocks
     private ActivitiesSectionService activitiesSectionService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void shouldSaveActivity() {
+        ActivityDTO dto = new ActivityDTO(
+                UUID.randomUUID(),
+                "Title",
+                "",
+                ActivityType.CHALLENGE,
+                "http://img.com/img.png",
+                1,
+                BigDecimal.TEN
+        );
+
+        System.out.println("Validating DTO: " + dto);
+
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = factory.getValidator();
+
+            Set<ConstraintViolation<ActivityDTO>> violations = validator.validate(dto);
+            if (!violations.isEmpty()) {
+                for (ConstraintViolation<ActivityDTO> violation : violations) {
+                    System.err.println(violation.getMessage());
+                }
+                return;
+            }
+        }
+
+
+        Activity entity = new Activity();
+        Mockito.when(activityMapper.toEntity(dto)).thenReturn(entity);
+
+        activitiesSectionService.saveActivity(dto);
+
+        Mockito.verify(activityDAO).save(entity);
     }
 
     @Test
