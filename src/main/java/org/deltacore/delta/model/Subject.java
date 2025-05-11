@@ -1,9 +1,6 @@
 package org.deltacore.delta.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -16,9 +13,19 @@ import java.util.UUID;
 @Entity
 public class Subject extends GeneralData {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subject_seq")
+    @SequenceGenerator(
+            name = "subject_seq",
+            sequenceName = "subject_sequence"
+    )
+    private Integer id;
+
+    @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(unique = true, length = 10)
     private String code;
+
+    @Column(nullable = false)
     private Boolean isActive;
 }
