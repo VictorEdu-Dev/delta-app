@@ -27,17 +27,21 @@ public class ActivitiesSectionService {
         activityDAO.save(activityForSave);
     }
 
-    public List<Activity> getLimitedActivities(String search) { // Busca atividades com 1 a n strings de quaisquer tamanhos
-        if (search == null || search.trim().isEmpty()) { // Eu espero que isso receba uma string vazia, ao invés de null
+    public List<ActivityDTO> getLimitedActivities(String search) { // Busca atividades com 1 a n strings de quaisquer tamanhos
+        if (search == null || search.trim().isEmpty()) { // Ele só executa isso se a string for vazia
             Optional<List<Activity>> activities = Optional
                     .ofNullable((List<Activity>) activityDAO
-                            .findAllActivities(DEFAULT_LIMIT)); // Limite de 20 atividades por busca, resolvo isso depois
-            return activities.orElse(Collections.emptyList());
+                            .findAllActivities(DEFAULT_LIMIT));
+
+            return activities
+                    .stream()
+                    .map(activity -> activityMapper.toDTO((Activity) activity))
+                    .distinct().toList();
         }
         return searchDetailed(search);
     }
 
-    protected List<Activity> searchDetailed(String search) {
+    protected List<ActivityDTO> searchDetailed(String search) {
         final String[] words = search.split("\\s+");
         final Set<String> setWords = new HashSet<>(Arrays.asList(words));
 
@@ -48,7 +52,10 @@ public class ActivitiesSectionService {
             found.ifPresent(activities::addAll);
         });
         // Tem que implementar paginação aqui
-        return activities.stream().toList();
+        return activities
+                .stream()
+                .map(activityMapper::toDTO)
+                .toList();
     }
 
 
