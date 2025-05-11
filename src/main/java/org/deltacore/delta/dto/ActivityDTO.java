@@ -14,23 +14,22 @@ import java.util.UUID;
 @Builder
 public record ActivityDTO(
         Long id,
-        @NotBlank(message = "Title cannot be blank.")
+        @NotBlank(message = "{activity.title.not.blank}")
         String title,
 
-        @NotBlank(message = "Description cannot be blank.")
+        @NotBlank(message = "{activity.description.not.blank}")
         String description,
 
-        @NotNull(message = "Activity type cannot be null.")
+        @NotNull(message = "{activity.activity_type.not.null}")
         ActivityType activityType,
 
-        @NotBlank(message = "Image URL cannot be blank.")
-        @URL(message = "Image URL must be a valid URL.")
+        @URL(message = "Image URL must be a valid URL.", regexp = "^(https?|ftp)://.*")
         String imageUrl,
 
-        @Min(value = 1, message = "Recommended level must be at least 1.")
+        @Min(value = 1, message = "{activity.recommended_level.min}")
         Integer recommendedLevel,
 
-        @NotNull(message = "Max score cannot be null.")
-        @DecimalMin(value = "0.0", inclusive = false, message = "Max score must be greater than 0.")
+        @NotNull(message = "{activity.max_score.not.null}")
+        @DecimalMin(value = "0.0", inclusive = false, message = "{activity.max_score.min}")
         BigDecimal maxScore) {
 }
