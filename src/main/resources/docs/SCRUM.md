@@ -4,18 +4,18 @@
 - **Scrum Master - Sprint 1**: Victor
 
 ## Development Team:
-- **Victor** - Backend Developer
+- **Victor** - Backend Developer & DBA
 - **Nathan** - Backend Developer
 - **Vander** - Frontend Developer
-- **JGCLeite** -
-- **Bryan** - 
+- **JGCLeite** - Backend Developer
+- **Bryan** - Frontend Developer
 
 ---
 
 # Funções Técnicas
 
-- **Victor** - Backend Developer & Scrum Master
+- **Victor** - Backend Developer & DBA
 - **Nathan** - Backend Developer
 - **Vander** - Frontend Developer
-- **JGCLeite** -
-- **Bryan**
+- **JGCLeite** - Backend Developer
+- **Bryan** - Frontend Developer
