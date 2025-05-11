@@ -2,8 +2,7 @@ package org.deltacore.delta.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.UUID;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Builder
@@ -13,11 +12,7 @@ import java.util.UUID;
 @Entity
 public class Subject extends GeneralData {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subject_seq")
-    @SequenceGenerator(
-            name = "subject_seq",
-            sequenceName = "subject_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false, length = 100)
@@ -28,4 +23,7 @@ public class Subject extends GeneralData {
 
     @Column(nullable = false)
     private Boolean isActive;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Activity> activity;
 }
