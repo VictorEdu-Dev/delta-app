@@ -14,11 +14,7 @@ import java.util.UUID;
 @Entity
 public class VideoLesson extends GeneralData {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "video_lesson_seq")
-    @SequenceGenerator(
-            name = "video_lesson_seq",
-            sequenceName = "video_lesson_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 150)
