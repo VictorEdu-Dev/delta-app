@@ -32,7 +32,7 @@ public class Activity extends GeneralData {
     @Column(nullable = false)
     private ActivityType activityType;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 150)
     private String imageUrl;
 
     @Column(nullable = false)
@@ -45,6 +45,6 @@ public class Activity extends GeneralData {
     private List<VideoLesson> videoUrl;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "subject_id", nullable = false)
+    @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private Subject subject;
 }
