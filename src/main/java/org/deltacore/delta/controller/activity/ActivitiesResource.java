@@ -1,19 +1,16 @@
-package org.deltacore.delta.controller;
+package org.deltacore.delta.controller.activity;
 
 import jakarta.validation.Valid;
+import org.deltacore.delta.controller.APIRoutes;
 import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.service.ActivitiesSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/activities")
+@RequestMapping(APIRoutes.BASE_API)
 public class ActivitiesResource {
 
     private final ActivitiesSectionService activitiesService;
@@ -23,7 +20,7 @@ public class ActivitiesResource {
         this.activitiesService = activitiesService;
     }
 
-    @GetMapping(value = "/list-activities", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = APIRoutes.LIST_ACTIVITIES, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getActivities(@RequestParam(value = "search", required = false)  String search) {
         return ResponseEntity.ok(activitiesService.getLimitedActivities(search));
     }
