@@ -30,17 +30,8 @@ public class ActivitiesResource {
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO activity, BindingResult result) {
-        ActivityDTO dtoActicity = activitiesService.saveActivity(activity);
-
-        if (result.hasErrors()) {
-            String errorMessage = result.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(errorMessage);
-        }
-
-        return ResponseEntity.ok(dtoActicity);
+    public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO activity) {
+        return ResponseEntity.ok(activitiesService.saveActivity(activity));
     }
 
 
