@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Builder
 public record ActivityDTO(
-        UUID id,
+        Long id,
         @NotBlank(message = "Title cannot be blank.")
         String title,
 
