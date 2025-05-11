@@ -71,6 +71,30 @@
 - Todo DTO deve ser anotado com @Builder para facilitar a construção de objetos.
 - Todo DTO está dentro do pacote `org.deltacore.delta.dto`.
 
+        @Builder
+        public record ActivityDTO(
+        UUID id,
+        
+        @NotBlank(message = "Title cannot be blank.")
+        String title,
+        
+        @NotBlank(message = "Description cannot be blank.")
+        String description,
+        
+        @NotNull(message = "Activity type cannot be null.")
+        ActivityType activityType,
+        
+        @NotBlank(message = "Image URL cannot be blank.")
+        @URL(message = "Image URL must be a valid URL.")
+        String imageUrl,
+        
+        @Min(value = 1, message = "Recommended level must be at least 1.")
+        Integer recommendedLevel,
+        
+        @NotNull(message = "Max score cannot be null.")
+        @DecimalMin(value = "0.0", inclusive = false, message = "Max score must be greater than 0.")
+        BigDecimal maxScore) {}
+
 - **Exemplo de Controller**:
 
 - **Exemplo de Service**:
