@@ -1,3 +1,6 @@
+- **IMPORTANTE**
+- Lembrar de habilitar spring.profiles.active=dev no application.properties para rodar o projeto facilemnte usando um banco de testes remoto.
+
 - **Arquitetura de Projeto**
 - A arquitetura do projeto é baseada em monolito com estrutura principal em camadas:
     - Camada de Apresentação (Controller)
