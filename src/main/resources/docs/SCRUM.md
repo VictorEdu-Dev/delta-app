@@ -6,16 +6,6 @@
 ## Development Team:
 - **Victor** - Backend Developer & DBA
 - **Nathan** - Backend Developer
-- **Vander** - Frontend Developer
-- **JGCLeite** - Backend Developer
-- **Bryan** - Frontend Developer
-
----
-
-# Funções Técnicas
-
-- **Victor** - Backend Developer & DBA
-- **Nathan** - Backend Developer
-- **Vander** - Frontend Developer
-- **JGCLeite** - Backend Developer
+- **Vander** - Frontend Developer & Tech Lead
+- **JGCLeite** - Backend Developer & QA
 - **Bryan** - Frontend Developer
