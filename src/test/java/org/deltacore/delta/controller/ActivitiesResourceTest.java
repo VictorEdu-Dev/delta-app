@@ -37,31 +37,14 @@ class ActivitiesResourceTest {
     }
 
     @Test
-    void saveActivityShouldReturnBadRequestWhenValidationFails() {
-        FieldError fieldError = new FieldError("activityDTO", "title", "Title is required");
-        when(bindingResult.hasErrors()).thenReturn(true);
-        when(bindingResult.getAllErrors()).thenReturn(Collections.singletonList(fieldError));
-
-        ActivityDTO activityDTO = new ActivityDTO(null, "", "Description", null, "", 1, null);
-
-        doNothing().when(activitiesService).saveActivity(any(ActivityDTO.class));
-
-        ResponseEntity<?> response = activitiesResource.saveActivity(activityDTO, bindingResult);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Title is required", response.getBody());
-    }
-
-    @Test
     void saveActivityShouldReturnOkWhenValidationSucceeds() {
 
         when(bindingResult.hasErrors()).thenReturn(false);
 
         ActivityDTO activityDTO = new ActivityDTO(null, "Activity Title", "Description", null, "", 1, null);
 
-        doNothing().when(activitiesService).saveActivity(any(ActivityDTO.class));
-
-        ResponseEntity<?> response = activitiesResource.saveActivity(activityDTO, bindingResult);
+        when(activitiesService.saveActivity(any(ActivityDTO.class))).thenReturn(activityDTO);
+        ResponseEntity<?> response = activitiesResource.saveActivity(activityDTO);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(activityDTO, response.getBody());
