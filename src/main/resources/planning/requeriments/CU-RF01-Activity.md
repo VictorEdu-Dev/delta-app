@@ -1,8 +1,8 @@
 ## Cadastro de Nova Atividade
-### ID: RF01
+### ID: CU-RF01
 - Nome: Cadastro de Nova Atividade
 - Ator Principal: Usuário autenticado (Administrador ou Estudante com permissão para cadastrar atividades)
-Descrição: Este caso de uso permite que o usuário cadastre uma nova atividade no sistema, fornecendo informações como título, descrição, prazo e categoria da atividade. O sistema valida se o prazo fornecido é uma data futura antes de confirmar o cadastro.
+- Descrição: Este caso de uso permite que o usuário cadastre uma nova atividade no sistema, fornecendo informações como título, descrição, prazo e categoria da atividade. O sistema valida se o prazo fornecido é uma data futura antes de confirmar o cadastro.
 
 
 ### Pré-condições:
