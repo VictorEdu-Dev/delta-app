@@ -1,4 +1,4 @@
-## **IMPORTANTE**
+# **IMPORTANTE**
 - Lembrar de habilitar spring.profiles.active=dev no application.properties para rodar o projeto facilemente usando um banco de dados remoto para testes.
 
 ## **Arquitetura de Projeto**
@@ -67,7 +67,7 @@
 ## **Reuniões**:
 - A definir
 
-## Exemplos
+# Exemplos
 
 ## **Exemplo de DTO**:
 - Todo DTO é um record (por isso se faz necessário o Java 17 ou superior).
