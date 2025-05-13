@@ -1,5 +1,6 @@
 # **IMPORTANTE**
 - Lembrar de habilitar spring.profiles.active=dev no application.properties para rodar o projeto facilemente usando um banco de dados remoto para testes.
+- Lembrar de solicitar ao DBA o acesso ao banco de dados remoto para rodar o projeto.
 
 ## **Arquitetura de Projeto**
 - A arquitetura do projeto é baseada em monolito com estrutura principal em camadas:
