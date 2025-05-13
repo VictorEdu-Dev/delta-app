@@ -100,9 +100,56 @@
 
 ## **Exemplo de Controller**:
 
+    @RestController()
+    public class Home {
+    
+        private final GeneralUserService generalUserService;
+    
+        @Autowired
+        public Home(GeneralUserService generalUserService) {
+            this.generalUserService = generalUserService;
+        }
+    
+        @GetMapping(path = "/register/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<UserDTO> home(@PathVariable String username) {
+            Optional<UserDTO> user = Optional.ofNullable(generalUserService.getUserDBByUsername(username));
+            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        }
+    
+        @PostMapping(path = "/register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<List<UserDTO>> home(@RequestBody UserDTO user) {
+            try {
+                generalUserService.saveUserDB(user);
+                return ResponseEntity.ok(generalUserService.getAllUsers());
+            } catch (Exception e) {
+                return ResponseEntity
+                        .badRequest()
+                        .body(null);
+            }
+        }
+    }
+
 ## **Exemplo de Service**:
 
+    @Service
+    public class ActivitiesSectionService {
+    private static final int DEFAULT_LIMIT = 20;
+    
+        private final ActivityMapper activityMapper;
+        private final ActivityDAO activityDAO;
+    
+        @Autowired
+        public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper) {
+            this.activityMapper = activityMapper;
+            this.activityDAO = activityDAO;
+        }
+    }
+
 ## **Exemplo de Repository**:
+
+    public interface UserDAO extends JpaRepository<User, UUID> {
+      User findByUsername(String username);
+    }
 
 ## **Exemplo de Model**:
 
@@ -149,6 +196,70 @@
         }
 
 ## **Exemplo de Teste**:
+
+      class ActivitiesSectionServiceTest {
+      
+          @Mock
+          private ActivityDAO activityDAO;
+      
+          @Mock
+          private ActivityMapper activityMapper;
+      
+          @InjectMocks
+          private ActivitiesSectionService activitiesSectionService;
+      
+          @BeforeEach
+          void setUp() {
+              MockitoAnnotations.openMocks(this);
+          }
+      
+          @Test
+          void shouldSaveActivity() {
+              ActivityDTO dto = new ActivityDTO(
+                      10L,
+                      "Title",
+                      "",
+                      ActivityType.CHALLENGE,
+                      "http://img.com/img.png",
+                      1,
+                      BigDecimal.TEN
+              );
+      
+              System.out.println("Validating DTO: " + dto);
+      
+              try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+                  Validator validator = factory.getValidator();
+      
+                  Set<ConstraintViolation<ActivityDTO>> violations = validator.validate(dto);
+                  if (!violations.isEmpty()) {
+                      for (ConstraintViolation<ActivityDTO> violation : violations) {
+                          System.err.println(violation.getMessage());
+                      }
+                      return;
+                  }
+              }
+      
+      
+              Activity entity = new Activity();
+              Mockito.when(activityMapper.toEntity(dto)).thenReturn(entity);
+              when(activityMapper.toDTO(any(Activity.class))).thenAnswer(invocation -> {
+                  Activity a = invocation.getArgument(0);
+                  return new ActivityDTO(
+                          a.getId(),
+                          a.getTitle(),
+                          a.getDescription(),
+                          a.getActivityType(),
+                          a.getImageUrl(),
+                          a.getRecommendedLevel(),
+                          a.getMaxScore()
+                  );
+              });
+      
+              activitiesSectionService.saveActivity(dto);
+      
+              Mockito.verify(activityDAO).save(entity);
+          }
+      }
 
 # Automação
 
