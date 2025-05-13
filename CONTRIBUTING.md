@@ -99,6 +99,8 @@
         BigDecimal maxScore) {}
 
 ## **Exemplo de Controller**:
+- Todo controller deve ser anotado com `@RestController` e obrigatoriamente com `@RequestMapping` para definir o caminho base do recurso.
+
 
     @RestController()
     public class Home {
@@ -130,26 +132,28 @@
     }
 
 ## **Exemplo de Service**:
+- Todo service deve ser anotado com `@Service`
 
-    @Service
-    public class ActivitiesSectionService {
-    private static final int DEFAULT_LIMIT = 20;
-    
-        private final ActivityMapper activityMapper;
-        private final ActivityDAO activityDAO;
-    
-        @Autowired
-        public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper) {
-            this.activityMapper = activityMapper;
-            this.activityDAO = activityDAO;
-        }
-    }
+      @Service
+      public class ActivitiesSectionService {
+      private static final int DEFAULT_LIMIT = 20;
+      
+          private final ActivityMapper activityMapper;
+          private final ActivityDAO activityDAO;
+      
+          @Autowired
+          public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper) {
+              this.activityMapper = activityMapper;
+              this.activityDAO = activityDAO;
+          }
+      }
 
 ## **Exemplo de Repository**:
+- Todo repositório deve ser uma interface que estende `CrudRepository<E, ID>` do Spring Data JPA, primordialmente.
 
-    public interface UserDAO extends JpaRepository<User, UUID> {
-      User findByUsername(String username);
-    }
+      public interface UserDAO extends JpaRepository<User, UUID> {
+        User findByUsername(String username);
+      }
 
 ## **Exemplo de Model**:
 
