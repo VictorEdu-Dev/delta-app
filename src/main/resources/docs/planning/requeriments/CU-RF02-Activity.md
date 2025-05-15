@@ -15,7 +15,7 @@
 ### Fluxo Principal:
 - [x] O usuário acessa a tela de atividades.
 - [x] O sistema carrega a lista de atividades cadastradas do usuário.
-- [ ] O sistema exibe as atividades com as informações de título, status (pendente, concluída, atrasada), categoria e prazo.
+- [x] O sistema exibe as atividades com as informações de título, status (pendente, concluída, atrasada), categoria e prazo.
 - [ ] O sistema organiza as atividades por ordem de expiração, exibindo as mais próximas primeiro.
 
 ### Exceções:

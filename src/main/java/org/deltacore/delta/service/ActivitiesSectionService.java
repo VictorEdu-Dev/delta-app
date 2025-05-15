@@ -2,6 +2,7 @@ package org.deltacore.delta.service;
 
 import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.dto.ActivityMapper;
+import org.deltacore.delta.dto.ActivityTsdtDTO;
 import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +63,12 @@ public class ActivitiesSectionService {
                 .toList();
     }
 
-
+    public List<ActivityTsdtDTO> getActivitiesWithTitleStatusTypeAndDeadline() {
+        List<Activity> act = (List<Activity>) activityDAO.findAllActivities(DEFAULT_LIMIT);
+        if (act.isEmpty()) return Collections.emptyList();
+        return act
+                .stream()
+                .map(activityMapper::toTsdtDTO)
+                .toList();
+    }
 }
