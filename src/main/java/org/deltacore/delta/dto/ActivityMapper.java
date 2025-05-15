@@ -8,4 +8,6 @@ public interface ActivityMapper {
     ActivityDTO toDTO(Activity activity);
 
     Activity toEntity(ActivityDTO activityDTO);
+
+    ActivityTsdtDTO toTsdtDTO(Activity activityTsdtDTO);
 }
