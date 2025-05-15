@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +37,13 @@ public class Activity extends GeneralData {
 
     @Column(precision = 19, scale = 4)
     private BigDecimal maxScore;
+
+    @Column(nullable = false)
+    private LocalDateTime deadline;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ActivityStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<VideoLesson> videoUrl;
