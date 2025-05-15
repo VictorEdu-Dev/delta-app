@@ -20,7 +20,6 @@ public interface ActivityDAO extends CrudRepository<Activity, UUID> {
     @Query(value = "SELECT * FROM activity WHERE title LIKE %?1% AND activityType = ?2 LIMIT 10", nativeQuery = true)
     Iterable<Activity> findActivitiesByTitleAndType(String title, ActivityType type);
 
-
     @Query(value = "SELECT * FROM activity WHERE activityType = ?1 LIMIT ?2", nativeQuery = true)
     Iterable<Activity> findActivitiesByActivityType(ActivityType type, Integer limit);
 
