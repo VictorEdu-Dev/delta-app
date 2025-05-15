@@ -25,12 +25,14 @@ public class ActivitiesResource {
         return ResponseEntity.ok(activitiesService.getLimitedActivities(search));
     }
 
+    @GetMapping(value = APIRoutes.LIST_ACTIVITIES_WITH_TITLE_STATUS_DEADLINE_TYPE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getActivitiesWithTitleStatusDeadlineType() {
+        return ResponseEntity.ok(activitiesService.getActivitiesWithTitleStatusTypeAndDeadline());
+    }
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO activity) {
         return ResponseEntity.ok(activitiesService.saveActivity(activity));
     }
-
-
-
 }
