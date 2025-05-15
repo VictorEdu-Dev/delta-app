@@ -36,6 +36,7 @@
     - `feat:` para novas funcionalidades.
     - `fix:` para correções de bugs.
     - `refactor:` para refatoração de código.
+    - 'feature/rf<NUMERO DA RF>-activity': ATENÇÃO, USAR ESTE PADRÃO PARA NOMEAR AS BRANCHES PARA NOVAS FUNCIONALIDADES.
 
 # Git e Fluxo de Trabalho
 
