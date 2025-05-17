@@ -3,11 +3,14 @@ package org.deltacore.delta.service;
 import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.dto.ActivityMapper;
 import org.deltacore.delta.dto.ActivityTsdtDTO;
+import org.deltacore.delta.exception.ConflictException;
 import org.deltacore.delta.model.Activity;
+import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -24,21 +27,54 @@ public class ActivitiesSectionService {
     }
 
     public ActivityDTO saveActivity(ActivityDTO activity) {
+        Optional<String> actDouble = activityDAO.findActByTitle(activity.title());
+        if (actDouble.isPresent()) throw new ConflictException(activity.title() + " already exists!");
+
         Activity activityForSave = activityMapper.toEntity(activity);
-         return activityMapper.toDTO(activityDAO.save(activityForSave));
+        setDefaultValues(activityForSave);
+
+        return activityMapper.toDTO(activityDAO.save(activityForSave));
+    }
+
+    private void setDefaultValues(Activity activityForSave) {
+        if (activityForSave.getStatus() == null) {
+            activityForSave.setStatus(ActivityStatus.PENDING);
+        }
+        if (activityForSave.getDeadline() == null) {
+            activityForSave.setDeadline(LocalDateTime.now().plusDays(7));
+        }
+    }
+
+    public List<ActivityDTO> getActivitiesFiltered(String order) {
+        if(order == null || order.isEmpty()) return getLimitedActivities(null);
+
+        List<Activity> activities = dispatchSortOperation(order);
+
+        return activities
+                .stream()
+                .map(activityMapper::toDTO)
+                .toList();
+    }
+
+    private List<Activity> dispatchSortOperation(String order) {
+        return switch (order) {
+            case OrderType.ASC -> activityDAO.findAllActivitiesOrderAsc(DEFAULT_LIMIT);
+            case OrderType.DESC -> activityDAO.findAllActivitiesOrderDesc(DEFAULT_LIMIT);
+            default -> throw new ConflictException("Invalid order parameter: " + order);
+        };
     }
 
     public List<ActivityDTO> getLimitedActivities(String search) {
-        // Busca atividades com 1 a n strings de quaisquer tamanhos
         if (search == null || search.trim().isEmpty()) {
-            Optional<List<Activity>> activities = Optional
-                    .ofNullable((List<Activity>) activityDAO
-                            .findAllActivities(DEFAULT_LIMIT));
+            List<Activity> activities = Optional
+                    .ofNullable((List<Activity>) activityDAO.findAllActivities(DEFAULT_LIMIT))
+                    .orElse(Collections.emptyList());
 
-            return activities.map(activityList -> activityList
+            return activities
+                    .isEmpty() ? Collections.emptyList() : activities
                     .stream()
                     .map(activityMapper::toDTO)
-                    .toList()).orElse(Collections.emptyList());
+                    .toList();
         }
 
         List<ActivityDTO> activities = searchDetailed(search);
@@ -52,7 +88,7 @@ public class ActivitiesSectionService {
 
         Set<Activity> activities = new HashSet<>();
 
-        setWords.forEach(word -> { // Ele vai procurar uma lista de atividades que contenham cada palavra
+        setWords.forEach(word -> {
             Optional<List<Activity>> found = Optional.ofNullable((List<Activity>) activityDAO.findActivitiesByTitle(word));
             found.ifPresent(activities::addAll);
         });
@@ -70,5 +106,10 @@ public class ActivitiesSectionService {
                 .stream()
                 .map(activityMapper::toTsdtDTO)
                 .toList();
+    }
+
+    private static class OrderType {
+        public static final String ASC = "asc";
+        public static final String DESC = "desc";
     }
 }
