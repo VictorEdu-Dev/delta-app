@@ -21,14 +21,13 @@
 - [x] O usuário seleciona a data e hora de vencimento da atividade.
 - [x] O usuário escolhe a categoria da atividade (exemplo: "challenge").
 - [x] O sistema valida que a data de vencimento fornecida é uma data futura.
-- [ ] Se o prazo for inválido (não for uma data futura), o sistema exibe uma mensagem de erro e solicita que o usuário insira uma nova data válida.
+- [x] Se o prazo for inválido (não for uma data futura), o sistema exibe uma mensagem de erro e solicita que o usuário insira uma nova data válida.
 - [x] O usuário confirma o cadastro da atividade.
 - [x] O sistema salva as informações da atividade no banco de dados e a associa à categoria selecionada.
 - [x] O sistema exibe uma mensagem de sucesso informando que a atividade foi cadastrada com sucesso.
 
 ### Fluxo Alternativo:
 #### Fluxo Alternativo 1: Prazo inválido
-- [ ] Se o usuário inserir uma data que não é uma data futura, o sistema exibe uma mensagem de erro informando que o prazo precisa ser uma data futura.
 - [x] O usuário corrige a data e repete o fluxo principal.
 
 ### Exceções:
