@@ -5,6 +5,8 @@ import org.deltacore.delta.model.ActivityType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ActivityDAO extends CrudRepository<Activity, UUID> {
@@ -31,4 +33,13 @@ public interface ActivityDAO extends CrudRepository<Activity, UUID> {
 
     @Query(value = "SELECT * FROM activity LIMIT ?1", nativeQuery = true)
     Iterable<Activity> findAllActivities(Integer limit);
+
+    @Query(value = "SELECT * FROM activity ORDER BY deadline ASC LIMIT ?1", nativeQuery = true)
+    List<Activity> findAllActivitiesOrderAsc(Integer limit);
+
+    @Query(value = "SELECT * FROM activity ORDER BY deadline DESC LIMIT ?1", nativeQuery = true)
+    List<Activity> findAllActivitiesOrderDesc(Integer limit);
+
+    @Query(value = "SELECT title FROM activity WHERE title = ?1", nativeQuery = true)
+    Optional<String> findActByTitle(String title);
 }
