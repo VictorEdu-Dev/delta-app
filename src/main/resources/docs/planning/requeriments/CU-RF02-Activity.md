@@ -16,7 +16,7 @@
 - [x] O usuário acessa a tela de atividades.
 - [x] O sistema carrega a lista de atividades cadastradas do usuário.
 - [x] O sistema exibe as atividades com as informações de título, status (pendente, concluída, atrasada), categoria e prazo.
-- [ ] O sistema organiza as atividades por ordem de expiração, exibindo as mais próximas primeiro.
+- [x] O sistema organiza as atividades por ordem de expiração, exibindo as mais próximas primeiro.
 
 ### Exceções:
 - Se não houver atividades cadastradas, o sistema exibe uma mensagem informando "Nenhuma atividade encontrada".
