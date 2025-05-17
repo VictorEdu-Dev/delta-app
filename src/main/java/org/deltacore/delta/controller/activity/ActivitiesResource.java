@@ -30,6 +30,11 @@ public class ActivitiesResource {
         return ResponseEntity.ok(activitiesService.getActivitiesWithTitleStatusTypeAndDeadline());
     }
 
+    @GetMapping(value = APIRoutes.LIST_ACTIVITIES_FILTERED, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getActivitiesOrderByDeadline(@RequestParam(value = "order", required = false) String search) {
+        return ResponseEntity.ok(activitiesService.getActivitiesFiltered(search));
+    }
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO activity) {
