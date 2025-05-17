@@ -1,9 +1,6 @@
 package org.deltacore.delta.dto;
 
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.model.ActivityType;
@@ -37,5 +34,6 @@ public record ActivityDTO(
 
         ActivityStatus status,
 
+        @FutureOrPresent(message = "{activity.deadline.future_or_present}")
         LocalDateTime deadline) {
 }
