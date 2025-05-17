@@ -1,8 +1,8 @@
 # Requisitos Funcionais - Módulo de Atividades
 
-#### RF01: O sistema deve permitir que o usuário cadastre uma nova atividade informando obrigatoriamente o título, a descrição detalhada, a data e hora de vencimento (prazo), e a categoria associada (challenge, etc). O sistema deve validar que o prazo seja uma data futura.
+#### ~~RF01: O sistema deve permitir que o usuário cadastre uma nova atividade informando obrigatoriamente o título, a descrição detalhada, a data e hora de vencimento (prazo), e a categoria associada (challenge, etc). O sistema deve validar que o prazo seja uma data futura.~~
 
-#### RF02: O sistema deve listar todas as atividades cadastradas pelo usuário autenticado, exibindo título, status (pendente, concluída, atrasada), categoria e prazo, organizadas por ordem de expiração (mais próximo primeiro).
+#### ~~RF02: O sistema deve listar todas as atividades cadastradas pelo usuário autenticado, exibindo título, status (pendente, concluída, atrasada), categoria e prazo, organizadas por ordem de expiração (mais próximo primeiro).~~
 
 #### RF03: O sistema deve permitir que o usuário (monitor) edite o título, descrição, prazo e categoria de uma atividade, desde que ela ainda não esteja marcada como concluída. Também deve permitir que o usuário exclua uma atividade em qualquer estado.
 
