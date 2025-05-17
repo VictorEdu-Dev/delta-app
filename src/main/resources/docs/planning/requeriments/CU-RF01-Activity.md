@@ -15,28 +15,27 @@
 - A atividade aparece na lista de atividades do usuário ou da categoria correspondente.
 
 ### Fluxo Principal:
-- [ ] O usuário acessa a tela de cadastro de atividade.
-- [ ] O usuário insere o título da atividade no campo apropriado.
-- [ ] O usuário insere a descrição detalhada da atividade.
-- [ ] O usuário seleciona a data e hora de vencimento da atividade.
-- [ ] O usuário escolhe a categoria da atividade (exemplo: "challenge").
-- [ ] O sistema valida que a data de vencimento fornecida é uma data futura.
+- [x] O usuário acessa a tela de cadastro de atividade.
+- [x] O usuário insere o título da atividade no campo apropriado.
+- [x] O usuário insere a descrição detalhada da atividade.
+- [x] O usuário seleciona a data e hora de vencimento da atividade.
+- [x] O usuário escolhe a categoria da atividade (exemplo: "challenge").
+- [x] O sistema valida que a data de vencimento fornecida é uma data futura.
 - [ ] Se o prazo for inválido (não for uma data futura), o sistema exibe uma mensagem de erro e solicita que o usuário insira uma nova data válida.
-- [ ] O usuário confirma o cadastro da atividade.
-- [ ] O sistema salva as informações da atividade no banco de dados e a associa à categoria selecionada.
-- [ ] O sistema exibe uma mensagem de sucesso informando que a atividade foi cadastrada com sucesso.
+- [x] O usuário confirma o cadastro da atividade.
+- [x] O sistema salva as informações da atividade no banco de dados e a associa à categoria selecionada.
+- [x] O sistema exibe uma mensagem de sucesso informando que a atividade foi cadastrada com sucesso.
 
 ### Fluxo Alternativo:
 #### Fluxo Alternativo 1: Prazo inválido
 - [ ] Se o usuário inserir uma data que não é uma data futura, o sistema exibe uma mensagem de erro informando que o prazo precisa ser uma data futura.
-- [ ] O usuário corrige a data e repete o fluxo principal.
+- [x] O usuário corrige a data e repete o fluxo principal.
 
 ### Exceções:
-- [ ] Se o usuário não preencher todos os campos obrigatórios (título, descrição, prazo e categoria), o sistema exibe uma mensagem informando os campos faltantes.
+- [x] Se o usuário não preencher todos os campos obrigatórios (título, descrição, prazo e categoria), o sistema exibe uma mensagem informando os campos faltantes.
 
 ### Requisitos Não Funcionais:
-- [ ] O sistema deve garantir que a validação da data de vencimento seja realizada de maneira rápida e sem afetar a performance do cadastro.
-- [ ] A interface deve ser intuitiva e fácil de usar para garantir que os dados sejam inseridos corretamente.
+- [x] O sistema deve garantir que a validação da data de vencimento seja realizada de maneira rápida e sem afetar a performance do cadastro.
 
 ##### Notas:
 - O prazo de vencimento deve ser validado em tempo real (ao submeter o formulário).
