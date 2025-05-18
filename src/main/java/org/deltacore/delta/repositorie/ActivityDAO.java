@@ -1,15 +1,21 @@
 package org.deltacore.delta.repositorie;
 
 import org.deltacore.delta.model.Activity;
+import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.model.ActivityType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ActivityDAO extends CrudRepository<Activity, UUID> {
+public interface ActivityDAO extends JpaRepository<Activity, UUID> {
     @Query(value = "SELECT * FROM activity WHERE LOWER(TRIM(title)) LIKE LOWER(CONCAT('%', ?1, '%')) LIMIT ?2", nativeQuery = true)
     Iterable<Activity> findActivitiesByTitle(String title, Integer limit);
 
@@ -34,11 +40,19 @@ public interface ActivityDAO extends CrudRepository<Activity, UUID> {
     @Query(value = "SELECT * FROM activity LIMIT ?1", nativeQuery = true)
     Iterable<Activity> findAllActivities(Integer limit);
 
-    @Query(value = "SELECT * FROM activity ORDER BY deadline ASC LIMIT ?1", nativeQuery = true)
-    List<Activity> findAllActivitiesOrderAsc(Integer limit);
+    @Query(value = "SELECT * FROM activity", nativeQuery = true)
+    Page<Activity> findAllActivitiesOrder(Pageable pageable);
 
-    @Query(value = "SELECT * FROM activity ORDER BY deadline DESC LIMIT ?1", nativeQuery = true)
-    List<Activity> findAllActivitiesOrderDesc(Integer limit);
+    @Query("SELECT a FROM Activity a " +
+            "WHERE (:status IS NULL OR a.status = :status) " +
+            "AND (:activityType IS NULL OR a.activityType = :activityType) " +
+            "AND a.deadline BETWEEN :startDate AND :endDate")
+    Page<Activity> findActivitiesByFilters(@Param("status") ActivityStatus status,
+                                           @Param("activityType") ActivityType activityType,
+                                           @Param("startDate") LocalDateTime startDate,
+                                           @Param("endDate") LocalDateTime endDate,
+                                           Pageable pageable);
+
 
     @Query(value = "SELECT title FROM activity WHERE title = ?1", nativeQuery = true)
     Optional<String> findActByTitle(String title);
