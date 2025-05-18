@@ -1,6 +1,5 @@
 package org.deltacore.delta.service;
 
-import jakarta.servlet.Filter;
 import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.dto.ActivityFilterDTO;
 import org.deltacore.delta.dto.ActivityMapper;
@@ -10,7 +9,6 @@ import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -27,12 +25,13 @@ import java.util.*;
 @Service
 public class ActivitiesSectionService {
     private static final int DEFAULT_LIMIT = 20;
+    private static final LocalDateTime DEFAULT_END_DATE = LocalDateTime.of(3000, 12, 31, 23, 59);
 
     private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
     private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
     @Autowired
-    public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper, PagedResourcesAssembler<Activity> pagedResourcesAssembler, @Qualifier("requestContextFilter") Filter filter) {
+    public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper, PagedResourcesAssembler<Activity> pagedResourcesAssembler) {
         this.activityMapper = activityMapper;
         this.activityDAO = activityDAO;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
@@ -64,7 +63,7 @@ public class ActivitiesSectionService {
                 filters.startDate() != null ? filters.startDate().atStartOfDay()
                         : LocalDate.now().atStartOfDay(),
                 filters.endDate() != null ? filters.endDate().atTime(LocalTime.MAX)
-                        : LocalDateTime.of(3000, 12, 31, 23, 59),
+                        : DEFAULT_END_DATE,
                 pageable);
 
         if (activities.isEmpty()) return PagedModel.empty();
@@ -73,6 +72,7 @@ public class ActivitiesSectionService {
                 .toModel(activities, activity -> EntityModel.of(activityMapper.toDTO(activity)));
     }
 
+    // Isso vai quebrar em algum momento se não implementar pesquisa paginada
     public List<ActivityDTO> getLimitedActivities(String search) {
         if (search == null || search.trim().isEmpty()) {
             List<Activity> activities = Optional

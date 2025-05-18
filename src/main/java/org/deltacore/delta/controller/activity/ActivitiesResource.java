@@ -3,32 +3,32 @@ package org.deltacore.delta.controller.activity;
 import jakarta.validation.Valid;
 import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.dto.ActivityFilterDTO;
-import org.deltacore.delta.model.ActivityStatus;
-import org.deltacore.delta.model.ActivityType;
 import org.deltacore.delta.service.ActivitiesSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-
 @RestController
 @RequestMapping("/activities")
 public class ActivitiesResource {
+    private static final int MAX_SIZE_PAGE = 50;
+    private static final int MIN_SIZE_PAGE = 0;
+    private static final int PAGE_DEFAULT = 0;
 
+    private final MessageSource messageSource;
     private final ActivitiesSectionService activitiesService;
 
     @Autowired
-    public ActivitiesResource(ActivitiesSectionService activitiesService) {
+    public ActivitiesResource(ActivitiesSectionService activitiesService, MessageSource messageSource) {
         this.activitiesService = activitiesService;
+        this.messageSource = messageSource;
     }
 
     // Barra de pesquisa de atividades
@@ -43,7 +43,21 @@ public class ActivitiesResource {
             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
             @Valid @ModelAttribute ActivityFilterDTO filters) {
 
-        System.out.println(filters);
+        if (size <= MIN_SIZE_PAGE || size > MAX_SIZE_PAGE) {
+            String msg = messageSource.getMessage(
+                    "error.size.invalid",
+                    null,
+                    LocaleContextHolder.getLocale());
+            return ResponseEntity.badRequest().body(msg);
+        }
+
+        if (page < PAGE_DEFAULT) {
+            String msg = messageSource.getMessage(
+                    "error.page.invalid",
+                    null,
+                    LocaleContextHolder.getLocale());
+            return ResponseEntity.badRequest().body(msg);
+        }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("deadline").ascending());
 
