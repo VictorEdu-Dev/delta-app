@@ -8,14 +8,13 @@
 
 #### RF04: O sistema deve permitir que o usuário altere o status de uma atividade para "concluída", registrando a data e hora da conclusão automaticamente.
 
-#### RF05: O sistema deve exibir um painel de progresso com o total de atividades do usuário, o número de concluídas, pendentes e atrasadas, apresentando também a porcentagem de conclusão geral.
+#### ~~RF05: O sistema deve permitir que o usuário filtre as atividades por status (pendente, concluída, atrasada), intervalo de datas (prazo inicial e final) e por categoria. O filtro deve funcionar em conjunto com a ordenação por data de vencimento.~~
 
-#### RF06: O sistema deve permitir que o usuário filtre as atividades por status (pendente, concluída, atrasada), intervalo de datas (prazo inicial e final) e por categoria. O filtro deve funcionar em conjunto com a ordenação por data de vencimento.
+#### RF06: O sistema deve exibir um painel de progresso com o total de atividades do usuário, o número de concluídas, pendentes e atrasadas, apresentando também a porcentagem de conclusão geral.
 
 #### RF07: O sistema deve gerar uma notificação (push ou interna) para o usuário 24 horas antes do vencimento de uma atividade pendente, e uma notificação imediata quando a data/hora do prazo for ultrapassada sem conclusão.
 
-##### // Isso pode acabar sendo deprecado
-#### RF08: O sistema deve permitir a criação de atividades recorrentes (ex: semanal, mensal), com base em uma atividade original, replicando título, descrição e categoria automaticamente para as novas ocorrências.
+##### Funcionalidade Deprecada — RF08: O sistema deve permitir a criação de atividades recorrentes (ex: semanal, mensal), com base em uma atividade original, replicando título, descrição e categoria automaticamente para as novas ocorrências.
 
 #### RF09: O sistema deve permitir ao usuário anexar arquivos (PDF, imagens ou documentos) às atividades para suporte ou referência. O tamanho máximo de cada arquivo deve ser de 5 MB.
 
