@@ -8,5 +8,6 @@ RUN mvn clean package
 # Stage 2: imagem final com JRE
 FROM eclipse-temurin:21-jdk
 WORKDIR /app
+EXPOSE 8080
 COPY --from=build /app/target/delta-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
