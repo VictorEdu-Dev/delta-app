@@ -1,16 +1,27 @@
 package org.deltacore.delta.controller.activity;
 
 import jakarta.validation.Valid;
-import org.deltacore.delta.controller.APIRoutes;
 import org.deltacore.delta.dto.ActivityDTO;
+import org.deltacore.delta.dto.ActivityFilterDTO;
+import org.deltacore.delta.model.ActivityStatus;
+import org.deltacore.delta.model.ActivityType;
 import org.deltacore.delta.service.ActivitiesSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
-@RequestMapping(APIRoutes.BASE_API)
+@RequestMapping("/activities")
 public class ActivitiesResource {
 
     private final ActivitiesSectionService activitiesService;
@@ -20,19 +31,28 @@ public class ActivitiesResource {
         this.activitiesService = activitiesService;
     }
 
-    @GetMapping(value = APIRoutes.LIST_ACTIVITIES, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getActivities(@RequestParam(value = "search", required = false)  String search) {
+    // Barra de pesquisa de atividades
+    @GetMapping(value = "/activities", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getActivities(@RequestParam(value = "search")  String search) {
         return ResponseEntity.ok(activitiesService.getLimitedActivities(search));
     }
 
-    @GetMapping(value = APIRoutes.LIST_ACTIVITIES_WITH_TITLE_STATUS_DEADLINE_TYPE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getActivitiesWithTitleStatusDeadlineType() {
-        return ResponseEntity.ok(activitiesService.getActivitiesWithTitleStatusTypeAndDeadline());
+    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getActivitiesOrderByDeadline(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+            @Valid @ModelAttribute ActivityFilterDTO filters) {
+
+        System.out.println(filters);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("deadline").ascending());
+
+        return ResponseEntity.ok(activitiesService.getActivitiesFiltered(pageable, filters));
     }
 
-    @GetMapping(value = APIRoutes.LIST_ACTIVITIES_FILTERED, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getActivitiesOrderByDeadline(@RequestParam(value = "order", required = false) String search) {
-        return ResponseEntity.ok(activitiesService.getActivitiesFiltered(search));
+    @GetMapping(value = "/list-activities-tsdt", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getActivitiesWithTitleStatusDeadlineType() {
+        return ResponseEntity.ok(activitiesService.getActivitiesWithTitleStatusTypeAndDeadline());
     }
 
 

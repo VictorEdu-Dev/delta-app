@@ -14,14 +14,14 @@
 - O sistema retorna uma lista de atividades filtrada e ordenada conforme os critérios passados.
 
 ### Fluxo Principal:
-- [ ] Usuário envia requisição com parâmetros opcionais: status, prazoInicial, prazoFinal, categoria.
-- [ ] Sistema valida os parâmetros (formato e lógica).
-- [ ] Sistema executa a consulta aplicando os filtros recebidos:
-- [ ] Filtra por status, se informado.
-- [ ] Filtra pelo intervalo de prazo, se informado.
-- [ ] Filtra pela categoria, se informado.
-- [ ] Ordena as atividades pelo campo data de vencimento (ascendente).
-- [ ] Retorna a lista paginada de atividades.
+- [x] Usuário envia requisição com parâmetros opcionais: status, prazoInicial, prazoFinal, categoria.
+- [x] Sistema valida os parâmetros (formato e lógica).
+- [x] Sistema executa a consulta aplicando os filtros recebidos:
+- [x] Filtra por status, se informado.
+- [x] Filtra pelo intervalo de prazo, se informado.
+- [x] Filtra pela categoria, se informado.
+- [x] Ordena as atividades pelo campo data de vencimento (ascendente).
+- [x] Retorna a lista paginada de atividades.
 
 ### Fluxo Alternativo 1: Parâmetros Inválidos
 - Caso as datas estejam no formato errado ou intervalo seja inválido (data inicial maior que final), o sistema retorna erro de validação.

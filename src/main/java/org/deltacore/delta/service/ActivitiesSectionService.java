@@ -1,6 +1,8 @@
 package org.deltacore.delta.service;
 
+import jakarta.servlet.Filter;
 import org.deltacore.delta.dto.ActivityDTO;
+import org.deltacore.delta.dto.ActivityFilterDTO;
 import org.deltacore.delta.dto.ActivityMapper;
 import org.deltacore.delta.dto.ActivityTsdtDTO;
 import org.deltacore.delta.exception.ConflictException;
@@ -8,9 +10,18 @@ import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Service
@@ -19,11 +30,12 @@ public class ActivitiesSectionService {
 
     private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
-
+    private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
     @Autowired
-    public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper) {
+    public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper, PagedResourcesAssembler<Activity> pagedResourcesAssembler, @Qualifier("requestContextFilter") Filter filter) {
         this.activityMapper = activityMapper;
         this.activityDAO = activityDAO;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     public ActivityDTO saveActivity(ActivityDTO activity) {
@@ -45,23 +57,20 @@ public class ActivitiesSectionService {
         }
     }
 
-    public List<ActivityDTO> getActivitiesFiltered(String order) {
-        if(order == null || order.isEmpty()) return getLimitedActivities(null);
+    public PagedModel<EntityModel<ActivityDTO>> getActivitiesFiltered(Pageable pageable, ActivityFilterDTO filters) {
+        Page<Activity> activities = activityDAO.findActivitiesByFilters(
+                filters.status(),
+                filters.activityType(),
+                filters.startDate() != null ? filters.startDate().atStartOfDay()
+                        : LocalDate.now().atStartOfDay(),
+                filters.endDate() != null ? filters.endDate().atTime(LocalTime.MAX)
+                        : LocalDateTime.of(3000, 12, 31, 23, 59),
+                pageable);
 
-        List<Activity> activities = dispatchSortOperation(order);
+        if (activities.isEmpty()) return PagedModel.empty();
 
-        return activities
-                .stream()
-                .map(activityMapper::toDTO)
-                .toList();
-    }
-
-    private List<Activity> dispatchSortOperation(String order) {
-        return switch (order) {
-            case OrderType.ASC -> activityDAO.findAllActivitiesOrderAsc(DEFAULT_LIMIT);
-            case OrderType.DESC -> activityDAO.findAllActivitiesOrderDesc(DEFAULT_LIMIT);
-            default -> throw new ConflictException("Invalid order parameter: " + order);
-        };
+        return pagedResourcesAssembler
+                .toModel(activities, activity -> EntityModel.of(activityMapper.toDTO(activity)));
     }
 
     public List<ActivityDTO> getLimitedActivities(String search) {
@@ -106,10 +115,5 @@ public class ActivitiesSectionService {
                 .stream()
                 .map(activityMapper::toTsdtDTO)
                 .toList();
-    }
-
-    private static class OrderType {
-        public static final String ASC = "asc";
-        public static final String DESC = "desc";
     }
 }
