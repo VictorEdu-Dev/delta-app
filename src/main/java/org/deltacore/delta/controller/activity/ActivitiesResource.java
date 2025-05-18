@@ -3,17 +3,12 @@ package org.deltacore.delta.controller.activity;
 import jakarta.validation.Valid;
 import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.dto.ActivityFilterDTO;
-import org.deltacore.delta.model.ActivityStatus;
-import org.deltacore.delta.model.ActivityType;
 import org.deltacore.delta.service.ActivitiesSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,8 +37,6 @@ public class ActivitiesResource {
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "size", defaultValue = "20", required = false) int size,
             @Valid @ModelAttribute ActivityFilterDTO filters) {
-
-        System.out.println(filters);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("deadline").ascending());
 
