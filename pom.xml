@@ -20,7 +20,7 @@
             <id>victorepc</id>
             <name>Victor Eduardo Pita Campos</name>
             <email>victoreduardodev@gmail.com</email>
-            <organization>UFC - Engenharia de Computação</organization>
+            <organization>UFC - Engenharia de Computacao</organization>
             <roles>
                 <role>Desenvolvedor</role>
             </roles>
@@ -162,6 +162,12 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
     </build>
 
 </project>
