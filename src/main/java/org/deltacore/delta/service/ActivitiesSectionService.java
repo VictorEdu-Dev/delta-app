@@ -8,7 +8,6 @@ import org.deltacore.delta.dto.ActivityTsdtDTO;
 import org.deltacore.delta.exception.ConflictException;
 import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.model.ActivityStatus;
-import org.deltacore.delta.model.ActivityType;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,14 +31,11 @@ public class ActivitiesSectionService {
     private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
     private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
-    private final Filter filter;
-
     @Autowired
     public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper, PagedResourcesAssembler<Activity> pagedResourcesAssembler, @Qualifier("requestContextFilter") Filter filter) {
         this.activityMapper = activityMapper;
         this.activityDAO = activityDAO;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
-        this.filter = filter;
     }
 
     public ActivityDTO saveActivity(ActivityDTO activity) {
