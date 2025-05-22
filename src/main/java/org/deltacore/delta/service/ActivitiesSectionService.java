@@ -140,13 +140,4 @@ public class ActivitiesSectionService {
 
         return activityDAO.save(activityToBeUpdated);
     }
-
-    public void deleteActivity(Long id)
-    {
-        Activity activityToBeDeleted = activityDAO.findById(id)
-                .orElseThrow(() -> {
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Atividade não encontrada");
-                });
-        activityDAO.delete(activityToBeDeleted);
-    }
 }
