@@ -10,4 +10,5 @@ public interface ActivityMapper {
     Activity toEntity(ActivityDTO activityDTO);
 
     ActivityTsdtDTO toTsdtDTO(Activity activity);
+
 }

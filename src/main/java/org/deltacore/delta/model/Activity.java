@@ -51,4 +51,11 @@ public class Activity extends GeneralData {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "subject_id")
     private Subject subject;
+
+    @Column(nullable = false)
+    private boolean completed = false;
+
+    @Column
+    private LocalDateTime completionTimestamp;
+
 }

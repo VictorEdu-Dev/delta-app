@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/activities")
 public class ActivitiesResource {
@@ -73,5 +75,11 @@ public class ActivitiesResource {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO activity) {
         return ResponseEntity.ok(activitiesService.saveActivity(activity));
+    }
+
+    @PutMapping(value = "/{id}/complete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ActivityDTO> markActivityAsCompleted(@PathVariable Long id) {
+        ActivityDTO updatedActivity = activitiesService.completeActivity(id);
+        return ResponseEntity.ok(updatedActivity);
     }
 }

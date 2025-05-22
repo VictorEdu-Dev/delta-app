@@ -13,6 +13,7 @@ import java.util.UUID;
 @Builder
 public record ActivityDTO(
         Long id,
+
         @NotBlank(message = "{activity.title.not.blank}")
         String title,
 
@@ -35,5 +36,9 @@ public record ActivityDTO(
         ActivityStatus status,
 
         @FutureOrPresent(message = "{activity.deadline.future_or_present}")
-        LocalDateTime deadline) {
-}
+        LocalDateTime deadline,
+
+        boolean completed,
+        LocalDateTime completionTimestamp
+) {}
+
