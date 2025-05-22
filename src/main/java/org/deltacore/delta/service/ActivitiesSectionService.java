@@ -9,13 +9,16 @@ import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -115,5 +118,26 @@ public class ActivitiesSectionService {
                 .stream()
                 .map(activityMapper::toTsdtDTO)
                 .toList();
+    }
+
+    public Activity updateActivity(Long id, ActivityDTO updatedActivity)
+    {
+        Activity activityToBeUpdated = activityDAO.findById(id)
+                .orElseThrow(() -> {
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Atividade não encontrada");
+                });
+        //if(!verificacao de credencial aqui) throw new AccessDeniedException("Acesso negado");//
+        if(activityToBeUpdated.getStatus() == ActivityStatus.COMPLETED) throw new RuntimeException("Atividade já completada");
+
+        activityToBeUpdated.setTitle(updatedActivity.title());
+        activityToBeUpdated.setDescription(updatedActivity.description());
+        activityToBeUpdated.setActivityType(updatedActivity.activityType());
+        activityToBeUpdated.setImageUrl(updatedActivity.imageUrl());
+        activityToBeUpdated.setRecommendedLevel(updatedActivity.recommendedLevel());
+        activityToBeUpdated.setMaxScore(updatedActivity.maxScore());
+        activityToBeUpdated.setStatus(updatedActivity.status());
+        activityToBeUpdated.setDeadline(updatedActivity.deadline());
+
+        return activityDAO.save(activityToBeUpdated);
     }
 }
