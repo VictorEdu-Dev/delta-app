@@ -68,4 +68,17 @@ public class ActivitiesQuery {
     public ResponseEntity<?> getActivityById(@PathVariable Long id) {
         return ResponseEntity.ok(activitiesService.loadActivityData(id));
     }
+
+    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateActivity(@PathVariable Long id, @RequestBody @Valid ActivityDTO activity) {
+        activitiesService.updateActivity(id, activity);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteActivity(@PathVariable Long id) {
+        activitiesService.deleteActivity(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
