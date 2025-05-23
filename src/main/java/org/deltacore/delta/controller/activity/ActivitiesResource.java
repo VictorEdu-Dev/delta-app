@@ -74,4 +74,17 @@ public class ActivitiesResource {
     public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO activity) {
         return ResponseEntity.ok(activitiesService.saveActivity(activity));
     }
+
+    @PostMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateActivity(@PathVariable Long id, @RequestBody @Valid ActivityDTO activity) {
+        activitiesService.updateActivity(id, activity);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteActivity(@PathVariable Long id) {
+        activitiesService.deleteActivity(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
