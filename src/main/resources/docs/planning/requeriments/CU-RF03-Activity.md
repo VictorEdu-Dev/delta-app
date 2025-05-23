@@ -15,7 +15,7 @@
 - Em ambos os casos, ações são restritas ao usuário com permissão adequada.
 
 ### Fluxo Principal (Edição):
-- [x] O usuário acessa a tela de edição da atividade.
+- [ ] O usuário acessa a tela de edição da atividade.
 - [ ] O sistema carrega os dados atuais da atividade.
 - [ ] O usuário modifica o título, descrição, prazo e/ou categoria.
 - [ ] O sistema verifica se a atividade não está marcada como concluída.
