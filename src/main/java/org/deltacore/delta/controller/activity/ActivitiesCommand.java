@@ -1,11 +1,13 @@
 package org.deltacore.delta.controller.activity;
 
-import jakarta.validation.Valid;
 import org.deltacore.delta.dto.ActivityDTO;
+import org.deltacore.delta.dto.OnCreate;
+import org.deltacore.delta.dto.OnUpdate;
 import org.deltacore.delta.service.ActivitiesSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,19 +21,22 @@ public class ActivitiesCommand {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO activity) {
-        return ResponseEntity.ok(activitiesService.saveActivity(activity));
+    public ResponseEntity<?> saveActivity(@RequestBody @Validated(OnCreate.class) ActivityDTO activity) {
+        return ResponseEntity
+                .ok(activitiesService.saveActivity(activity));
     }
 
     @PutMapping(value = "/edit/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateActivity(@PathVariable Long id, @RequestBody @Valid ActivityDTO activity) {
-        activitiesService.updateActivity(id, activity);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> updateActivity(@PathVariable Long id, @RequestBody @Validated(OnUpdate.class) ActivityDTO activity) {
+        return ResponseEntity
+                .ok(activitiesService.updateActivity(id, activity));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteActivity(@PathVariable Long id) {
         activitiesService.deleteActivity(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }
