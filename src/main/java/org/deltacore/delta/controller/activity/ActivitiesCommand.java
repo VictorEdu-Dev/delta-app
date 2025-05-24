@@ -39,4 +39,12 @@ public class ActivitiesCommand {
                 .noContent()
                 .build();
     }
+
+    // Atualizações para um único ou mais campos, desde que não sejam para o recurso inteiro,
+    // devem semanticamente usar PATCH como metodo HTTP mais adequado.
+    @PatchMapping(value = "/{id}/complete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ActivityDTO> markActivityAsCompleted(@PathVariable Long id) {
+        ActivityDTO updatedActivity = activitiesService.completeActivity(id);
+        return ResponseEntity.ok(updatedActivity);
+    }
 }
