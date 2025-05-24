@@ -81,4 +81,9 @@ public class ActivitiesQuery {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getActivityById(@PathVariable Long id) {
+        return ResponseEntity.ok(activitiesService.loadActivityData(id));
+    }
+
 }
