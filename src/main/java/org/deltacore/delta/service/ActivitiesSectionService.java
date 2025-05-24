@@ -149,4 +149,13 @@ public class ActivitiesSectionService {
                 });
         activityDAO.delete(activityToBeDeleted);
     }
+
+    public ActivityDTO loadActivityData(Long id)
+    {
+        Activity activityToBeLoaded = activityDAO.findById(id)
+                .orElseThrow(() -> {
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Atividade não encontrada");
+                });
+        return activityMapper.toDTO(activityToBeLoaded);
+    }
 }
