@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/activities")
 public class ActivitiesQuery {
@@ -64,5 +66,11 @@ public class ActivitiesQuery {
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getActivityById(@PathVariable Long id) {
         return ResponseEntity.ok(activitiesService.loadActivityData(id));
+    }
+
+    @PutMapping(value = "/{id}/complete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ActivityDTO> markActivityAsCompleted(@PathVariable Long id) {
+        ActivityDTO updatedActivity = activitiesService.completeActivity(id);
+        return ResponseEntity.ok(updatedActivity);
     }
 }

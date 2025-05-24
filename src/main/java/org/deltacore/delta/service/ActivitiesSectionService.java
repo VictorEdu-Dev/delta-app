@@ -1,5 +1,6 @@
 package org.deltacore.delta.service;
 
+import jakarta.transaction.Transactional;
 import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.dto.ActivityFilterDTO;
 import org.deltacore.delta.dto.ActivityMapper;
@@ -183,5 +184,21 @@ public class ActivitiesSectionService {
                     return new ResourceNotFoundException(msg);
                 });
         return activityMapper.toDTO(activityToBeLoaded);
+    }
+
+    @Transactional
+    public ActivityDTO completeActivity(Long activityId) {
+        Activity activity = activityDAO.findById(activityId)
+                .orElseThrow(() -> new NoSuchElementException("Activity not found with ID: " + activityId));
+
+        if (activity.isCompleted()) {
+            throw new ConflictException("Activity is already completed.");
+        }
+
+        activity.setCompleted(true);
+        activity.setCompletionTimestamp(LocalDateTime.now());
+
+        Activity saved = activityDAO.save(activity);
+        return activityMapper.toDTO(saved);
     }
 }
