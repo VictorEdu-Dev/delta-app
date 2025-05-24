@@ -186,19 +186,15 @@ public class ActivitiesSectionService {
         return activityMapper.toDTO(activityToBeLoaded);
     }
 
-    @Transactional
     public ActivityDTO completeActivity(Long activityId) {
         Activity activity = activityDAO.findById(activityId)
-                .orElseThrow(() -> new NoSuchElementException("Activity not found with ID: " + activityId));
+                .orElseThrow(() -> new ResourceNotFoundException("error.activity.not.found"));
 
-        if (activity.isCompleted()) {
-            throw new ConflictException("Activity is already completed.");
-        }
+        if (activity.isCompleted()) throw new ConflictException("conflict.activity.completed");
 
         activity.setCompleted(true);
         activity.setCompletionTimestamp(LocalDateTime.now());
 
-        Activity saved = activityDAO.save(activity);
-        return activityMapper.toDTO(saved);
+        return activityMapper.toDTO(activity);
     }
 }
