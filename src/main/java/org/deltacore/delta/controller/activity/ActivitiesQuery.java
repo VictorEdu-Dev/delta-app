@@ -1,6 +1,7 @@
 package org.deltacore.delta.controller.activity;
 
 import jakarta.validation.Valid;
+import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.dto.ActivityFilterDTO;
 import org.deltacore.delta.service.ActivitiesSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
