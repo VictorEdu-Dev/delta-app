@@ -68,10 +68,4 @@ public class ActivitiesQuery {
     public ResponseEntity<?> getActivityById(@PathVariable Long id) {
         return ResponseEntity.ok(activitiesService.loadActivityData(id));
     }
-
-    @PutMapping(value = "/{id}/complete", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ActivityDTO> markActivityAsCompleted(@PathVariable Long id) {
-        ActivityDTO updatedActivity = activitiesService.completeActivity(id);
-        return ResponseEntity.ok(updatedActivity);
-    }
 }
