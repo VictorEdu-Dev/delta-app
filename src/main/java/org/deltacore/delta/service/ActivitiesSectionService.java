@@ -5,11 +5,13 @@ import org.deltacore.delta.dto.ActivityFilterDTO;
 import org.deltacore.delta.dto.ActivityMapper;
 import org.deltacore.delta.dto.ActivityTsdtDTO;
 import org.deltacore.delta.exception.ConflictException;
+import org.deltacore.delta.exception.ResourceNotFoundException;
 import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -33,11 +35,18 @@ public class ActivitiesSectionService {
     private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
     private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
+
+    private MessageSource messageSource;
+
     @Autowired
-    public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper, PagedResourcesAssembler<Activity> pagedResourcesAssembler) {
+    public ActivitiesSectionService(ActivityDAO activityDAO,
+                                    ActivityMapper activityMapper,
+                                    PagedResourcesAssembler<Activity> pagedResourcesAssembler,
+                                    MessageSource messageSource) {
         this.activityMapper = activityMapper;
         this.activityDAO = activityDAO;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.messageSource = messageSource;
     }
 
     public ActivityDTO saveActivity(ActivityDTO activity) {
@@ -120,41 +129,58 @@ public class ActivitiesSectionService {
                 .toList();
     }
 
-    public Activity updateActivity(Long id, ActivityDTO updatedActivity)
-    {
-        Activity activityToBeUpdated = activityDAO.findById(id)
+    public ActivityDTO updateActivity(Long id, ActivityDTO updatedActivity) {
+        if (id == null || id <= 0) {
+            String msg = messageSource.getMessage(
+                    "error.activity.id.invalid",
+                    null,
+                    LocaleContextHolder.getLocale());
+            throw new ConflictException(msg);
+        }
+        if (!updatedActivity.id().equals(id)) {
+            String msg = messageSource.getMessage(
+                    "conflict.activity.id.unexpected",
+                    null,
+                    LocaleContextHolder.getLocale());
+            throw new ConflictException(msg);
+        }
+        Activity activity = activityDAO.findById(id)
                 .orElseThrow(() -> {
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Atividade não encontrada");
+                    String msg = messageSource.getMessage(
+                            "error.activity.not.found",
+                            null,
+                            LocaleContextHolder.getLocale());
+                    return new ResourceNotFoundException(msg);
                 });
-        //if(!verificacao de credencial aqui) throw new AccessDeniedException("Acesso negado");//
-        if(activityToBeUpdated.getStatus() == ActivityStatus.COMPLETED) throw new RuntimeException("Atividade já completada");
 
-        activityToBeUpdated.setTitle(updatedActivity.title());
-        activityToBeUpdated.setDescription(updatedActivity.description());
-        activityToBeUpdated.setActivityType(updatedActivity.activityType());
-        activityToBeUpdated.setImageUrl(updatedActivity.imageUrl());
-        activityToBeUpdated.setRecommendedLevel(updatedActivity.recommendedLevel());
-        activityToBeUpdated.setMaxScore(updatedActivity.maxScore());
-        activityToBeUpdated.setStatus(updatedActivity.status());
-        activityToBeUpdated.setDeadline(updatedActivity.deadline());
-
-        return activityDAO.save(activityToBeUpdated);
+        activityMapper.updateEntityFromDto(updatedActivity, activity);
+        // Esqueci de mencionar que ao buscar uma entidade, ela se torna gerenciada. Portanto, é só alterar os campos com setters.
+        // Encaminhei a responsabilidade disso para o MapStruct, mas poderia ser feito aqui também.
+        return activityMapper.toDTO(activity);
     }
 
-    public void deleteActivity(Long id)
-    {
+    public void deleteActivity(Long id) {
+
         Activity activityToBeDeleted = activityDAO.findById(id)
                 .orElseThrow(() -> {
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Atividade não encontrada");
+                    String msg = messageSource.getMessage(
+                            "error.activity.not.found",
+                            null,
+                            LocaleContextHolder.getLocale());
+                    return new ResourceNotFoundException(msg);
                 });
+
         activityDAO.delete(activityToBeDeleted);
     }
 
-    public ActivityDTO loadActivityData(Long id)
-    {
+    public ActivityDTO loadActivityData(Long id) {
         Activity activityToBeLoaded = activityDAO.findById(id)
                 .orElseThrow(() -> {
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Atividade não encontrada");
+                    String msg = messageSource.getMessage(
+                            "error.activity.not.found",
+                            null,
+                            LocaleContextHolder.getLocale());
+                    return new ResourceNotFoundException(msg);
                 });
         return activityMapper.toDTO(activityToBeLoaded);
     }
