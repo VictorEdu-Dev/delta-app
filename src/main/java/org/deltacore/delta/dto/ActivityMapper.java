@@ -2,6 +2,7 @@ package org.deltacore.delta.dto;
 
 import org.deltacore.delta.model.Activity;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface ActivityMapper {
