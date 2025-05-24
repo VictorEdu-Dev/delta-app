@@ -51,10 +51,10 @@ public class Activity extends GeneralData {
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
-    @Column(nullable = false)
-    private boolean completed = false;
+    @Column(name = "complete", nullable = false)
+    private boolean completed;
 
-    @Column
+    @Column(name = "timestamp")
     private LocalDateTime completionTimestamp;
 
 }
