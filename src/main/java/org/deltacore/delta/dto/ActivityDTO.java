@@ -34,6 +34,6 @@ public record ActivityDTO(
 
         ActivityStatus status,
 
-        @FutureOrPresent(message = "{activity.deadline.future_or_present}")
+        @FutureOrPresent(message = "{activity.deadline.future_or_present}", groups = OnCreate.class)
         LocalDateTime deadline) {
 }
