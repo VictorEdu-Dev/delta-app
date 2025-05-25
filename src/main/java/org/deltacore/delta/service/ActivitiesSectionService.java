@@ -1,21 +1,27 @@
 package org.deltacore.delta.service;
 
+import jakarta.transaction.Transactional;
 import org.deltacore.delta.dto.ActivityDTO;
 import org.deltacore.delta.dto.ActivityFilterDTO;
 import org.deltacore.delta.dto.ActivityMapper;
 import org.deltacore.delta.dto.ActivityTsdtDTO;
 import org.deltacore.delta.exception.ConflictException;
+import org.deltacore.delta.exception.ResourceNotFoundException;
 import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,11 +36,18 @@ public class ActivitiesSectionService {
     private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
     private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
+
+    private MessageSource messageSource;
+
     @Autowired
-    public ActivitiesSectionService(ActivityDAO activityDAO, ActivityMapper activityMapper, PagedResourcesAssembler<Activity> pagedResourcesAssembler) {
+    public ActivitiesSectionService(ActivityDAO activityDAO,
+                                    ActivityMapper activityMapper,
+                                    PagedResourcesAssembler<Activity> pagedResourcesAssembler,
+                                    MessageSource messageSource) {
         this.activityMapper = activityMapper;
         this.activityDAO = activityDAO;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.messageSource = messageSource;
     }
 
     public ActivityDTO saveActivity(ActivityDTO activity) {
@@ -115,5 +128,73 @@ public class ActivitiesSectionService {
                 .stream()
                 .map(activityMapper::toTsdtDTO)
                 .toList();
+    }
+
+    public ActivityDTO updateActivity(Long id, ActivityDTO updatedActivity) {
+        if (id == null || id <= 0) {
+            String msg = messageSource.getMessage(
+                    "error.activity.id.invalid",
+                    null,
+                    LocaleContextHolder.getLocale());
+            throw new ConflictException(msg);
+        }
+        if (!updatedActivity.id().equals(id)) {
+            String msg = messageSource.getMessage(
+                    "conflict.activity.id.unexpected",
+                    null,
+                    LocaleContextHolder.getLocale());
+            throw new ConflictException(msg);
+        }
+        Activity activity = activityDAO.findById(id)
+                .orElseThrow(() -> {
+                    String msg = messageSource.getMessage(
+                            "error.activity.not.found",
+                            null,
+                            LocaleContextHolder.getLocale());
+                    return new ResourceNotFoundException(msg);
+                });
+
+        activityMapper.updateEntityFromDto(updatedActivity, activity);
+        // Esqueci de mencionar que ao buscar uma entidade, ela se torna gerenciada. Portanto, é só alterar os campos com setters.
+        // Encaminhei a responsabilidade disso para o MapStruct, mas poderia ser feito aqui também.
+        return activityMapper.toDTO(activity);
+    }
+
+    public void deleteActivity(Long id) {
+
+        Activity activityToBeDeleted = activityDAO.findById(id)
+                .orElseThrow(() -> {
+                    String msg = messageSource.getMessage(
+                            "error.activity.not.found",
+                            null,
+                            LocaleContextHolder.getLocale());
+                    return new ResourceNotFoundException(msg);
+                });
+
+        activityDAO.delete(activityToBeDeleted);
+    }
+
+    public ActivityDTO loadActivityData(Long id) {
+        Activity activityToBeLoaded = activityDAO.findById(id)
+                .orElseThrow(() -> {
+                    String msg = messageSource.getMessage(
+                            "error.activity.not.found",
+                            null,
+                            LocaleContextHolder.getLocale());
+                    return new ResourceNotFoundException(msg);
+                });
+        return activityMapper.toDTO(activityToBeLoaded);
+    }
+
+    public ActivityDTO completeActivity(Long activityId) {
+        Activity activity = activityDAO.findById(activityId)
+                .orElseThrow(() -> new ResourceNotFoundException("error.activity.not.found"));
+
+        if (activity.isCompleted()) throw new ConflictException("conflict.activity.completed");
+
+        activity.setCompleted(true);
+        activity.setCompletionTimestamp(LocalDateTime.now());
+
+        return activityMapper.toDTO(activity);
     }
 }

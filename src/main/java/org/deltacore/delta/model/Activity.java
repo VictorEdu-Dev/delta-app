@@ -6,7 +6,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -45,10 +44,17 @@ public class Activity extends GeneralData {
     @Column(nullable = false)
     private ActivityStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "activity")
     private List<VideoLesson> videoUrl;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "subject_id")
     private Subject subject;
+
+    @Column(name = "complete", nullable = false)
+    private boolean completed;
+
+    @Column(name = "timestamp")
+    private LocalDateTime completionTimestamp;
+
 }

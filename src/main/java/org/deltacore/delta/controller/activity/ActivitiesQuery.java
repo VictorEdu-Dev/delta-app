@@ -10,14 +10,15 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/activities")
-public class ActivitiesResource {
+public class ActivitiesQuery {
     private static final int MAX_SIZE_PAGE = 50;
     private static final int MIN_SIZE_PAGE = 0;
     private static final int PAGE_DEFAULT = 0;
@@ -26,21 +27,20 @@ public class ActivitiesResource {
     private final ActivitiesSectionService activitiesService;
 
     @Autowired
-    public ActivitiesResource(ActivitiesSectionService activitiesService, MessageSource messageSource) {
-        this.activitiesService = activitiesService;
+    public ActivitiesQuery(MessageSource messageSource, ActivitiesSectionService activitiesService) {
         this.messageSource = messageSource;
+        this.activitiesService = activitiesService;
     }
 
-    // Barra de pesquisa de atividades
-    @GetMapping(value = "/activities", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getActivities(@RequestParam(value = "search")  String search) {
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchActivities(@RequestParam("q") String search) {
         return ResponseEntity.ok(activitiesService.getLimitedActivities(search));
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getActivitiesOrderByDeadline(
-            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(value = "size", defaultValue = "20", required = false) int size,
+    public ResponseEntity<?> getFilteredActivities(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
             @Valid @ModelAttribute ActivityFilterDTO filters) {
 
         if (size <= MIN_SIZE_PAGE || size > MAX_SIZE_PAGE) {
@@ -64,14 +64,8 @@ public class ActivitiesResource {
         return ResponseEntity.ok(activitiesService.getActivitiesFiltered(pageable, filters));
     }
 
-    @GetMapping(value = "/list-activities-tsdt", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getActivitiesWithTitleStatusDeadlineType() {
-        return ResponseEntity.ok(activitiesService.getActivitiesWithTitleStatusTypeAndDeadline());
-    }
-
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO activity) {
-        return ResponseEntity.ok(activitiesService.saveActivity(activity));
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getActivityById(@PathVariable Long id) {
+        return ResponseEntity.ok(activitiesService.loadActivityData(id));
     }
 }
