@@ -1,41 +1,35 @@
 package org.deltacore.delta.controller;
 
+import org.deltacore.delta.dto.LoginRequest;
 import org.deltacore.delta.dto.UserDTO;
 import org.deltacore.delta.service.GeneralUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-
+@RestController
+@RequestMapping(path = "/api/v1")
 public class Home {
 
-    private final GeneralUserService generalUserService;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    public Home(GeneralUserService generalUserService) {
-        this.generalUserService = generalUserService;
+    public Home(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
-    @GetMapping(path = "/register/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> home(@PathVariable String username) {
-        Optional<UserDTO> user = Optional.ofNullable(generalUserService.getUserDBByUsername(username));
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @PostMapping("/login")
+    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
+        Authentication authenticationRequest =
+                UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.username(), loginRequest.password());
+        Authentication authenticationResponse =
+                this.authenticationManager.authenticate(authenticationRequest);
+        return ResponseEntity.ok().build();
     }
-
-    @PostMapping(path = "/register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserDTO>> home(@RequestBody UserDTO user) {
-        try {
-            generalUserService.saveUserDB(user);
-            return ResponseEntity.ok(generalUserService.getAllUsers());
-        } catch (Exception e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(null);
-        }
-    }
-
 }
