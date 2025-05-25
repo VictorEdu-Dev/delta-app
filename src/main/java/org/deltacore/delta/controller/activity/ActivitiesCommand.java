@@ -11,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/activities")
+@RequestMapping("/activities/monitor")
 public class ActivitiesCommand {
     private final ActivitiesSectionService activitiesService;
 
