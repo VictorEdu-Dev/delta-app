@@ -1,7 +1,9 @@
-package org.deltacore.delta.model;
+package org.deltacore.delta.model.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.deltacore.delta.model.Feedback;
+import org.deltacore.delta.model.GeneralData;
 
 import java.util.List;
 import java.util.UUID;
