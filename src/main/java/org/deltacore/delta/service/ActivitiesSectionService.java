@@ -31,6 +31,8 @@ public class ActivitiesSectionService {
     private final ActivityDAO activityDAO;
     private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
     private final MessageSource messageSource;
+    private final AttachmentService attachmentService;
+    private final ActivityHistoryService activityHistoryService;
 
     @Autowired
     public ActivitiesSectionService(ActivityDAO activityDAO,
@@ -41,6 +43,8 @@ public class ActivitiesSectionService {
         this.activityDAO = activityDAO;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.messageSource = messageSource;
+        this.attachmentService = attachmentService;
+        this.activityHistoryService = activityHistoryService;
     }
 
     public ActivityDTO saveActivity(ActivityDTO activity) {
