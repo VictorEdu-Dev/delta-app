@@ -20,30 +20,40 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityDeltaConfig {
     @Bean
-    public SecurityFilterChain monitorSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain monitorSecurityFilterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
         http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/activities/monitor/**").hasAuthority("MONITOR")
-                        .anyRequest()
-                        .authenticated()
+                .securityMatcher("/activities/monitor/**")
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().hasAuthority("MONITOR")
                 )
                 .httpBasic(Customizer.withDefaults())
-                .authenticationManager(authenticationManager());
+                .authenticationManager(authManager);
 
         return http.build();
     }
 
     @Bean
-    public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
         http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/login/**").permitAll()
-                        .anyRequest()
-                        .authenticated()
+                .securityMatcher("/login")
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())
-                .authenticationManager(authenticationManager());
+                .authenticationManager(authManager);
 
+        return http.build();
+    }
+
+    @Bean
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
+        http
+                .securityMatcher("/**")
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().authenticated()
+                )
+                .httpBasic(Customizer.withDefaults())
+                .authenticationManager(authManager);
         return http.build();
     }
 
