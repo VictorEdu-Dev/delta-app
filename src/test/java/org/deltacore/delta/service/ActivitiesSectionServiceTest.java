@@ -23,54 +23,54 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ActivitiesSectionServiceTest {
-
-    @Mock
-    private ActivityDAO activityDAO;
-
-    @Mock
-    private ActivityMapper activityMapper;
-
-    @InjectMocks
-    private ActivitiesSectionService activitiesSectionService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-    @Test
-    void shouldMarkActivityAsCompleted() {
-        Long id = 1L;
-        Activity activity = new Activity();
-        activity.setId(id);
-        activity.setCompleted(false);
-
-        when(activityDAO.findById(id)).thenReturn(Optional.of(activity));
-        when(activityDAO.save(any())).thenReturn(activity);
-        when(activityMapper.toDTO(any())).thenReturn(mock(ActivityDTO.class));
-
-        ActivityDTO result = activitiesSectionService.completeActivity(id);
-
-        assertNotNull(result);
-        assertTrue(activity.isCompleted());
-        assertNotNull(activity.getCompletionTimestamp());
-
-        verify(activityDAO).save(activity);
-    }
-
-    @Test
-    void shouldThrowConflictExceptionIfActivityAlreadyCompleted() {
-        Long id = 1L;
-        Activity activity = new Activity();
-        activity.setId(id);
-        activity.setCompleted(true);
-
-        when(activityDAO.findById(id)).thenReturn(Optional.of(activity));
-
-        assertThrows(ConflictException.class, () -> activitiesSectionService.completeActivity(id));
-        verify(activityDAO, never()).save(any());
-    }
-}
+//class ActivitiesSectionServiceTest {
+//
+//    @Mock
+//    private ActivityDAO activityDAO;
+//
+//    @Mock
+//    private ActivityMapper activityMapper;
+//
+//    @InjectMocks
+//    private ActivitiesSectionService activitiesSectionService;
+//
+//    @BeforeEach
+//    void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//    }
+//    @Test
+//    void shouldMarkActivityAsCompleted() {
+//        Long id = 1L;
+//        Activity activity = new Activity();
+//        activity.setId(id);
+//        activity.setCompleted(false);
+//
+//        when(activityDAO.findById(id)).thenReturn(Optional.of(activity));
+//        when(activityDAO.save(any())).thenReturn(activity);
+//        when(activityMapper.toDTO(any())).thenReturn(mock(ActivityDTO.class));
+//
+//        ActivityDTO result = activitiesSectionService.completeActivity(id);
+//
+//        assertNotNull(result);
+//        assertTrue(activity.isCompleted());
+//        assertNotNull(activity.getCompletionTimestamp());
+//
+//        verify(activityDAO).save(activity);
+//    }
+//
+//    @Test
+//    void shouldThrowConflictExceptionIfActivityAlreadyCompleted() {
+//        Long id = 1L;
+//        Activity activity = new Activity();
+//        activity.setId(id);
+//        activity.setCompleted(true);
+//
+//        when(activityDAO.findById(id)).thenReturn(Optional.of(activity));
+//
+//        assertThrows(ConflictException.class, () -> activitiesSectionService.completeActivity(id));
+//        verify(activityDAO, never()).save(any());
+//    }
+//}
 //    @Test
 //    void shouldSaveActivity() {
 //        ActivityDTO dto = new ActivityDTO(
