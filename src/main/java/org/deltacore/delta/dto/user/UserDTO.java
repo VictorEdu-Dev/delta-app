@@ -3,8 +3,10 @@ package org.deltacore.delta.dto.user;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 
-@Builder
+@Builder(toBuilder = true)
 public record UserDTO(
+        Long id,
+
         @NotBlank(message = "{user.username.notblank}")
         @Size(min = 3, max = 50, message = "{user.username.size}")
         @Pattern(
