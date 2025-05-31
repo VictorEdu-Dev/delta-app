@@ -1,10 +1,7 @@
 package org.deltacore.delta.service;
 
 import jakarta.transaction.Transactional;
-import org.deltacore.delta.dto.ActivityDTO;
-import org.deltacore.delta.dto.ActivityFilterDTO;
-import org.deltacore.delta.dto.ActivityMapper;
-import org.deltacore.delta.dto.ActivityTsdtDTO;
+import org.deltacore.delta.dto.*;
 import org.deltacore.delta.exception.ConflictException;
 import org.deltacore.delta.exception.ResourceNotFoundException;
 import org.deltacore.delta.model.Activity;
@@ -15,13 +12,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,8 +30,7 @@ public class ActivitiesSectionService {
     private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
     private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
-
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     @Autowired
     public ActivitiesSectionService(ActivityDAO activityDAO,
@@ -85,15 +78,13 @@ public class ActivitiesSectionService {
                 .toModel(activities, activity -> EntityModel.of(activityMapper.toDTO(activity)));
     }
 
-    // Isso vai quebrar em algum momento se não implementar pesquisa paginada
     public List<ActivityDTO> getLimitedActivities(String search) {
         if (search == null || search.trim().isEmpty()) {
             List<Activity> activities = Optional
                     .ofNullable((List<Activity>) activityDAO.findAllActivities(DEFAULT_LIMIT))
                     .orElse(Collections.emptyList());
 
-            return activities
-                    .isEmpty() ? Collections.emptyList() : activities
+            return activities.isEmpty() ? Collections.emptyList() : activities
                     .stream()
                     .map(activityMapper::toDTO)
                     .toList();
@@ -114,9 +105,8 @@ public class ActivitiesSectionService {
             Optional<List<Activity>> found = Optional.ofNullable((List<Activity>) activityDAO.findActivitiesByTitle(word));
             found.ifPresent(activities::addAll);
         });
-        // Tem que implementar paginação aqui
-        return  activities
-                .stream()
+
+        return activities.stream()
                 .map(activityMapper::toDTO)
                 .toList();
     }
@@ -124,8 +114,7 @@ public class ActivitiesSectionService {
     public List<ActivityTsdtDTO> getActivitiesWithTitleStatusTypeAndDeadline() {
         List<Activity> act = (List<Activity>) activityDAO.findAllActivities(DEFAULT_LIMIT);
         if (act.isEmpty()) return Collections.emptyList();
-        return act
-                .stream()
+        return act.stream()
                 .map(activityMapper::toTsdtDTO)
                 .toList();
     }
@@ -155,13 +144,10 @@ public class ActivitiesSectionService {
                 });
 
         activityMapper.updateEntityFromDto(updatedActivity, activity);
-        // Esqueci de mencionar que ao buscar uma entidade, ela se torna gerenciada. Portanto, é só alterar os campos com setters.
-        // Encaminhei a responsabilidade disso para o MapStruct, mas poderia ser feito aqui também.
         return activityMapper.toDTO(activity);
     }
 
     public void deleteActivity(Long id) {
-
         Activity activityToBeDeleted = activityDAO.findById(id)
                 .orElseThrow(() -> {
                     String msg = messageSource.getMessage(
@@ -186,15 +172,38 @@ public class ActivitiesSectionService {
         return activityMapper.toDTO(activityToBeLoaded);
     }
 
+    @Transactional
     public ActivityDTO completeActivity(Long activityId) {
         Activity activity = activityDAO.findById(activityId)
-                .orElseThrow(() -> new ResourceNotFoundException("error.activity.not.found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Activity not found with ID: " + activityId));
 
-        if (activity.isCompleted()) throw new ConflictException("conflict.activity.completed");
+        if (activity.isCompleted()) {
+            throw new ConflictException("Activity is already completed.");
+        }
 
         activity.setCompleted(true);
         activity.setCompletionTimestamp(LocalDateTime.now());
 
-        return activityMapper.toDTO(activity);
+        Activity saved = activityDAO.save(activity);
+        return activityMapper.toDTO(saved);
+    }
+
+    public ActivityDetailsDTO getActivityDetails(Long id) {
+        Activity activity = activityDAO.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Activity not found"));
+
+        List<AttachmentDTO> attachments = attachmentService.getAttachmentsForActivity(id);
+        List<ActivityHistoryDTO> history = activityHistoryService.getHistoryForActivity(id);
+
+        return new ActivityDetailsDTO(
+                activity.getId(),
+                activity.getTitle(),
+                activity.getDescription(),
+                activity.getCreatedAt(),
+                activity.getUpdatedAt(),
+                activity.getStatus().name(),
+                attachments,
+                history
+        );
     }
 }
