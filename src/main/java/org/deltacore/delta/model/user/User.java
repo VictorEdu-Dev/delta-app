@@ -7,7 +7,7 @@ import org.deltacore.delta.model.GeneralData;
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
-@Builder
+@Builder(toBuilder = true)
 @Data
 @AllArgsConstructor
 @Entity(name = "user_delta")
