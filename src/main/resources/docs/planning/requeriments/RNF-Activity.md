@@ -1,13 +1,9 @@
 # Requisitos Não Funcionais - Módulo de Atividades
-#### RNF01: A API deve responder em menos de 1 segundo em 95% das requisições.
-#### RNF02: As rotas devem seguir o padrão REST, com verbos HTTP apropriados e respostas em JSON.
-#### RNF03: A autenticação deve ser feita por token (JWT), com expiração e renovação seguras.
-#### RNF04: Todas as entradas devem ser validadas conforme as regras de negócio.
-#### RNF05: As operações sobre atividades devem ser transacionais, garantindo consistência dos dados.
-#### RNF06: As datas devem ser armazenadas em UTC e tratadas de forma consistente.
-#### RNF07: O histórico de alterações deve registrar data, campo alterado, novo valor e autor.
-#### RNF08: O sistema deve registrar logs de ações sensíveis, como criação, edição, exclusão e login.
-#### RNF09: Arquivos anexados devem ter tipo e tamanho validados (máx. 5 MB) antes do armazenamento.
-#### RNF10: As exceções devem ser tratadas com mensagens claras e status HTTP adequados.
-#### RNF11: Deve ser possível executar testes automatizados cobrindo as regras de negócio principais.
-#### RNF12: A aplicação deve suportar múltiplas instâncias sem quebra de funcionalidade.
+### RNF01: Apenas monitores autenticados devem conseguir criar, editar, excluir, concluir ou anexar arquivos em atividades.
+### RNF02: Todas as rotas protegidas devem exigir autenticação via token JWT válido, com verificação de escopo do usuário.
+### RNF03: O sistema deve rejeitar qualquer data de vencimento anterior ao horário atual do servidor no momento da criação ou edição de atividades.
+### RNF04: Alterações em atividades com status "concluída" devem ser bloqueadas, retornando erro HTTP 403 com justificativa clara.
+### RNF05: Anexos enviados devem ser validados quanto à extensão (.pdf, .jpg, .png, .docx) e tamanho máximo de 5 MB antes do armazenamento.
+### RNF06: Toda ação de criação, modificação ou exclusão deve ser registrada com timestamp, ID do usuário responsável e dados alterados, compondo um histórico auditável.
+### RNF07: As respostas da API devem seguir o padrão JSON, com códigos HTTP apropriados e mensagens de erro claras para cada violação de regra.
+### RNF08: Dados sensíveis de usuários devem ser protegidos em trânsito com HTTPS obrigatório e nunca expostos nas respostas da API.
