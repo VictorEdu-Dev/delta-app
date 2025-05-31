@@ -5,26 +5,26 @@ import lombok.Builder;
 
 @Builder
 public record UserDTO(
-        @Size(min = 3, max = 50, message = "{}")
+        @NotBlank(message = "{user.username.notblank}")
+        @Size(min = 3, max = 50, message = "{user.username.size}")
         @Pattern(
                 regexp = "^[a-zA-Z][a-zA-Z0-9._-]*$",
-                message = "{}"
+                message = "{user.username.pattern}"
         )
         String username,
 
-        @Email(message = "{}")
         @Pattern(
                 regexp = "^[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,255}\\.[a-zA-Z]{2,}$",
-                message = "{}"
+                message = "{user.email.format}"
         )
         String email,
 
-        @NotBlank()
-        @Size(min = 6)
-        @Pattern(regexp = ".*[A-Z].*", message = "{}")
-        @Pattern(regexp = ".*[a-z].*", message = "{}")
-        @Pattern(regexp = ".*\\d.*", message = "{}")
-        @Pattern(regexp = ".*[^a-zA-Z0-9].*", message = "{}")
+        @NotBlank(message = "{user.password.notblank}")
+        @Size(min = 6, message = "{user.password.size}")
+        @Pattern(regexp = ".*[A-Z].*", message = "{user.password.pattern.uppercase}")
+        @Pattern(regexp = ".*[a-z].*", message = "{user.password.pattern.lowercase}")
+        @Pattern(regexp = ".*\\d.*", message = "{user.password.pattern.digit}")
+        @Pattern(regexp = ".*[^a-zA-Z0-9].*", message = "{user.password.pattern.special}")
         String passwordHash
 ) {}
 
