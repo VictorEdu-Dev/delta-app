@@ -5,7 +5,6 @@ import lombok.*;
 import org.deltacore.delta.model.GeneralData;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Builder
@@ -21,10 +20,7 @@ public class User extends GeneralData {
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @ElementCollection
-    private List<Email> emails;
-
-    @Transient
+    @Column(length = 255, unique = true)
     private String email;
 
     @Column(nullable = false, length = 70)
@@ -38,36 +34,4 @@ public class User extends GeneralData {
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "userMonitor")
     private Monitor monitor;
-
-    /*
-    Esta rotina será usada pelo mapstruct toda
-    vez que esta entidade for instanciada por ele.
-    */
-    public void setEmail(String email) {
-        this.email = email;
-        if (email != null && !email.isEmpty()) {
-            String[] parts = email.split("@", 2);
-            Email newEmail = Email
-                    .builder()
-                    .userMail(parts[0])
-                    .domain(parts[1])
-                    .isVerified(false)
-                    .isMain(true)
-                    .build();
-            this.emails = List.of(newEmail);
-        } else {
-            this.emails = List.of();
-        }
-    }
-
-    public String getEmail() {
-        if (emails != null && !emails.isEmpty())
-            return emails.stream()
-                .filter(Email::getIsMain)
-                .map(email -> email.getUserMail() + "@" + email.getDomain())
-                .findFirst()
-                .orElse(null);
-
-        return null;
-    }
 }
