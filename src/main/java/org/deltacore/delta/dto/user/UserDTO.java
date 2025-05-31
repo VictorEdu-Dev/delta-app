@@ -1,4 +1,4 @@
-package org.deltacore.delta.dto;
+package org.deltacore.delta.dto.user;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;
