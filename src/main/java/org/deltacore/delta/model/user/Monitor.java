@@ -1,7 +1,9 @@
-package org.deltacore.delta.model;
+package org.deltacore.delta.model.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.deltacore.delta.model.GeneralData;
+import org.deltacore.delta.model.Subject;
 
 import java.time.LocalDateTime;
 import java.util.List;
