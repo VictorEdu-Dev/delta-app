@@ -48,23 +48,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String role = jwt.getClaim("role").asString();
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, List.of(authority));
-
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
-                try {
-                    validateToken(token);
-                    filterChain.doFilter(request, response);
-                } catch (Exception e) {
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid token");
-                }
+                validateToken(token);
 
-            } catch (JWTVerificationException ignored) {
-
+            } catch (RuntimeException e) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid token");
+                return;
             }
         }
 
