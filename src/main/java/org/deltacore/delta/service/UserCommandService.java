@@ -3,6 +3,7 @@ package org.deltacore.delta.service;
 import org.deltacore.delta.dto.user.UserDTO;
 import org.deltacore.delta.dto.user.UserDeltaMapper;
 import org.deltacore.delta.exception.ResourceNotFoundException;
+import org.deltacore.delta.model.user.Roles;
 import org.deltacore.delta.model.user.User;
 import org.deltacore.delta.repositorie.UserDAO;
 import org.hibernate.Hibernate;
@@ -46,6 +47,7 @@ public class UserCommandService {
             userDeltaMapper.updateEntityFromDTO(userDTO, user);
         }
         user.setCreatedAt(LocalDateTime.now());
+        user.setRole(Roles.STUDENT);
         userDAO.save(user);
 
         UserDTO userDTOSaved = userDeltaMapper.toDTO(user);
