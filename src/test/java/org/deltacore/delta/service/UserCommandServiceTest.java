@@ -3,6 +3,7 @@ package org.deltacore.delta.service;
 import org.deltacore.delta.dto.user.UserDTO;
 import org.deltacore.delta.dto.user.UserDeltaMapper;
 import org.deltacore.delta.exception.ResourceNotFoundException;
+import org.deltacore.delta.model.user.Roles;
 import org.deltacore.delta.model.user.User;
 import org.deltacore.delta.repositorie.UserDAO;
 import org.junit.jupiter.api.Test;
@@ -81,11 +82,11 @@ class UserCommandServiceTest {
 
     @Test
     void saveUser_shouldUpdateUser_whenIdIsNotNull() {
-        UserDTO inputDto = new UserDTO(1L, "updatedUser", "updated@example.com", "updatedPass");
+        UserDTO inputDto = new UserDTO(1L, "updatedUser", "updated@example.com", "updatedPass", Roles.STUDENT);
         User existingUser = new User();
         existingUser.setId(1L);
 
-        UserDTO outputDto = new UserDTO(1L, "updatedUser", "updated@example.com", "updatedPass");
+        UserDTO outputDto = new UserDTO(1L, "updatedUser", "updated@example.com", "updatedPass", Roles.STUDENT);
 
         when(userDAO.findById(1L)).thenReturn(Optional.of(existingUser));
 
@@ -112,7 +113,7 @@ class UserCommandServiceTest {
 
     @Test
     void saveUser_shouldThrow_whenUserNotFound() {
-        UserDTO inputDto = new UserDTO(999L, "nonexistent", "x@example.com", "pass");
+        UserDTO inputDto = new UserDTO(999L, "nonexistent", "x@example.com", "pass", Roles.STUDENT);
 
         when(userDAO.findById(999L)).thenReturn(Optional.empty());
 
