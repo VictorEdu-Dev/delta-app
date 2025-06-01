@@ -1,5 +1,8 @@
 package org.deltacore.delta.config.security;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;
@@ -53,10 +56,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 
+                try {
+                    validateToken(token);
+                    filterChain.doFilter(request, response);
+                } catch (Exception e) {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid token");
+                }
+
             } catch (JWTVerificationException ignored) {
+
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    public static void validateToken(String token) throws JWTVerificationException {
+        Algorithm algorithm = Algorithm.HMAC256("9PZtBd3RH6Y2M3h8U8nh0R6cWmAQN+itHHeupX7jnhw=");
+        JWTVerifier verifier = JWT.require(algorithm)
+                .build();
+        verifier.verify(token);
     }
 }
