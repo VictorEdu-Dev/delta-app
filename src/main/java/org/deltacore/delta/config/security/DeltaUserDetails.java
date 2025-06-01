@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,10 +27,8 @@ public class DeltaUserDetails implements UserDetails {
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Roles role = user.getRole();
-        Set<Permissions> permissions = role.getPermissions();
-        return permissions.stream()
-                .map(perm -> new SimpleGrantedAuthority(perm.name()))
-                .collect(Collectors.toSet());
+        System.out.println(role.name());
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     public String getPassword() {
