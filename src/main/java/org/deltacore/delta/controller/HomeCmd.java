@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -42,7 +44,14 @@ public class HomeCmd {
                 new UsernamePasswordAuthenticationToken(request.username(), request.password())
         );
 
-        String token = jwtService.generateToken(authentication.getName());
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        String role = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("ROLE_STUDENT");
+
+        String token = jwtService.generateToken(authentication.getName(), role);
 
         return ResponseEntity.ok(Map.of("token", token));
     }
