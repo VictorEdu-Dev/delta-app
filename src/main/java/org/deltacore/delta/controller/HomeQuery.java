@@ -20,7 +20,7 @@ public class HomeQuery {
         this.userQueryService = userQueryService;
     }
 
-    @GetMapping(path = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/get/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserUsername(@PathVariable String username) {
         return ResponseEntity
                 .ok(userQueryService.getUserUsername(username));
