@@ -1,6 +1,6 @@
 //package org.deltacore.delta.service;
 //
-//import org.deltacore.delta.dto.UserDTO;
+//import org.deltacore.delta.dto.user.UserDTO;
 //import org.deltacore.delta.model.user.User;
 //import org.deltacore.delta.repositorie.UserDAO;
 //import org.junit.jupiter.api.BeforeEach;
