@@ -15,7 +15,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,5 +74,21 @@ public class ControllerExceptionHandler {
         body.put("Error:", ex.getMessage());
         body.put("Status:", HttpStatus.FORBIDDEN.value());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
+    @ExceptionHandler(NoSuchFileException.class)
+    public ResponseEntity<?> handleNoSuchFileException(NoSuchFileException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("Error:", ex.getMessage());
+        body.put("Status:", HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<?> handleNoResourceFoundException(NoResourceFoundException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("Error:", ex.getMessage());
+        body.put("Status:", HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 }
