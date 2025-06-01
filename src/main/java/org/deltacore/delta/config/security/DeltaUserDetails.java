@@ -27,7 +27,6 @@ public class DeltaUserDetails implements UserDetails {
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Roles role = user.getRole();
-        System.out.println(role.name());
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
