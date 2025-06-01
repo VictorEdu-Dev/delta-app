@@ -3,7 +3,7 @@ package org.deltacore.delta.controller;
 import jakarta.validation.Valid;
 import org.deltacore.delta.dto.LoginRequest;
 import org.deltacore.delta.dto.user.UserDTO;
-import org.deltacore.delta.service.JwtTokenService;
+import org.deltacore.delta.config.security.JwtTokenService;
 import org.deltacore.delta.service.UserCommandService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
