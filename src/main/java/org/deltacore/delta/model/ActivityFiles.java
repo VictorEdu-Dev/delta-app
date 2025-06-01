@@ -1,12 +1,12 @@
 package org.deltacore.delta.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 @Builder
 @Entity
 @NoArgsConstructor
@@ -16,7 +16,7 @@ public class ActivityFiles extends GeneralData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 300)
+    @Column(nullable = false, length = 200)
     private String fileName;
 
     @Column(nullable = false, length = 100)
