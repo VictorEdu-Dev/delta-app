@@ -2,6 +2,7 @@ package org.deltacore.delta.dto.user;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;
+import org.deltacore.delta.model.user.Roles;
 
 @Builder(toBuilder = true)
 public record UserDTO(
@@ -27,6 +28,8 @@ public record UserDTO(
         @Pattern(regexp = ".*[a-z].*", message = "{user.password.pattern.lowercase}")
         @Pattern(regexp = ".*\\d.*", message = "{user.password.pattern.digit}")
         @Pattern(regexp = ".*[^a-zA-Z0-9].*", message = "{user.password.pattern.special}")
-        String passwordHash
+        String passwordHash,
+
+        Roles role
 ) {}
 
