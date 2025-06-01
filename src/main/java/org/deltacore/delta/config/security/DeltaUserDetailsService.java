@@ -1,4 +1,4 @@
-package org.deltacore.delta.service;
+package org.deltacore.delta.config.security;
 
 import org.deltacore.delta.dto.user.UserDTO;
 import org.deltacore.delta.dto.user.UserDeltaMapper;
@@ -29,10 +29,6 @@ public class DeltaUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         UserDTO userDTO = userDeltaMapper.toDTO(user);
-        return new org.springframework.security.core.userdetails.User(
-                userDTO.username(),
-                userDTO.passwordHash(),
-                Collections.emptyList()
-        );
+        return new DeltaUserDetails(userDTO);
     }
 }
