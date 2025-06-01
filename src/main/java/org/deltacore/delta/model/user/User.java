@@ -23,6 +23,10 @@ public class User extends GeneralData {
     @Column(length = 255, unique = true)
     private String email;
 
+    @Column(nullable = false, length = 15)
+    @Enumerated(EnumType.STRING)
+    private Roles role;
+
     @Column(nullable = false, length = 70)
     private String passwordHash;
 
