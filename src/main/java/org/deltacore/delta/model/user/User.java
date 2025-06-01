@@ -31,7 +31,4 @@ public class User extends GeneralData {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_id")
     private Profile profile;
-
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userMonitor")
-    private Monitor monitor;
 }
