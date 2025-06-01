@@ -2,24 +2,35 @@ package org.deltacore.delta.config;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.deltacore.delta.config.security.JwtAuthFilter;
+import org.deltacore.delta.config.security.event.AuthFailure;
 import org.deltacore.delta.model.user.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.authentication.*;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
+import org.springframework.security.authorization.AuthorizationEventPublisher;
+import org.springframework.security.authorization.SpringAuthorizationEventPublisher;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.Collections;
+import java.util.Map;
 
 @EnableWebSecurity
 @Configuration
@@ -131,5 +142,25 @@ public class SecurityDeltaConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(13);
+    }
+
+    @Bean
+    static RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+                .role(Roles.ADMIN.name()).implies(Roles.MONITOR.name())
+                .role(Roles.MONITOR.name()).implies(Roles.STUDENT.name())
+                .build();
+    }
+
+    @Bean
+    public AuthenticationEventPublisher authenticationEventPublisher
+            (ApplicationEventPublisher applicationEventPublisher) {
+        Map<Class<? extends AuthenticationException>,
+                        Class<? extends AbstractAuthenticationFailureEvent>> mapping =
+                Collections.singletonMap(BadCredentialsException.class, AuthFailure.class);
+        DefaultAuthenticationEventPublisher authenticationEventPublisher =
+                new DefaultAuthenticationEventPublisher(applicationEventPublisher);
+        authenticationEventPublisher.setAdditionalExceptionMappings(mapping);
+        return authenticationEventPublisher;
     }
 }
