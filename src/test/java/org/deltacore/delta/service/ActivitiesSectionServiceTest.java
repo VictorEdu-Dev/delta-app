@@ -1,27 +1,28 @@
-//package org.deltacore.delta.service;
-//
-//import jakarta.validation.ConstraintViolation;
-//import jakarta.validation.Validation;
-//import jakarta.validation.Validator;
-//import jakarta.validation.ValidatorFactory;
-//import org.deltacore.delta.dto.ActivityDTO;
-//import org.deltacore.delta.dto.ActivityMapper;
-//import org.deltacore.delta.model.Activity;
-//import org.deltacore.delta.model.ActivityType;
-//import org.deltacore.delta.repositorie.ActivityDAO;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.Mockito;
-//import org.mockito.MockitoAnnotations;
-//
-//import java.math.BigDecimal;
-//import java.util.*;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
+package org.deltacore.delta.service;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.deltacore.delta.dto.ActivityDTO;
+import org.deltacore.delta.dto.ActivityMapper;
+import org.deltacore.delta.exception.ConflictException;
+import org.deltacore.delta.model.Activity;
+import org.deltacore.delta.model.ActivityType;
+import org.deltacore.delta.repositorie.ActivityDAO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import java.math.BigDecimal;
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 //class ActivitiesSectionServiceTest {
 //
 //    @Mock
@@ -37,7 +38,39 @@
 //    void setUp() {
 //        MockitoAnnotations.openMocks(this);
 //    }
+//    @Test
+//    void shouldMarkActivityAsCompleted() {
+//        Long id = 1L;
+//        Activity activity = new Activity();
+//        activity.setId(id);
+//        activity.setCompleted(false);
 //
+//        when(activityDAO.findById(id)).thenReturn(Optional.of(activity));
+//        when(activityDAO.save(any())).thenReturn(activity);
+//        when(activityMapper.toDTO(any())).thenReturn(mock(ActivityDTO.class));
+//
+//        ActivityDTO result = activitiesSectionService.completeActivity(id);
+//
+//        assertNotNull(result);
+//        assertTrue(activity.isCompleted());
+//        assertNotNull(activity.getCompletionTimestamp());
+//
+//        verify(activityDAO).save(activity);
+//    }
+//
+//    @Test
+//    void shouldThrowConflictExceptionIfActivityAlreadyCompleted() {
+//        Long id = 1L;
+//        Activity activity = new Activity();
+//        activity.setId(id);
+//        activity.setCompleted(true);
+//
+//        when(activityDAO.findById(id)).thenReturn(Optional.of(activity));
+//
+//        assertThrows(ConflictException.class, () -> activitiesSectionService.completeActivity(id));
+//        verify(activityDAO, never()).save(any());
+//    }
+//}
 //    @Test
 //    void shouldSaveActivity() {
 //        ActivityDTO dto = new ActivityDTO(
@@ -154,7 +187,7 @@
 //        assertNotNull(result);
 //        assertFalse(result.isEmpty());
 //    }
-//
+
 //    @Test
 //    void testSearchDetailedWithMultipleWords() {
 //        List<Activity> mockActivities1 = new ArrayList<>();
@@ -260,4 +293,5 @@
 //        assertNotNull(result);
 //        assertTrue(result.isEmpty());
 //    }
-//}
+
+

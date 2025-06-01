@@ -57,4 +57,7 @@ public class Activity extends GeneralData {
     @Column(name = "timestamp")
     private LocalDateTime completionTimestamp;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "activity")
+    private List<ActivityFiles> files;
+
 }
