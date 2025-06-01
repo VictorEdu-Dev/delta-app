@@ -1,6 +1,7 @@
 package org.deltacore.delta.controller.activity;
 
 import org.deltacore.delta.dto.ActivityDTO;
+import org.deltacore.delta.dto.ActivityFilesDTO;
 import org.deltacore.delta.dto.OnCreate;
 import org.deltacore.delta.dto.OnUpdate;
 import org.deltacore.delta.service.ActivitiesSectionService;
@@ -9,6 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/activities/monitor")
