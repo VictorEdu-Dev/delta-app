@@ -14,17 +14,17 @@ Permite que o aluno envie arquivos (PDF, imagens ou documentos) em resposta a um
 - O arquivo é salvo e associado à submissão do aluno para aquela atividade.
 
 ### Fluxo Principal:
-- [ ] Aluno acessa uma atividade pendente.
-- [ ] Aluno seleciona arquivos para envio (PDF, imagem, documento).
-- [ ] Sistema valida o tipo e tamanho dos arquivos (máx. 5 MB por arquivo).
-- [ ] Sistema salva os arquivos e os vincula à submissão do aluno.
-- [ ] Sistema retorna confirmação de sucesso com os dados dos arquivos enviados.
+- [x] Aluno acessa uma atividade pendente.
+- [x] Aluno seleciona arquivos para envio (PDF, imagem, documento).
+- [x] Sistema valida o tipo e tamanho dos arquivos (máx. 5 MB por arquivo).
+- [x] Sistema salva os arquivos e os vincula à submissão do aluno.
+- [x] Sistema retorna confirmação de sucesso com os dados dos arquivos enviados.
 
 ### Fluxo Alternativo 1: Arquivo inválido
-- [ ] Se o tipo não for permitido ou o tamanho exceder 5 MB, o sistema rejeita o upload e informa o erro.
+- [x] Se o tipo não for permitido ou o tamanho exceder 5 MB, o sistema rejeita o upload e informa o erro.
 
 ### Exceções:
-- [ ] Falha no upload: retorna "Erro ao enviar arquivo. Tente novamente."
+- [x] Falha no upload: retorna "Erro ao enviar arquivo. Tente novamente."
 
 ### Requisitos Não Funcionais:
 - Os arquivos devem ser armazenados de forma segura, com nomes únicos ou hash.
