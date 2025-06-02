@@ -7,6 +7,7 @@ import org.deltacore.delta.dto.OnUpdate;
 import org.deltacore.delta.service.ActivitiesSectionService;
 import org.deltacore.delta.service.ActivityUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -58,6 +59,24 @@ public class ActivitiesCommand {
 
     @PostMapping(value = "/files/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> uploadFiles(@RequestParam("file") MultipartFile[] files, @PathVariable Long id) throws IOException {
+
+        List<String> allowedTypes = List.of(
+                "application/pdf",
+                "image/png",
+                "image/jpeg",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        );
+
+        for (MultipartFile file : files) {
+            if(file.isEmpty()) continue;
+            String type = file.getContentType();
+            if (type == null || !allowedTypes.contains(type)) {
+                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                        .body("Unsupported file type: " + file.getOriginalFilename());
+            }
+        }
+
         List<ActivityFilesDTO> metadataList = activityUploadService.uploadAndSaveFiles(files, id);
         return ResponseEntity.ok(metadataList);
     }
