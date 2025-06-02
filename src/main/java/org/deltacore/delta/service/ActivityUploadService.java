@@ -7,12 +7,14 @@ import com.google.cloud.storage.StorageOptions;
 import org.deltacore.delta.dto.ActivityFilesDTO;
 import org.deltacore.delta.dto.ActivityFilesMapper;
 import org.deltacore.delta.dto.ActivityMapper;
+import org.deltacore.delta.exception.LargeFileException;
 import org.deltacore.delta.exception.ResourceNotFoundException;
 import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.model.ActivityFiles;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.deltacore.delta.repositorie.ActivityFilesDAO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +26,8 @@ import java.util.*;
 public class ActivityUploadService {
     private static final String BUCKET_NAME = "delta_core_storage";
     private static final String PROJECT_ID = "delta-core-app";
-    private static final String FOLDER_PATH = "prod/activities/doc/";
+    private static final String FOLDER_PATH = "prod/activities/";
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     private final ActivityFilesDAO activityFilesDAO;
     private final ActivityDAO activityDAO;
@@ -45,11 +48,14 @@ public class ActivityUploadService {
     public List<ActivityFilesDTO> uploadAndSaveFiles(MultipartFile[] files, Long id) throws IOException {
         Optional<Activity> activity = activityDAO.findById(id);
         if (activity.isEmpty()) throw new ResourceNotFoundException("Activity not found with id: " + id);
-
         List<ActivityFilesDTO> metadataList = new ArrayList<>();
 
         for (MultipartFile file : files) {
             if (file.isEmpty()) continue;
+
+            if(file.getSize() > MAX_FILE_SIZE) {
+                throw new LargeFileException("File size exceeds the limit of 5 MB: " + file.getOriginalFilename());
+            }
 
             ActivityFilesDTO dto = processAndUploadFile(file);
             ActivityFilesDTO savedDto = saveMetadata(dto, activity.get());
@@ -65,7 +71,7 @@ public class ActivityUploadService {
 
     private ActivityFilesDTO processAndUploadFile(MultipartFile file) throws IOException {
         String fileName = generateUniqueFileName(file);
-        String objectName = FOLDER_PATH + fileName;
+        String objectName = getString(file, fileName);
 
         Storage storage = getStorage();
         BlobId blobId = BlobId.of(BUCKET_NAME, objectName);
@@ -82,6 +88,21 @@ public class ActivityUploadService {
                 .size(file.getSize())
                 .filePath(FOLDER_PATH)
                 .build();
+    }
+
+    private static String getString(MultipartFile file, String fileName) {
+        String objectName;
+        switch (file.getContentType()) {
+            case MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE ->
+                objectName = FOLDER_PATH + "img/" + fileName;
+
+            case MediaType.APPLICATION_PDF_VALUE, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword" ->
+                objectName = FOLDER_PATH + "doc/" + fileName;
+
+            case null -> throw new IllegalStateException("File type cannot be null: " + file.getOriginalFilename());
+            default -> throw new IllegalStateException("Unexpected value: " + file.getContentType());
+        }
+        return objectName;
     }
 
     private String generateUniqueFileName(MultipartFile file) {
