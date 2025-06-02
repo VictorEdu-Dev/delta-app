@@ -1,9 +1,6 @@
 package org.deltacore.delta.service;
 
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
+import com.google.cloud.storage.*;
 import org.deltacore.delta.dto.ActivityFilesDTO;
 import org.deltacore.delta.dto.ActivityFilesMapper;
 import org.deltacore.delta.dto.ActivityMapper;
@@ -25,24 +22,27 @@ import java.util.*;
 @Service
 public class ActivityUploadService {
     private static final String BUCKET_NAME = "delta_core_storage";
-    private static final String PROJECT_ID = "delta-core-app";
     private static final String FOLDER_PATH = "prod/activities/";
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
+    private static final String DEMILIMETER = "@";
 
     private final ActivityFilesDAO activityFilesDAO;
     private final ActivityDAO activityDAO;
     private final ActivityFilesMapper activityFilesMapper;
     private final ActivityMapper activityMapper;
+    private final Storage storage;
 
     @Autowired
     public ActivityUploadService(ActivityFilesDAO activityFilesDAO,
                                  ActivityFilesMapper activityFilesMapper,
                                  ActivityDAO activityDAO,
-                                 ActivityMapper activityMapper) {
+                                 ActivityMapper activityMapper,
+                                 Storage storage) {
         this.activityFilesDAO = activityFilesDAO;
         this.activityFilesMapper = activityFilesMapper;
         this.activityDAO = activityDAO;
         this.activityMapper = activityMapper;
+        this.storage = storage;
     }
 
     public List<ActivityFilesDTO> uploadAndSaveFiles(MultipartFile[] files, Long id) throws IOException {
@@ -52,6 +52,8 @@ public class ActivityUploadService {
 
         for (MultipartFile file : files) {
             if (file.isEmpty()) continue;
+            Optional<ActivityFiles> activityFiles = activityFilesDAO.findByTemplate(file.getOriginalFilename(), id);
+            if (activityFiles.isPresent()) continue;
 
             if(file.getSize() > MAX_FILE_SIZE) {
                 throw new LargeFileException("File size exceeds the limit of 5 MB: " + file.getOriginalFilename());
@@ -73,14 +75,13 @@ public class ActivityUploadService {
         String fileName = generateUniqueFileName(file);
         String objectName = getString(file, fileName);
 
-        Storage storage = getStorage();
         BlobId blobId = BlobId.of(BUCKET_NAME, objectName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
 
         byte[] content = file.getBytes();
-        Storage.BlobTargetOption precondition = getPrecondition(storage, objectName);
+        Storage.BlobTargetOption precondition = getPrecondition(this.storage, objectName);
 
-        storage.create(blobInfo, content, precondition);
+        this.storage.create(blobInfo, content, precondition);
 
         return ActivityFilesDTO.builder()
                 .fileName(fileName)
@@ -106,14 +107,7 @@ public class ActivityUploadService {
     }
 
     private String generateUniqueFileName(MultipartFile file) {
-        return UUID.randomUUID() + "_" + Objects.requireNonNull(file.getOriginalFilename());
-    }
-
-    private Storage getStorage() {
-        return StorageOptions.newBuilder()
-                .setProjectId(PROJECT_ID)
-                .build()
-                .getService();
+        return UUID.randomUUID() + DEMILIMETER + Objects.requireNonNull(file.getOriginalFilename());
     }
 
     private Storage.BlobTargetOption getPrecondition(Storage storage, String objectName) {
@@ -124,7 +118,6 @@ public class ActivityUploadService {
                     storage.get(BUCKET_NAME, objectName).getGeneration());
         }
     }
-
 
     public ActivityFilesDTO saveMetadata(ActivityFilesDTO activityFilesDTO, Activity activity) {
         ActivityFiles activityFiles = activityFilesMapper.toEntity(activityFilesDTO);
