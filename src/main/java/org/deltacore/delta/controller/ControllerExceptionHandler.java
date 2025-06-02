@@ -1,10 +1,8 @@
 package org.deltacore.delta.controller;
 
 import org.deltacore.delta.exception.ConflictException;
+import org.deltacore.delta.exception.LargeFileException;
 import org.deltacore.delta.exception.ResourceNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.nio.file.NoSuchFileException;
@@ -90,5 +87,13 @@ public class ControllerExceptionHandler {
         body.put("Error:", ex.getMessage());
         body.put("Status:", HttpStatus.NOT_FOUND.value());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(LargeFileException.class)
+    public ResponseEntity<?> handleLargeFileException(LargeFileException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("Error:", ex.getMessage());
+        body.put("Status:", HttpStatus.PAYLOAD_TOO_LARGE.value());
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(body);
     }
 }
