@@ -2,6 +2,7 @@ package org.deltacore.delta.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.deltacore.delta.model.monitoring.Subject;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -47,7 +48,7 @@ public class Activity extends GeneralData {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "activity")
     private List<VideoLesson> videoUrl;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
