@@ -39,7 +39,7 @@ public class MonitoringQueryService {
 
     public Optional<MonitorDTO> findMonitorByUserUsername(String username) {
         if (username == null || username.isBlank()) return Optional.empty();
-        Optional<Monitor> monitor = monitorDAO.findByUserUsername(username);
+        Optional<Monitor> monitor = monitorDAO.findByUserUsername(username.toLowerCase());
         return monitor.map(monitorMapper::toDTO);
     }
 
