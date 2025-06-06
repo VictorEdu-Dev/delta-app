@@ -30,5 +30,5 @@ public record ProfileDTO(
         @Size(max = 150, min = 1, message = "{profile.bio.size}")
         String bio,
 
-        UserDTO userDTO
+        Long userId
 ) {}
