@@ -3,8 +3,10 @@ package org.deltacore.delta.model.user;
 import jakarta.persistence.*;
 import lombok.*;
 import org.deltacore.delta.model.GeneralData;
+import org.deltacore.delta.model.monitoring.Monitoring;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Builder(toBuilder = true)
@@ -35,4 +37,7 @@ public class User extends GeneralData {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
+    private List<Monitoring> monitorings;
 }
