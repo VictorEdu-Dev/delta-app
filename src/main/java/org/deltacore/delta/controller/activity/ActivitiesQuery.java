@@ -2,7 +2,9 @@ package org.deltacore.delta.controller.activity;
 
 import jakarta.validation.Valid;
 import org.deltacore.delta.dto.ActivityDTO;
+import org.deltacore.delta.dto.ActivityDetailsDTO;
 import org.deltacore.delta.dto.ActivityFilterDTO;
+import org.deltacore.delta.dto.CompleteActivityRequestDTO;
 import org.deltacore.delta.service.ActivitiesSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -67,5 +69,16 @@ public class ActivitiesQuery {
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getActivityById(@PathVariable Long id) {
         return ResponseEntity.ok(activitiesService.loadActivityData(id));
+    }
+
+    @PutMapping(value = "/complete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ActivityDTO> markActivityAsCompleted(@RequestBody CompleteActivityRequestDTO request) {
+        ActivityDTO updatedActivity = activitiesService.completeActivity(request.id());
+        return ResponseEntity.ok(updatedActivity);
+    }
+
+    @GetMapping(value = "/{id}/details", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ActivityDetailsDTO> getActivityDetails(@PathVariable Long id) {
+        return ResponseEntity.ok(activitiesService.getActivityDetails(id));
     }
 }

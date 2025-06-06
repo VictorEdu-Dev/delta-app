@@ -53,4 +53,6 @@ public interface ActivityDAO extends CrudRepository<Activity, Long> {
 
     @Query(value = "SELECT title FROM activity WHERE title = ?1", nativeQuery = true)
     Optional<String> findActByTitle(String title);
+
+    Optional<Activity> findById(Long id);
 }
