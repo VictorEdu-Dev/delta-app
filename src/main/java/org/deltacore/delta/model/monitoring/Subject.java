@@ -1,7 +1,10 @@
-package org.deltacore.delta.model;
+package org.deltacore.delta.model.monitoring;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.deltacore.delta.model.Activity;
+import org.deltacore.delta.model.GeneralData;
+
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -13,7 +16,7 @@ import java.util.List;
 public class Subject extends GeneralData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -26,4 +29,7 @@ public class Subject extends GeneralData {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Activity> activity;
+
+    @OneToOne(mappedBy = "subject", cascade = CascadeType.REMOVE)
+    private Monitoring monitoring;
 }
