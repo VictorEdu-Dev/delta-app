@@ -2,6 +2,7 @@ package org.deltacore.delta.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.deltacore.delta.model.monitoring.Monitoring;
 import org.deltacore.delta.model.user.Profile;
 
 import java.time.LocalDateTime;
