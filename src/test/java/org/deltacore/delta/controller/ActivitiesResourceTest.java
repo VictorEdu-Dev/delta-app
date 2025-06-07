@@ -2,7 +2,7 @@
 //
 //import org.deltacore.delta.controller.activity.ActivitiesResource;
 //import org.deltacore.delta.dto.ActivityDTO;
-//import org.deltacore.delta.service.ActivitiesSectionService;
+//import org.deltacore.delta.service.activity.ActivitiesSectionService;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.Test;
 //import org.mockito.InjectMocks;
