@@ -22,7 +22,7 @@ public enum FileType {
 
     public static boolean contains(String value) {
         for (FileType type : FileType.values()) {
-            if (type.name().equals(value)) {
+            if (type.getFileTypeValue().equalsIgnoreCase(value)) {
                 return true;
             }
         }
