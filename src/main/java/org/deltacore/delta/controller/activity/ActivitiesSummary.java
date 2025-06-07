@@ -1,6 +1,6 @@
 package org.deltacore.delta.controller.activity;
 
-import org.deltacore.delta.service.ActivitiesSectionService;
+import org.deltacore.delta.service.activity.ActivitiesSectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
