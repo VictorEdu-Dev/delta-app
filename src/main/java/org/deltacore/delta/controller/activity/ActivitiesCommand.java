@@ -30,8 +30,7 @@ public class ActivitiesCommand {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveActivity(@RequestBody @Validated(OnCreate.class) ActivityDTO activity,
-                                          MultipartFile[] files) throws IOException {
+    public ResponseEntity<?> saveActivity(@RequestBody @Validated(OnCreate.class) ActivityDTO activity) {
         return ResponseEntity
                 .ok(activitiesService.saveActivity(activity));
     }
