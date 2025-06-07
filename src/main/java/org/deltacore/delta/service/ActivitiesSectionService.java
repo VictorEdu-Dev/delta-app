@@ -1,15 +1,13 @@
 package org.deltacore.delta.service;
 
 import jakarta.transaction.Transactional;
-import org.deltacore.delta.dto.ActivityDTO;
-import org.deltacore.delta.dto.ActivityFilterDTO;
-import org.deltacore.delta.dto.ActivityMapper;
-import org.deltacore.delta.dto.ActivityTsdtDTO;
+import org.deltacore.delta.dto.*;
 import org.deltacore.delta.exception.ConflictException;
 import org.deltacore.delta.exception.ResourceNotFoundException;
 import org.deltacore.delta.model.Activity;
 import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.repositorie.ActivityDAO;
+import org.deltacore.delta.repositorie.ActivityFilesDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,8 +19,10 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -35,19 +35,24 @@ public class ActivitiesSectionService {
 
     private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
+    private final ActivityFilesDAO activityFilesDAO;
     private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
-
-    private MessageSource messageSource;
+    private final ActivityUploadService activityUploadService;
+    private final MessageSource messageSource;
 
     @Autowired
     public ActivitiesSectionService(ActivityDAO activityDAO,
+                                    ActivityFilesDAO activityFilesDAO,
                                     ActivityMapper activityMapper,
                                     PagedResourcesAssembler<Activity> pagedResourcesAssembler,
-                                    MessageSource messageSource) {
+                                    MessageSource messageSource,
+                                    ActivityUploadService activityUploadService) {
         this.activityMapper = activityMapper;
         this.activityDAO = activityDAO;
+        this.activityFilesDAO = activityFilesDAO;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.messageSource = messageSource;
+        this.activityUploadService = activityUploadService;
     }
 
     public ActivityDTO saveActivity(ActivityDTO activity) {
@@ -58,6 +63,27 @@ public class ActivitiesSectionService {
         setDefaultValues(activityForSave);
 
         return activityMapper.toDTO(activityDAO.save(activityForSave));
+    }
+
+    public ActivityDTO saveActivity(ActivityDTO activity, MultipartFile... files) throws IOException {
+        Optional<String> actDouble = activityDAO.findActByTitle(activity.title());
+        if (actDouble.isPresent()) throw new ConflictException(activity.title() + " already exists!");
+
+        Activity activityForSave = activityMapper.toEntity(activity);
+        setDefaultValues(activityForSave);
+
+        Activity act = activityDAO.save(activityForSave);
+        List<ActivityFilesDTO> actFiles = activityUploadService.uploadAndSaveFiles(files, act.getId());
+
+        act.setFiles(
+                actFiles.stream()
+                        .map(actFile -> activityFilesDAO.findById(actFile.id()))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .toList()
+        );
+
+        return activityMapper.toDTO(act);
     }
 
     private void setDefaultValues(Activity activityForSave) {
