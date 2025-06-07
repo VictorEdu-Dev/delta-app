@@ -1,4 +1,4 @@
-package org.deltacore.delta.service;
+package org.deltacore.delta.service.activity;
 
 import org.deltacore.delta.dto.*;
 import org.deltacore.delta.exception.ConflictException;
