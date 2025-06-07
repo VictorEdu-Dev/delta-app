@@ -1,6 +1,7 @@
-package org.deltacore.delta.service;
+package org.deltacore.delta.service.activity;
 
 import com.google.cloud.storage.*;
+import org.deltacore.delta.controller.activity.FileType;
 import org.deltacore.delta.dto.ActivityFilesDTO;
 import org.deltacore.delta.dto.ActivityFilesMapper;
 import org.deltacore.delta.dto.ActivityMapper;
@@ -11,7 +12,6 @@ import org.deltacore.delta.model.ActivityFiles;
 import org.deltacore.delta.repositorie.ActivityDAO;
 import org.deltacore.delta.repositorie.ActivityFilesDAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,8 +21,10 @@ import java.util.*;
 
 @Service
 public class ActivityUploadService {
-    private static final String BUCKET_NAME = "delta_core_storage";
-    private static final String FOLDER_PATH = "prod/activities/";
+    private static final String BUCKET_NAME = GcpConfig.getBucketName();
+    private static final String FOLDER_PATH = GcpConfig.getFolderPath();
+    private static final String FOLDER_PATH_DOC = GcpConfig.getFolderPathDoc();
+    private static final String FOLDER_PATH_IMG = GcpConfig.getFolderPathImage();
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
     private static final String DEMILIMETER = "@";
 
@@ -94,11 +96,11 @@ public class ActivityUploadService {
     private static String getString(MultipartFile file, String fileName) {
         String objectName;
         switch (file.getContentType()) {
-            case MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE ->
-                objectName = FOLDER_PATH + "img/" + fileName;
+            case FileType.IMAGE_JPEG, FileType.IMAGE_PNG ->
+                objectName = FOLDER_PATH + FOLDER_PATH_IMG + fileName;
 
-            case MediaType.APPLICATION_PDF_VALUE, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword" ->
-                objectName = FOLDER_PATH + "doc/" + fileName;
+            case FileType.APPLICATION_PDF, FileType.APPLICATION_DOCX, FileType.APPLICATION_DOC ->
+                objectName = FOLDER_PATH + FOLDER_PATH_DOC + fileName;
 
             case null -> throw new IllegalStateException("File type cannot be null: " + file.getOriginalFilename());
             default -> throw new IllegalStateException("Unexpected value: " + file.getContentType());
