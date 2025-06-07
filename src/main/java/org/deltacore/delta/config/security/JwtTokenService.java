@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -14,8 +15,13 @@ import java.util.Date;
 @Service
 public class JwtTokenService {
 
+    private final String secret;
+
+    public JwtTokenService(@Value("${jwt.secret}") String secret) {
+        this.secret = secret;
+    }
+
     private Algorithm getAlgorithm() {
-        String secret = "9PZtBd3RH6Y2M3h8U8nh0R6cWmAQN+itHHeupX7jnhw=";
         return Algorithm.HMAC256(secret);
     }
 
