@@ -69,12 +69,11 @@ public class SecurityDeltaConfig {
     @Order(2)
     public SecurityFilterChain adminSecurityChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/admin/**", "/settings/**", "/v3/api-docs/**", "/swagger-ui/**", "/home/get/**")
+                .securityMatcher("/admin/**", "/settings/**", "/home/get/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**", "/manage/**").hasRole(Roles.ADMIN.name())
                         .requestMatchers("/settings/**").hasAnyRole(Roles.ADMIN.name())
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").hasAnyRole(Roles.ADMIN.name())
                         .requestMatchers("/home/get/**").hasAnyRole(Roles.ADMIN.name())
                         .anyRequest().authenticated()
                 )
