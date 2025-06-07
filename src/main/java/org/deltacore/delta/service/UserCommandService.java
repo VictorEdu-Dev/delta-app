@@ -6,7 +6,6 @@ import org.deltacore.delta.exception.ResourceNotFoundException;
 import org.deltacore.delta.model.user.Roles;
 import org.deltacore.delta.model.user.User;
 import org.deltacore.delta.repositorie.UserDAO;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,6 @@ public class UserCommandService {
                     .toBuilder()
                     .passwordHash(encodedPassword)
                     .build();
-            System.out.println(encodedPassword);
             user = userDeltaMapper.toEntity(userDTO);
         } else {
             UserDTO finalUserDTO = userDTO;
