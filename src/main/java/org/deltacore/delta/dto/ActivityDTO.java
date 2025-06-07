@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.URL;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -38,5 +39,7 @@ public record ActivityDTO(
         LocalDateTime deadline,
 
         boolean completed,
-        LocalDateTime completionTimestamp
+        LocalDateTime completionTimestamp,
+
+        List<ActivityFilesDTO> activityFilesDTO
 ) {}
