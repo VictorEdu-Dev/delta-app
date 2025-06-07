@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/activities/monitor")
@@ -27,7 +26,7 @@ public class ActivitiesCommand {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveActivity(@RequestBody @Validated(OnCreate.class) ActivityDTO activity,
-                                          MultipartFile[] files) throws IOException {
+                                          @RequestBody MultipartFile[] files) throws IOException {
 
         ResponseEntity<String> UNSUPPORTED_MEDIA_TYPE = verifyFileCompatibility(files);
         if (UNSUPPORTED_MEDIA_TYPE != null) return UNSUPPORTED_MEDIA_TYPE;
