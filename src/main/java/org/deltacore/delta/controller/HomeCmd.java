@@ -1,5 +1,7 @@
 package org.deltacore.delta.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.deltacore.delta.dto.LoginRequest;
 import org.deltacore.delta.dto.user.UserDTO;
@@ -32,12 +34,14 @@ public class HomeCmd {
         this.jwtService = jwtService;
     }
 
+    @Operation(security = @SecurityRequirement(name = ""))
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody @Valid UserDTO userDTO) {
         UserDTO savedUser = userCommandService.saveUser(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
+    @Operation(security = @SecurityRequirement(name = ""))
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
         Authentication authentication = authManager.authenticate(
