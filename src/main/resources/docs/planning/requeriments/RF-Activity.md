@@ -16,9 +16,9 @@
 
 ##### Funcionalidade Deprecada — RF08: O sistema deve permitir a criação de atividades recorrentes (ex: semanal, mensal), com base em uma atividade original, replicando título, descrição e categoria automaticamente para as novas ocorrências.
 
-#### RF09: O sistema deve permitir ao usuário anexar arquivos (PDF, imagens ou documentos) às atividades para suporte ou referência. O tamanho máximo de cada arquivo deve ser de 5 MB.
+#### ~~RF09: O sistema deve permitir ao usuário anexar arquivos (PDF, imagens ou documentos) às atividades para suporte ou referência. O tamanho máximo de cada arquivo deve ser de 5 MB.~~
 
-#### RF10: O sistema deve registrar um histórico de alterações em cada atividade, informando data e hora da modificação, campo alterado e novo valor.
+#### Para próxima sprint - RF10: O sistema deve registrar um histórico de alterações em cada atividade, informando data e hora da modificação, campo alterado e novo valor.
 
 #### RF11: O sistema deve permitir a visualização de detalhes completos de uma atividade, incluindo data de criação, data de modificação, status, anexos e histórico de alterações.
 
