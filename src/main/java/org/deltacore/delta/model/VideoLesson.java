@@ -17,17 +17,21 @@ public class VideoLesson extends GeneralData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 50)
+    private String videoId;
+
     @Column(nullable = false, length = 150)
     private String title;
 
+    @Lob
     @Column(length = 500)
     private String description;
 
     @Column(nullable = false, length = 200)
     private String videoUrl;
 
-    @Column()
-    private Integer videoDuration;
+    @Column(length = 10)
+    private String videoDuration;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "activity_id")
