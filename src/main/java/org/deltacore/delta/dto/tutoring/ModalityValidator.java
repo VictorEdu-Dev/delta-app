@@ -1,8 +1,8 @@
-package org.deltacore.delta.dto.monitoring;
+package org.deltacore.delta.dto.tutoring;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.deltacore.delta.model.monitoring.Modality;
+import org.deltacore.delta.model.tutoring.Modality;
 
 public class ModalityValidator implements ConstraintValidator<GabeModality, String> {
     @Override
