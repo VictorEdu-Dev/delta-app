@@ -117,6 +117,10 @@ public class ActivitiesSectionService {
                 .toList();
     }
 
+    @Deprecated(
+            forRemoval = true,
+            since = "0.1.0"
+    )
     public List<ActivityTsdtDTO> getActivitiesWithTitleStatusTypeAndDeadline() {
         List<Activity> act = (List<Activity>) activityDAO.findAllActivities(DEFAULT_LIMIT);
         if (act.isEmpty()) return Collections.emptyList();
