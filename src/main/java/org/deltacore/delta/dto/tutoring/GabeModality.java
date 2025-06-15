@@ -1,4 +1,4 @@
-package org.deltacore.delta.dto.monitoring;
+package org.deltacore.delta.dto.tutoring;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
