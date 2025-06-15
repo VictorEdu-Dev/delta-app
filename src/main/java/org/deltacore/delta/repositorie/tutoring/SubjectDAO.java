@@ -1,6 +1,6 @@
-package org.deltacore.delta.repositorie.monitoring;
+package org.deltacore.delta.repositorie.tutoring;
 
-import org.deltacore.delta.model.monitoring.Subject;
+import org.deltacore.delta.model.tutoring.Subject;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
