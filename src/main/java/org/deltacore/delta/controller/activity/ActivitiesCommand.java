@@ -1,7 +1,7 @@
 package org.deltacore.delta.controller.activity;
 
-import org.deltacore.delta.dto.ActivityDTO;
-import org.deltacore.delta.dto.ActivityFilesDTO;
+import org.deltacore.delta.dto.activities.ActivityDTO;
+import org.deltacore.delta.dto.activities.ActivityFilesDTO;
 import org.deltacore.delta.dto.OnCreate;
 import org.deltacore.delta.dto.OnUpdate;
 import org.deltacore.delta.service.activity.ActivitiesSectionService;
