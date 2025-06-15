@@ -1,7 +1,8 @@
-package org.deltacore.delta.dto;
+package org.deltacore.delta.dto.activities;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;
+import org.deltacore.delta.dto.OnCreate;
 import org.deltacore.delta.model.ActivityStatus;
 import org.deltacore.delta.model.ActivityType;
 import org.hibernate.validator.constraints.URL;
@@ -9,7 +10,6 @@ import org.hibernate.validator.constraints.URL;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Builder
 public record ActivityDTO(
