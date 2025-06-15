@@ -1,7 +1,7 @@
-package org.deltacore.delta.dto.monitoring;
+package org.deltacore.delta.dto.tutoring;
 
 import org.deltacore.delta.dto.user.UserMapper;
-import org.deltacore.delta.model.monitoring.Tutoring;
+import org.deltacore.delta.model.tutoring.Tutoring;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring",
