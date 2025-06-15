@@ -1,6 +1,9 @@
 package org.deltacore.delta.service.activity;
 
-import org.deltacore.delta.dto.*;
+import org.deltacore.delta.dto.activities.ActivityDTO;
+import org.deltacore.delta.dto.activities.ActivityFilterDTO;
+import org.deltacore.delta.dto.activities.ActivityMapper;
+import org.deltacore.delta.dto.activities.ActivityTsdtDTO;
 import org.deltacore.delta.exception.ConflictException;
 import org.deltacore.delta.exception.ResourceNotFoundException;
 import org.deltacore.delta.model.Activity;
