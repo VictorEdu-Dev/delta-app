@@ -1,7 +1,4 @@
-package org.deltacore.delta.dto;
-
-import org.deltacore.delta.model.ActivityStatus;
-import org.deltacore.delta.model.ActivityType;
+package org.deltacore.delta.dto.activities;
 
 import java.time.LocalDateTime;
 
