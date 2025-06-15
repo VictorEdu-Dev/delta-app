@@ -10,6 +10,10 @@ public interface ActivityMapper {
 
     Activity toEntity(ActivityDTO activityDTO);
 
+    @Deprecated(
+            forRemoval = true,
+            since = "0.1.0"
+    )
     ActivityTsdtDTO toTsdtDTO(Activity activity);
 
     void updateEntityFromDto(ActivityDTO dto, @MappingTarget Activity entity);
