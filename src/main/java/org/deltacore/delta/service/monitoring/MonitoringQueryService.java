@@ -6,11 +6,10 @@ import org.deltacore.delta.dto.monitoring.MonitorDTO;
 import org.deltacore.delta.dto.monitoring.SubjectDTO;
 import org.deltacore.delta.model.monitoring.Subject;
 import org.deltacore.delta.model.user.Monitor;
-import org.deltacore.delta.repositorie.MonitorDAO;
-import org.deltacore.delta.repositorie.SubjectDAO;
+import org.deltacore.delta.repositorie.user.MonitorDAO;
+import org.deltacore.delta.repositorie.monitoring.SubjectDAO;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.Optional;
 
 @Service
