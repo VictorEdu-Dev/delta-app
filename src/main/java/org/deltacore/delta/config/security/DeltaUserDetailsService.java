@@ -3,14 +3,12 @@ package org.deltacore.delta.config.security;
 import org.deltacore.delta.dto.user.UserDTO;
 import org.deltacore.delta.dto.user.UserDeltaMapper;
 import org.deltacore.delta.model.user.User;
-import org.deltacore.delta.repositorie.UserDAO;
+import org.deltacore.delta.repositorie.user.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 @Service
 public class DeltaUserDetailsService implements UserDetailsService {
