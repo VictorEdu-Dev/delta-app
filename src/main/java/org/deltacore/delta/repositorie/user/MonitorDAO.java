@@ -1,4 +1,4 @@
-package org.deltacore.delta.repositorie;
+package org.deltacore.delta.repositorie.user;
 
 import org.deltacore.delta.model.user.Monitor;
 import org.springframework.data.jpa.repository.Query;
