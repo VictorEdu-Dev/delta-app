@@ -15,31 +15,20 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Monitoring extends GeneralData {
+@Table(name = "monitoring")
+public class Tutoring extends GeneralData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "monitor_id")
-    private Monitor monitor;
-
     @Column(length = 150)
     private String description;
 
-    @Column(length = 300)
+    @Column(length = 1000)
     private String urlThumbnail;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "monitoring_id")
-    private List<DayTimeEntry> daysOfWeek;
 
     @Column(length = 50)
     private String location;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subject_id")
-    private Subject subject;
 
     @Column(nullable = false)
     private Integer vacancies;
@@ -53,9 +42,21 @@ public class Monitoring extends GeneralData {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "monitor_id")
+    private Monitor monitor;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "monitoring_users",
             joinColumns = @JoinColumn(name = "monitoring_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> users;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "monitoring_id")
+    private List<DayTimeEntry> daysOfWeek;
 }
