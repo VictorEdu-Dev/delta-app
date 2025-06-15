@@ -17,12 +17,12 @@ Uma nova monitoria é registrada e aparece na listagem de monitorias disponívei
 O sistema armazena todos os dados fornecidos e os torna disponíveis para futuras consultas.
 
 ### Fluxo Principal:
-- [ ] O estudante monitor acessa a funcionalidade “Cadastrar Monitoria”.
+- [x] O estudante monitor acessa a funcionalidade “Cadastrar Monitoria”.
 
-- [ ] O sistema exibe o formulário de cadastro com os campos obrigatórios:
+- [x] O sistema exibe o formulário de cadastro com os campos obrigatórios:
 - Ver classe "Monitoring" e as restrições de integridade e constraints associadas.
 
-- [ ] O estudante preenche todos os campos e confirma o cadastro.
+- [x] O estudante preenche todos os campos e confirma o cadastro.
 
 - [ ] O sistema valida os dados inseridos.
 
