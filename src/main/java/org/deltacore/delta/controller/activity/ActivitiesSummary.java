@@ -20,7 +20,7 @@ public class ActivitiesSummary {
 
     @Deprecated(
             forRemoval = true,
-            since = "1.0.0"
+            since = "0.1.0"
     )
     @GetMapping(value = "/list-activities-tsdt", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getActivitiesSummary() {
