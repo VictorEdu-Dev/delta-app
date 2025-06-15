@@ -2,9 +2,9 @@ package org.deltacore.delta.service.activity;
 
 import com.google.cloud.storage.*;
 import org.deltacore.delta.controller.activity.FileType;
-import org.deltacore.delta.dto.ActivityFilesDTO;
-import org.deltacore.delta.dto.ActivityFilesMapper;
-import org.deltacore.delta.dto.ActivityMapper;
+import org.deltacore.delta.dto.activities.ActivityFilesDTO;
+import org.deltacore.delta.dto.activities.ActivityFilesMapper;
+import org.deltacore.delta.dto.activities.ActivityMapper;
 import org.deltacore.delta.exception.LargeFileException;
 import org.deltacore.delta.exception.ResourceNotFoundException;
 import org.deltacore.delta.model.Activity;
