@@ -1,6 +1,7 @@
 package org.deltacore.delta.dto.monitoring;
 
 import lombok.Builder;
+import org.deltacore.delta.dto.user.UserDTO;
 
 import java.time.LocalDate;
 
@@ -9,5 +10,6 @@ public record MonitorDTO(
         Long id,
         LocalDate startDate,
         LocalDate endDate,
-        Long userMonitorId
+        UserDTO userMonitor,
+        TutoringDTO monitoring
 ) {}
