@@ -1,6 +1,6 @@
-package org.deltacore.delta.dto.monitoring;
+package org.deltacore.delta.dto.tutoring;
 
-import org.deltacore.delta.model.monitoring.DayTimeEntry;
+import org.deltacore.delta.model.tutoring.DayTimeEntry;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
