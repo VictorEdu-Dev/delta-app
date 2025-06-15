@@ -2,6 +2,7 @@ package org.deltacore.delta.controller.monitoring;
 
 import org.deltacore.delta.service.monitoring.MonitoringQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,15 @@ public class MonitoringQuery {
         this.monitoringQueryService = monitoringQueryService;
     }
 
+    @GetMapping(path = "get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getMonitoring(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    }
+
+    @GetMapping(path = "get", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getMonitoring() {
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    }
 
     @GetMapping(path = "subject/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findSubjectByCode(@PathVariable("code") String code) {
