@@ -1,7 +1,7 @@
-package org.deltacore.delta.dto.monitoring;
+package org.deltacore.delta.dto.tutoring;
 
 import lombok.Builder;
-import org.deltacore.delta.model.monitoring.DaysWeek;
+import org.deltacore.delta.model.tutoring.DaysWeek;
 
 import java.time.LocalDateTime;
 import java.util.List;
