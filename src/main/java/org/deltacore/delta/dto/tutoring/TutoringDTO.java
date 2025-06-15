@@ -1,9 +1,8 @@
-package org.deltacore.delta.dto.monitoring;
+package org.deltacore.delta.dto.tutoring;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import org.deltacore.delta.dto.user.UserDTO;
-import org.deltacore.delta.model.monitoring.Modality;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
