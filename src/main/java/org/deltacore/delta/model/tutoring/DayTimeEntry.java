@@ -1,4 +1,4 @@
-package org.deltacore.delta.model.monitoring;
+package org.deltacore.delta.model.tutoring;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
