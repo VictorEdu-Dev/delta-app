@@ -3,7 +3,7 @@ package org.deltacore.delta.model.user;
 import jakarta.persistence.*;
 import lombok.*;
 import org.deltacore.delta.model.GeneralData;
-import org.deltacore.delta.model.monitoring.Monitoring;
+import org.deltacore.delta.model.monitoring.Tutoring;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,5 +39,5 @@ public class User extends GeneralData {
     private Profile profile;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
-    private List<Monitoring> monitorings;
+    private List<Tutoring> tutorings;
 }
