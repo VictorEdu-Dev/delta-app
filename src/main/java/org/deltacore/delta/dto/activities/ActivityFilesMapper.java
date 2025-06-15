@@ -1,4 +1,4 @@
-package org.deltacore.delta.dto;
+package org.deltacore.delta.dto.activities;
 
 import org.deltacore.delta.model.ActivityFiles;
 import org.mapstruct.Mapper;
