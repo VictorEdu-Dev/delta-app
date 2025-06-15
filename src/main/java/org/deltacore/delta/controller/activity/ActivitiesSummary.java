@@ -18,6 +18,10 @@ public class ActivitiesSummary {
         this.activitiesService = activitiesService;
     }
 
+    @Deprecated(
+            forRemoval = true,
+            since = "1.0.0"
+    )
     @GetMapping(value = "/list-activities-tsdt", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getActivitiesSummary() {
         return ResponseEntity.ok(activitiesService.getActivitiesWithTitleStatusTypeAndDeadline());
