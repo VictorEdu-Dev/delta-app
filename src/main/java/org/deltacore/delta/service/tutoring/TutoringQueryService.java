@@ -1,29 +1,29 @@
-package org.deltacore.delta.service.monitoring;
+package org.deltacore.delta.service.tutoring;
 
-import org.deltacore.delta.dto.monitoring.MonitorMapper;
-import org.deltacore.delta.dto.monitoring.SubjectMapper;
-import org.deltacore.delta.dto.monitoring.MonitorDTO;
-import org.deltacore.delta.dto.monitoring.SubjectDTO;
-import org.deltacore.delta.model.monitoring.Subject;
+import org.deltacore.delta.dto.tutoring.MonitorMapper;
+import org.deltacore.delta.dto.tutoring.SubjectMapper;
+import org.deltacore.delta.dto.tutoring.MonitorDTO;
+import org.deltacore.delta.dto.tutoring.SubjectDTO;
+import org.deltacore.delta.model.tutoring.Subject;
 import org.deltacore.delta.model.user.Monitor;
 import org.deltacore.delta.repositorie.user.MonitorDAO;
-import org.deltacore.delta.repositorie.monitoring.SubjectDAO;
+import org.deltacore.delta.repositorie.tutoring.SubjectDAO;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class MonitoringQueryService {
+public class TutoringQueryService {
 
     private final MonitorDAO monitorDAO;
     private final SubjectDAO subjectDAO;
     private final SubjectMapper subjectMapper;
     private final MonitorMapper monitorMapper;
 
-    public MonitoringQueryService(MonitorDAO monitorDAO,
-                                  SubjectDAO subjectDAO,
-                                  SubjectMapper subjectMapper,
-                                  MonitorMapper monitorMapper) {
+    public TutoringQueryService(MonitorDAO monitorDAO,
+                                SubjectDAO subjectDAO,
+                                SubjectMapper subjectMapper,
+                                MonitorMapper monitorMapper) {
         this.monitorDAO = monitorDAO;
         this.subjectDAO = subjectDAO;
         this.subjectMapper = subjectMapper;
