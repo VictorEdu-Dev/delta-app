@@ -24,12 +24,12 @@ O sistema armazena todos os dados fornecidos e os torna disponíveis para futura
 
 - [x] O estudante preenche todos os campos e confirma o cadastro.
 
-- [ ] O sistema valida os dados inseridos.
+- [x] O sistema valida os dados inseridos.
 
-- [ ] O sistema salva a nova monitoria e exibe a mensagem: “Monitoria cadastrada com sucesso.”
+- [x] O sistema salva a nova monitoria e exibe a mensagem: “Monitoria cadastrada com sucesso.”
 
 ### Fluxo Alternativo 1: Dados inválidos ou incompletos
-- [ ] Se o formulário for enviado com dados faltando ou inválidos, o sistema destaca os campos com erro e exibe mensagens apropriadas para correção.
+- [x] Se o formulário for enviado com dados faltando ou inválidos, o sistema destaca os campos com erro e exibe mensagens apropriadas para correção.
 
 ### Exceções:
 - [ ] Se ocorrer erro no servidor ao salvar a monitoria, o sistema exibe a mensagem: “Erro ao cadastrar monitoria. Tente novamente.”
