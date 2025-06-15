@@ -2,7 +2,7 @@ package org.deltacore.delta.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.deltacore.delta.model.monitoring.Subject;
+import org.deltacore.delta.model.tutoring.Subject;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
