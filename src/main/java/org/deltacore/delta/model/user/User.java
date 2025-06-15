@@ -3,7 +3,7 @@ package org.deltacore.delta.model.user;
 import jakarta.persistence.*;
 import lombok.*;
 import org.deltacore.delta.model.GeneralData;
-import org.deltacore.delta.model.monitoring.Tutoring;
+import org.deltacore.delta.model.tutoring.Tutoring;
 
 import java.time.LocalDateTime;
 import java.util.List;
