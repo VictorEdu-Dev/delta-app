@@ -1,4 +1,4 @@
-package org.deltacore.delta.dto;
+package org.deltacore.delta.dto.activities;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import lombok.Builder;
