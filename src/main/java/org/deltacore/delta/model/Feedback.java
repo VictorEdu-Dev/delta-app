@@ -2,7 +2,7 @@ package org.deltacore.delta.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.deltacore.delta.model.monitoring.Monitoring;
+import org.deltacore.delta.model.monitoring.Tutoring;
 import org.deltacore.delta.model.user.Profile;
 
 import java.time.LocalDateTime;
@@ -25,5 +25,5 @@ public class Feedback extends GeneralData {
     @JoinColumn(name = "profile_id")
     private Profile profile;
     @ManyToOne(fetch = FetchType.LAZY)
-    private Monitoring monitoring;
+    private Tutoring tutoring;
 }
