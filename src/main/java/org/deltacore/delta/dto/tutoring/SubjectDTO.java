@@ -1,4 +1,4 @@
-package org.deltacore.delta.dto.monitoring;
+package org.deltacore.delta.dto.tutoring;
 
 import org.deltacore.delta.dto.activities.ActivityDTO;
 
