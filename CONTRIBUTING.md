@@ -28,7 +28,7 @@
 - Use DTOs para transferir dados entre as camadas. Por exemplo, `StudentDTO` para transferir dados do aluno entre o controller e o service.
 
 ## **Transações**:
-- Sempre utilize transações nas operações que envolvem múltiplas etapas no banco de dados, para permitir as propriedades ACID.
+- Sempre utilize transações nas operações que envolvem MÚLTIPLAS etapas no banco de dados, para permitir as propriedades ACID.
 - Use a anotação `@Transactional` do Spring em caso de múltiplas transações num método. A interface `JpaRepository` já possui suporte a transações para cada método. Mas, caso precise de um método customizado que use múltiplas consultas, use `@Transactional` que irá se sobrepôr ao padrão da interface.
 
 ## **Regras de commits**:
@@ -36,7 +36,11 @@
     - `feat:` para novas funcionalidades.
     - `fix:` para correções de bugs.
     - `refactor:` para refatoração de código.
-    - 'feature/rf<NUMERO DA RF>-activity': ATENÇÃO, USAR ESTE PADRÃO PARA NOMEAR AS BRANCHES PARA NOVAS FUNCIONALIDADES.
+    - `feature/rf<NUMERO DA RF>-activity`: ATENÇÃO, USAR ESTE PADRÃO PARA NOMEAR AS BRANCHES PARA NOVAS FUNCIONALIDADES.
+- Em mensagens de commits, no fim da mensagem deve-se pôr entre parênteses o número da issue sobre a qual se está trabalhando, pra manter documentado o que está sendo feito.
+    - `git commit -m "feat: mensagem bla bla bla (#13)"`
+    - `git commit -m "feat: mensagem ble ble ble (#15)"`
+
 
 # Git e Fluxo de Trabalho
 
