@@ -30,6 +30,6 @@ public class Subject extends GeneralData {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Activity> activity;
 
-    @OneToOne(mappedBy = "subject", cascade = CascadeType.REMOVE)
-    private Monitoring monitoring;
+    @OneToOne(mappedBy = "subject", cascade = CascadeType.DETACH)
+    private Tutoring tutoring;
 }
