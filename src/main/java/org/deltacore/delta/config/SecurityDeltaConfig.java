@@ -86,11 +86,11 @@ public class SecurityDeltaConfig {
     @Order(3)
     public SecurityFilterChain monitorSecurityChain(HttpSecurity http) throws Exception {
         return http
-                .securityMatcher("/activities/monitor/**", "monitoring/**")
+                .securityMatcher("/activities/monitor/**", "tutoring/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/activities/monitor/**").hasAnyRole(Roles.MONITOR.name(), Roles.ADMIN.name())
-                        .requestMatchers("/monitoring/**").hasAnyRole(Roles.MONITOR.name(), Roles.ADMIN.name())
+                        .requestMatchers("/tutoring/**").hasAnyRole(Roles.MONITOR.name(), Roles.ADMIN.name())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
