@@ -1,4 +1,4 @@
-package org.deltacore.delta.dto.monitoring;
+package org.deltacore.delta.dto.tutoring;
 
 import org.deltacore.delta.model.user.Monitor;
 import org.mapstruct.Mapper;
