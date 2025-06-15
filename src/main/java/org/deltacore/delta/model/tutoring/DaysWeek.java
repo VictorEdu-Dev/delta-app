@@ -1,4 +1,4 @@
-package org.deltacore.delta.model.monitoring;
+package org.deltacore.delta.model.tutoring;
 
 public enum DaysWeek {
     MONDAY,
