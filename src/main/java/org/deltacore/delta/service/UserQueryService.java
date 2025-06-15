@@ -4,7 +4,7 @@ import org.deltacore.delta.dto.user.UserDTO;
 import org.deltacore.delta.dto.user.UserDeltaMapper;
 import org.deltacore.delta.exception.ResourceNotFoundException;
 import org.deltacore.delta.model.user.User;
-import org.deltacore.delta.repositorie.UserDAO;
+import org.deltacore.delta.repositorie.user.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
