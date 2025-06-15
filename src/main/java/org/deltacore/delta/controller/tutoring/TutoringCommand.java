@@ -1,8 +1,8 @@
-package org.deltacore.delta.controller.monitoring;
+package org.deltacore.delta.controller.tutoring;
 
 import jakarta.validation.Valid;
-import org.deltacore.delta.dto.monitoring.TutoringDTO;
-import org.deltacore.delta.service.monitoring.MonitoringCommandService;
+import org.deltacore.delta.dto.tutoring.TutoringDTO;
+import org.deltacore.delta.service.tutoring.TutoringCommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
 @RequestMapping("tutoring/")
-public class MonitoringCommand {
+public class TutoringCommand {
 
-    private final MonitoringCommandService monitoringCmdService;
+    private final TutoringCommandService monitoringCmdService;
 
     @Autowired
-    public MonitoringCommand(MonitoringCommandService monitoringCmdService) {
+    public TutoringCommand(TutoringCommandService monitoringCmdService) {
         this.monitoringCmdService = monitoringCmdService;
     }
 
