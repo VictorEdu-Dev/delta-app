@@ -12,6 +12,7 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 
 @Configuration
 public class SwaggerConfig {
@@ -71,12 +72,13 @@ public class SwaggerConfig {
     }
 
     @Bean
-    public GroupedOpenApi apiGroup() {
+    public GroupedOpenApi apiActivityGroup() {
         return GroupedOpenApi.builder()
                 .group("Activities API")
                 .pathsToMatch("/activities/**")
-                .packagesToScan("org.deltacore.delta.controller",
-                        "org.deltacore.delta.dto")
+                .packagesToScan("org.deltacore.delta.domains.activity.rest",
+                        "org.deltacore.delta.domains.activity.dto")
+                .displayName("Activities API")
                 .build();
     }
 
@@ -85,8 +87,9 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("Auth API")
                 .pathsToMatch("/home/**")
-                .packagesToScan("org.deltacore.delta.controller",
-                        "org.deltacore.delta.dto")
+                .packagesToScan("org.deltacore.delta.domains.auth.rest",
+                        "org.deltacore.delta.domains.auth.dto")
+                .displayName("Auth API")
                 .build();
     }
 
