@@ -8,16 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class AuthCmdService {
-    private final AuthenticationManager authManager;
-    private final JwtTokenService jwtTokenService;
-
-    public AuthCmdService(AuthenticationManager authManager, JwtTokenService jwtTokenService) {
-        this.authManager = authManager;
-        this.jwtTokenService = jwtTokenService;
-    }
-
     public String getToken(LoginRequest request,
                            AuthenticationManager authManager,
                            JwtTokenService jwtService) {
@@ -33,5 +28,15 @@ public class AuthCmdService {
                 .orElse("ROLE_STUDENT");
 
         return jwtService.generateToken(authentication.getName(), role);
+    }
+
+    public Map<String, Object> getTokenInfo(LoginRequest request, String token) {
+        Map<String,Object> microInfo = new HashMap<>();
+        microInfo.put("username", request.username());
+        microInfo.put("token", token);
+
+        Map<String,Object> tokenInfo = new HashMap<>();
+        tokenInfo.put("token_info", microInfo);
+        return tokenInfo;
     }
 }
