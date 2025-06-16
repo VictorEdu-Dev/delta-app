@@ -1,4 +1,4 @@
-package org.deltacore.delta.controller;
+package org.deltacore.delta.controller.auth;
 
 import org.deltacore.delta.service.UserQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/home")
-public class HomeQuery {
+public class AuthQuery {
 
     private final UserQueryService userQueryService;
 
     @Autowired
-    public HomeQuery(UserQueryService userQueryService) {
+    public AuthQuery(UserQueryService userQueryService) {
         this.userQueryService = userQueryService;
     }
 
