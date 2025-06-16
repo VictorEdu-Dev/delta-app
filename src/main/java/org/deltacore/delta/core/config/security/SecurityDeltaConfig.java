@@ -40,7 +40,7 @@ public class SecurityDeltaConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.securityMatcher("/home/login", "/home/register", "/auth/**")
+        http.securityMatcher("/auth/login/**", "/auth/register/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         commonSecurityConfig(http);
         return http.build();
