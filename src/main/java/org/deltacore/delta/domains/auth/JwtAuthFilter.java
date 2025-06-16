@@ -17,6 +17,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+@Deprecated(
+    forRemoval = true,
+    since = "0.1.0"
+)
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer";
