@@ -1,15 +1,16 @@
 package org.deltacore.delta.service.tutoring;
 
-import org.deltacore.delta.dto.tutoring.MonitorMapper;
-import org.deltacore.delta.dto.tutoring.SubjectMapper;
-import org.deltacore.delta.dto.tutoring.TutoringDTO;
-import org.deltacore.delta.dto.tutoring.TutoringMapper;
-import org.deltacore.delta.model.tutoring.Modality;
-import org.deltacore.delta.model.tutoring.Tutoring;
-import org.deltacore.delta.repositorie.tutoring.DayTimeEntryDAO;
-import org.deltacore.delta.repositorie.tutoring.SubjectDAO;
-import org.deltacore.delta.repositorie.tutoring.TutoringDAO;
-import org.deltacore.delta.repositorie.user.MonitorDAO;
+import org.deltacore.delta.domains.tutoring.servive.TutoringCommandService;
+import org.deltacore.delta.domains.tutoring.dto.MonitorMapper;
+import org.deltacore.delta.domains.tutoring.dto.SubjectMapper;
+import org.deltacore.delta.domains.tutoring.dto.TutoringDTO;
+import org.deltacore.delta.domains.tutoring.dto.TutoringMapper;
+import org.deltacore.delta.domains.tutoring.model.Modality;
+import org.deltacore.delta.domains.tutoring.model.Tutoring;
+import org.deltacore.delta.domains.tutoring.repository.DayTimeEntryDAO;
+import org.deltacore.delta.domains.tutoring.repository.SubjectDAO;
+import org.deltacore.delta.domains.tutoring.repository.TutoringDAO;
+import org.deltacore.delta.domains.auth.repository.MonitorDAO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
