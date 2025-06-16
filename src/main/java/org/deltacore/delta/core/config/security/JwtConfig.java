@@ -1,6 +1,9 @@
 package org.deltacore.delta.core.config.security;
 
 import jakarta.annotation.PostConstruct;
+import org.deltacore.delta.core.config.security.filter.JwtAuthFilter;
+import org.deltacore.delta.domains.auth.service.JwtTokenService;
+import org.deltacore.delta.domains.auth.service.TokenBlacklistService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,4 +40,10 @@ public class JwtConfig {
         jwtAuthConverter.setJwtGrantedAuthoritiesConverter(converter);
         return jwtAuthConverter;
     }
+
+    @Bean
+    public JwtAuthFilter jwtAuthFilter(JwtDecoder jwtDecoder, TokenBlacklistService blacklistService, JwtTokenService tokenProvider) {
+        return new JwtAuthFilter(jwtDecoder, blacklistService, tokenProvider);
+    }
+
 }
