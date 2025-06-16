@@ -4,11 +4,15 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.deltacore.delta.domains.auth.model.DeltaUserDetails;
+import org.deltacore.delta.domains.auth.service.DeltaUserDetailsService;
 import org.deltacore.delta.domains.auth.service.JwtTokenService;
 import org.deltacore.delta.domains.auth.service.TokenBlacklistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -19,63 +23,73 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 
-public class JwtAuthFilter extends OncePerRequestFilter {
-    private final JwtDecoder jwtDecoder;
-    private final TokenBlacklistService blacklistService;
-    private final JwtTokenService tokenProvider;
+    public class JwtAuthFilter extends OncePerRequestFilter {
+        private final JwtDecoder jwtDecoder;
+        private final TokenBlacklistService blacklistService;
+        private final DeltaUserDetailsService userDetailsService;
 
-    @Autowired
-    public JwtAuthFilter(JwtDecoder jwtDecoder, TokenBlacklistService blacklistService, JwtTokenService tokenProvider) {
-        this.jwtDecoder = jwtDecoder;
-        this.blacklistService = blacklistService;
-        this.tokenProvider = tokenProvider;
-    }
-
-    @Override
-    protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getRequestURI();
-        if (path.equals("/home/login") || path.equals("/home/register")) {
-            filterChain.doFilter(request, response);
-            return;
+        @Autowired
+        public JwtAuthFilter(JwtDecoder jwtDecoder, TokenBlacklistService blacklistService, DeltaUserDetailsService userDetailsService) {
+            this.jwtDecoder = jwtDecoder;
+            this.blacklistService = blacklistService;
+            this.userDetailsService = userDetailsService;
         }
 
-        String token = extractToken(request);
-        Jwt jwt;
-        try {
-            jwt = jwtDecoder.decode(token);
-        } catch (JwtValidationException ex) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid Token: " + ex.getMessage());
-            return;
-        } catch (BadJwtException ex) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Bad Token: " + ex.getMessage());
-            return;
-        }
+        @Override
+        protected void doFilterInternal(
+                @NonNull HttpServletRequest request,
+                @NonNull HttpServletResponse response,
+                @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-
-        String username = jwt.getSubject();
-        String role = jwt.getClaimAsString("role");
-        Instant expiresAt = jwt.getExpiresAt();
-        Instant now = Instant.now();
-        long minutesLeft = Duration.between(now, expiresAt).toMinutes();
-        int TIME_TO_REFRESH = 10;
-
-        if (minutesLeft < TIME_TO_REFRESH) {
-            if (blacklistService.isBlacklisted(token, username)) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            String path = request.getRequestURI();
+            if (
+                    path.equals("/auth/login") ||
+                    path.equals("/auth/register") ||
+                    path.equals("/auth/refresh")) {
+                filterChain.doFilter(request, response);
                 return;
             }
 
-            String newToken = tokenProvider.generateToken(username, role);
-            blacklistService.add(token, expiresAt, username);
-            response.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + newToken);
+            String token = extractToken(request);
+            if (token == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            Jwt jwt;
+            try {
+                jwt = jwtDecoder.decode(token);
+            } catch (JwtValidationException ex) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"error\": \"Invalid Token: " + ex.getMessage() + "\"}");
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                return;
+            } catch (BadJwtException ex) {
+                // Token malformado
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"error\": \"Bad Token: " + ex.getMessage() + "\"}");
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                return;
+            }
+
+            if (blacklistService.isBlacklisted(jwt.getId(), jwt.getSubject())) { //
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //
+                response.getWriter().write("{\"error\": \"Token has been blacklisted.\"}"); //
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                return;
+            }
+
+            DeltaUserDetails userDetails = userDetailsService.loadUserByUsername(jwt.getSubject());
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
         }
-        filterChain.doFilter(request, response);
-    }
 
     public String extractToken(HttpServletRequest request) {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
