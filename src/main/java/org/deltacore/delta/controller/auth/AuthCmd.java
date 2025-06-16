@@ -1,37 +1,37 @@
-package org.deltacore.delta.controller;
+package org.deltacore.delta.controller.auth;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.deltacore.delta.dto.LoginRequest;
 import org.deltacore.delta.dto.user.UserDTO;
-import org.deltacore.delta.config.security.JwtTokenService;
+import org.deltacore.delta.service.auth.JwtTokenService;
 import org.deltacore.delta.service.UserCommandService;
+import org.deltacore.delta.service.auth.AuthCmdService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/home")
-public class HomeCmd {
+public class AuthCmd {
 
     private final JwtTokenService jwtService;
     private final UserCommandService userCommandService;
     private final AuthenticationManager authManager;
+    private final AuthCmdService authCmdService;
 
-    public HomeCmd(AuthenticationManager authManager,
+    public AuthCmd(AuthenticationManager authManager,
                    UserCommandService userCommandService,
-                   JwtTokenService jwtService) {
+                   JwtTokenService jwtService, AuthCmdService authCmdService) {
         this.authManager = authManager;
         this.userCommandService = userCommandService;
         this.jwtService = jwtService;
+        this.authCmdService = authCmdService;
     }
 
     @Operation(security = @SecurityRequirement(name = ""))
@@ -44,19 +44,19 @@ public class HomeCmd {
     @Operation(security = @SecurityRequirement(name = ""))
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
-        Authentication authentication = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username(), request.password())
-        );
+        String token = authCmdService.getToken(request, authManager, jwtService);
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Map<String,Object> microInfo = new HashMap<>();
+        microInfo.put("username", request.username());
+        microInfo.put("token", token);
 
-        String role = userDetails.getAuthorities().stream()
-                .findFirst()
-                .map(GrantedAuthority::getAuthority)
-                .orElse("ROLE_STUDENT");
+        Map<String,Object> tokenInfo = new HashMap<>();
+        tokenInfo.put("token_info", microInfo);
 
-        String token = jwtService.generateToken(authentication.getName(), role);
-
-        return ResponseEntity.ok(Map.of("token", token));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(tokenInfo);
     }
+
+
 }
