@@ -1,4 +1,4 @@
-package org.deltacore.delta.config.security;
+package org.deltacore.delta.service.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -51,7 +51,7 @@ public class JwtTokenService {
                 .build();
 
         DecodedJWT jwt = verifier.verify(token);
-        return jwt.getClaim("roles").asString();
+        return jwt.getClaim("role").asString();
     }
 
     public DecodedJWT verifyToken(String token) throws JWTVerificationException {
