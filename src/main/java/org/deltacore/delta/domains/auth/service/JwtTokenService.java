@@ -26,7 +26,7 @@ public class JwtTokenService {
     }
 
     public String generateToken(String username, String role) throws JWTCreationException {
-        long expirationMillis = 3600000; // 1 hora
+        long expirationMillis = 1_740_000; // 29 minutes expiration time
         return JWT.create()
                 .withSubject(username)
                 .withClaim("role", role)
