@@ -10,6 +10,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthCmdService {
+    private final AuthenticationManager authManager;
+    private final JwtTokenService jwtTokenService;
+
+    public AuthCmdService(AuthenticationManager authManager, JwtTokenService jwtTokenService) {
+        this.authManager = authManager;
+        this.jwtTokenService = jwtTokenService;
+    }
+
     public String getToken(LoginRequest request,
                            AuthenticationManager authManager,
                            JwtTokenService jwtService) {
