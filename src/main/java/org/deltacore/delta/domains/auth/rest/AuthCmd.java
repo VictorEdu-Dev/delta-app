@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping(path = "/home")
+@RequestMapping(path = "/auth")
 public class AuthCmd {
 
     private final JwtTokenService jwtService;
@@ -43,16 +43,10 @@ public class AuthCmd {
 
     @Operation(security = @SecurityRequirement(name = ""))
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
-        String token = authCmdService.getToken(request, authManager, jwtService);
+    public ResponseEntity<?> login(@RequestBody LoginRequest login) {
+        String token = authCmdService.getToken(login, authManager, jwtService);
 
-        Map<String,Object> microInfo = new HashMap<>();
-        microInfo.put("username", request.username());
-        microInfo.put("token", token);
-
-        Map<String,Object> tokenInfo = new HashMap<>();
-        tokenInfo.put("token_info", microInfo);
-
+        Map<String, Object> tokenInfo = authCmdService.getTokenInfo(login, token);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(tokenInfo);
