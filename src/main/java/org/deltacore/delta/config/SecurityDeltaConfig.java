@@ -1,6 +1,7 @@
 package org.deltacore.delta.config;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.deltacore.delta.config.security.DeltaUserDetailsService;
 import org.deltacore.delta.config.security.JwtAuthFilter;
 import org.deltacore.delta.config.security.event.AuthFailure;
 import org.deltacore.delta.model.user.Roles;
@@ -46,21 +47,13 @@ public class SecurityDeltaConfig {
     @Order(1)
     public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http, AuthenticationManager authManager) throws Exception {
         return http
-                .securityMatcher("/home/login", "/home/register", "/auth/**") // <- limita esse filtro
+                .securityMatcher("/home/login", "/home/register", "/auth/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/home/login", "/home/register").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
-                .authenticationManager(authManager)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(e -> e
-                        .authenticationEntryPoint((request, response, authException) ->
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
-                        )
                 )
                 .build();
     }
@@ -131,7 +124,7 @@ public class SecurityDeltaConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder encoder) {
+    public AuthenticationProvider authenticationProvider(DeltaUserDetailsService userDetailsService, PasswordEncoder encoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(encoder);
