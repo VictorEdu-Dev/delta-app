@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.deltacore.delta.domains.auth.dto.LoginRequest;
+import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
 import org.deltacore.delta.domains.profile.dto.UserDTO;
 import org.deltacore.delta.domains.auth.service.JwtTokenService;
 import org.deltacore.delta.domains.auth.service.UserCommandService;
@@ -44,13 +45,9 @@ public class AuthCmd {
     @Operation(security = @SecurityRequirement(name = ""))
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest login) {
-        String token = authCmdService.getToken(login, authManager, jwtService);
-
-        Map<String, Object> tokenInfo = authCmdService.getTokenInfo(login, token);
+        TokenInfoDTO token = authCmdService.getToken(login, authManager, jwtService);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(tokenInfo);
+                .body(token);
     }
-
-
 }
