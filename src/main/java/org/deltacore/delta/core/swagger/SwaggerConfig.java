@@ -76,8 +76,7 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("Activities API")
                 .pathsToMatch("/activities/**")
-                .packagesToScan("org.deltacore.delta.domains.activity.rest",
-                        "org.deltacore.delta.domains.activity.dto")
+                .packagesToScan("org.deltacore.delta.domains.activity")
                 .displayName("Activities API")
                 .build();
     }
@@ -86,9 +85,8 @@ public class SwaggerConfig {
     public GroupedOpenApi authApiGroup() {
         return GroupedOpenApi.builder()
                 .group("Auth API")
-                .pathsToMatch("/home/**")
-                .packagesToScan("org.deltacore.delta.domains.auth.rest",
-                        "org.deltacore.delta.domains.auth.dto")
+                .pathsToMatch("/auth/**")
+                .packagesToScan("org.deltacore.delta.domains.auth")
                 .displayName("Auth API")
                 .build();
     }
