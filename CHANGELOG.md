@@ -1,4 +1,11 @@
 # Notas de Versão
+
+## [0.1.1] - 2025-06-18
+
+## Corrigido
+- Corrigido bug no envio de arquivos para o bucket do Google Cloud Storage causado pela inicialização estática incorreta de credenciais na classe GcpConfig.
+- A configuração foi refatorada para utilizar injeção de dependência adequada pelo Spring, eliminando o uso de campos static e compatibilizando com o ciclo de vida dos beans.
+
 ## [0.1.0-SNAPSHOT] - 2025-06-08
 
 ### Adicionado
