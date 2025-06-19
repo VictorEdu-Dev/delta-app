@@ -21,10 +21,10 @@ import java.util.*;
 
 @Service
 public class ActivityUploadService {
-    private static final String BUCKET_NAME = GcpConfig.getBucketName();
-    private static final String FOLDER_PATH = GcpConfig.getFolderPath();
-    private static final String FOLDER_PATH_DOC = GcpConfig.getFolderPathDoc();
-    private static final String FOLDER_PATH_IMG = GcpConfig.getFolderPathImage();
+    private final String BUCKET_NAME;
+    private final String FOLDER_PATH;
+    private final String FOLDER_PATH_DOC;
+    private final String FOLDER_PATH_IMG;
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
     private static final String DEMILIMETER = "@";
 
@@ -39,12 +39,18 @@ public class ActivityUploadService {
                                  ActivityFilesMapper activityFilesMapper,
                                  ActivityDAO activityDAO,
                                  ActivityMapper activityMapper,
-                                 Storage storage) {
+                                 Storage storage,
+                                 GcpConfig gcpConfig) {
         this.activityFilesDAO = activityFilesDAO;
         this.activityFilesMapper = activityFilesMapper;
         this.activityDAO = activityDAO;
         this.activityMapper = activityMapper;
         this.storage = storage;
+
+        BUCKET_NAME = gcpConfig.getBucketName();
+        FOLDER_PATH = gcpConfig.getFolderPath();
+        FOLDER_PATH_DOC = gcpConfig.getFolderPathDoc();
+        FOLDER_PATH_IMG = gcpConfig.getFolderPathImage();
     }
 
     public List<ActivityFilesDTO> uploadAndSaveFiles(MultipartFile[] files, Long id) throws IOException {
@@ -93,7 +99,7 @@ public class ActivityUploadService {
                 .build();
     }
 
-    private static String getString(MultipartFile file, String fileName) {
+    private String getString(MultipartFile file, String fileName) {
         String objectName;
         switch (file.getContentType()) {
             case FileType.IMAGE_JPEG, FileType.IMAGE_PNG ->
