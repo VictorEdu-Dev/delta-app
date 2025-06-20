@@ -1,30 +1,135 @@
 package org.deltacore.delta.core.config.security;
 
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
+import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Configuration
 public class AuthorizationServerConfig {
 
     @Bean
-    @Order(0)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        var configurer = new OAuth2AuthorizationServerConfigurer();
-
-        http
-                .securityMatcher(configurer.getEndpointsMatcher())
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public SecurityFilterChain authorizationServerSecurityFilterChain(
+            HttpSecurity http,
+            RegisteredClientRepository registeredClientRepository,
+            OAuth2AuthorizationService authorizationService,
+            OAuth2AuthorizationConsentService authorizationConsentService,
+            AuthorizationServerSettings authorizationServerSettings,
+            OAuth2TokenGenerator<?> tokenGenerator,
+            JWKSource<SecurityContext> jwkSource
+    ) throws Exception {
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
+        http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .with(configurer, c -> c.oidc(Customizer.withDefaults()));
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated()
+                )
+                .with(authorizationServerConfigurer, (authorizationServer) -> {
+                    authorizationServer
+                            .registeredClientRepository(registeredClientRepository)
+                            .authorizationService(authorizationService)
+                            .authorizationConsentService(authorizationConsentService)
+                            .authorizationServerSettings(authorizationServerSettings)
+                            .tokenGenerator(tokenGenerator)
+                            .clientAuthentication(Customizer.withDefaults())
+                            .oidc(Customizer.withDefaults());
+                })
+                .exceptionHandling(exceptions ->
+                        exceptions.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                )
+                .oauth2ResourceServer(oauth2ResourceServer ->
+                        oauth2ResourceServer.jwt(Customizer.withDefaults())
+                );
 
         return http.build();
+    }
+
+    @Bean
+    public RegisteredClientRepository registeredClientRepository() {
+        // Exemplo de cliente para CLIENT_CREDENTIALS flow (ideal para API-API)
+        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId("api-client")
+                .clientSecret("{noop}secret") // AVISO: Em produção, use um PasswordEncoder adequado (ex: BCryptPasswordEncoder)
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS) // Para comunicação máquina-máquina
+                .scope("api.read")
+                .scope("api.write")
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()) // APIs geralmente não requerem consentimento manual
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenTimeToLive(Duration.ofMinutes(15)) // Tempo de vida do token de acesso
+                        .reuseRefreshTokens(false) // Para client_credentials, refresh tokens são menos comuns
+                        .build())
+                .build();
+        // Para produção, você injetaria um JdbcTemplate aqui e usaria JdbcRegisteredClientRepository
+        return new InMemoryRegisteredClientRepository(registeredClient); // AVISO: Apenas para desenvolvimento!
+    }
+
+    // Serviço de Autorização (Usar JdbcOAuth2AuthorizationService em produção)
+    @Bean
+    public OAuth2AuthorizationService authorizationService(RegisteredClientRepository registeredClientRepository) {
+        // Para produção, você injetaria um JdbcTemplate aqui e usaria JdbcOAuth2AuthorizationService
+        return new InMemoryOAuth2AuthorizationService(); // AVISO: Apenas para desenvolvimento!
+    }
+
+    // Serviço de Consentimento de Autorização (Usar JdbcOAuth2AuthorizationConsentService em produção)
+    // Para APIs sem front-end e fluxos como client_credentials, este serviço pode ser menos crítico.
+    @Bean
+    public OAuth2AuthorizationConsentService authorizationConsentService(RegisteredClientRepository registeredClientRepository) {
+        // Para produção, você injetaria um JdbcTemplate aqui e usaria JdbcOAuth2AuthorizationConsentService
+        return new InMemoryOAuth2AuthorizationConsentService(); // AVISO: Apenas para desenvolvimento!
+    }
+
+    // Gerador de Tokens (incluindo JwtGenerator para tokens de acesso JWT)
+    @Bean
+    public OAuth2TokenGenerator<?> tokenGenerator(JWKSource<SecurityContext> jwkSource) {
+        NimbusJwtEncoder jwtEncoder = new NimbusJwtEncoder(jwkSource); // Usa a JWKSource para criar o encoder
+        JwtGenerator jwtGenerator = new JwtGenerator(jwtEncoder);
+
+        jwtGenerator.setJwtCustomizer(jwtCustomizer()); // Adiciona o customizador de JWT
+
+        OAuth2AccessTokenGenerator accessTokenGenerator = new OAuth2AccessTokenGenerator();
+        OAuth2RefreshTokenGenerator refreshTokenGenerator = new OAuth2RefreshTokenGenerator();
+
+        return new DelegatingOAuth2TokenGenerator(jwtGenerator, accessTokenGenerator, refreshTokenGenerator);
+    }
+
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+        return context -> {
+            if (context.getTokenType().getValue().equals("access_token")) {
+                context.getClaims().audience(List.of("delta-api"));
+            }
+        };
     }
 }
