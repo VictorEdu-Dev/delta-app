@@ -9,7 +9,10 @@ import org.deltacore.delta.domains.profile.dto.UserDTO;
 import org.deltacore.delta.domains.auth.service.JwtTokenService;
 import org.deltacore.delta.domains.auth.service.UserCommandService;
 import org.deltacore.delta.domains.auth.service.AuthCmdService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +24,10 @@ import java.util.Map;
 @RequestMapping(path = "/auth")
 public class AuthCmd {
 
-    private final JwtTokenService jwtService;
-    private final UserCommandService userCommandService;
-    private final AuthenticationManager authManager;
-    private final AuthCmdService authCmdService;
-
-    public AuthCmd(AuthenticationManager authManager,
-                   UserCommandService userCommandService,
-                   JwtTokenService jwtService, AuthCmdService authCmdService) {
-        this.authManager = authManager;
-        this.userCommandService = userCommandService;
-        this.jwtService = jwtService;
-        this.authCmdService = authCmdService;
-    }
+    private JwtTokenService jwtService;
+    private UserCommandService userCommandService;
+    private AuthenticationManager authManager;
+    private AuthCmdService authCmdService;
 
     @Operation(security = @SecurityRequirement(name = ""))
     @PostMapping("/register")
@@ -50,4 +44,43 @@ public class AuthCmd {
                 .status(HttpStatus.OK)
                 .body(token);
     }
+
+    @Operation(security = @SecurityRequirement(name = ""))
+    @PostMapping(path = "/refresh", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> refreshToken(@RequestBody @Valid TokenInfoDTO.RefreshTokenDTO refreshToken) {
+        TokenInfoDTO response = authCmdService.refresh(refreshToken.token(), jwtService);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @Operation(security = @SecurityRequirement(name = ""))
+    @PostMapping(path = "/revoke", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> revokeToken(@RequestBody @Valid TokenInfoDTO.RefreshTokenDTO refreshToken) {
+        TokenInfoDTO response = authCmdService.revoke(refreshToken.token());
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(response);
+    }
+
+    @Autowired @Lazy
+    public void setJwtService(JwtTokenService jwtService) {
+        this.jwtService = jwtService;
+    }
+
+    @Autowired @Lazy
+    public void setUserCommandService(UserCommandService userCommandService) {
+        this.userCommandService = userCommandService;
+    }
+
+    @Autowired @Lazy
+    public void setAuthCmdService(AuthCmdService authCmdService) {
+        this.authCmdService = authCmdService;
+    }
+
+    @Autowired
+    public void setAuthManager(AuthenticationManager authManager) {
+        this.authManager = authManager;
+    }
+
 }
