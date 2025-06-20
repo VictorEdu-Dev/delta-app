@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+@Deprecated(
+    forRemoval = true,
+    since = "0.1.0"
+)
 @Service
 public class TokenCleanupJob {
 
@@ -15,7 +19,7 @@ public class TokenCleanupJob {
         this.blacklistService = blacklistService;
     }
 
-    @Scheduled(fixedRate = 1_800_000)
+    // @Scheduled(fixedRate = 1_800_000)
     public void cleanExpiredTokens() {
         blacklistService.removeExpiredTokens();
     }
