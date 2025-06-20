@@ -8,7 +8,12 @@ import org.springframework.security.oauth2.server.authorization.settings.Authori
 public class AuthServerSettings {
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+        return AuthorizationServerSettings.builder()
+                .issuer("http://localhost:8080/api/v1")
+                .authorizationEndpoint("/oauth2/v1/authorize")
+                .tokenEndpoint("/oauth2/v1/token")
+                .jwkSetEndpoint("/oauth2/v1/jwks")
+                .build();
     }
 }
 
