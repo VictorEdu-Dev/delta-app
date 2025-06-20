@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
+@Deprecated(
+    forRemoval = true,
+    since = "0.1.0"
+)
 @Service
 public class TokenBlacklistService {
     private final BlacklistDAO blacklistDAO;
