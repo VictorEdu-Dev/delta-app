@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 
+@Deprecated(
+    forRemoval = true,
+    since = "0.1.0"
+)
 @Data
 @Builder
 @Entity
