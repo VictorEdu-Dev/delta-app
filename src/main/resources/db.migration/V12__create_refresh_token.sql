@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS refresh_token (
+       id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+       user_id BIGINT NOT NULL,
+       token UUID NOT NULL,
+       revoked BOOLEAN NOT NULL DEFAULT FALSE,
+       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+       expires_at TIMESTAMP NOT NULL,
+       version TIMESTAMP,
+
+       FOREIGN KEY (user_id) REFERENCES user_delta(id) ON DELETE CASCADE
+);
