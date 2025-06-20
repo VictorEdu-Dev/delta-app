@@ -1,87 +1,101 @@
 package org.deltacore.delta.domains.auth.service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+import org.deltacore.delta.domains.auth.dto.RefreshTokenMapper;
 import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
-import org.springframework.beans.factory.annotation.Value;
+import org.deltacore.delta.domains.auth.dto.UserBasicDTO;
+import org.deltacore.delta.domains.auth.dto.UserBasicMapper;
+import org.deltacore.delta.domains.auth.exception.UserNotFound;
+import org.deltacore.delta.domains.auth.model.RefreshToken;
+import org.deltacore.delta.domains.auth.model.User;
+import org.deltacore.delta.domains.auth.repository.RefreshTokenDAO;
+import org.deltacore.delta.domains.auth.repository.UserDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.Instant;
+import java.util.UUID;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 public class JwtTokenService {
     private static final String ISSUER = "DELTA APPLICATION";
-    private final String secret;
+    private final JwtEncoder jwtEncoder;
+    private UserDAO userDAO;
+    private UserBasicMapper userBasicMapper;
+    private RefreshTokenDAO refreshTokenDAO;
+    private RefreshTokenMapper refreshTokenMapper;
 
-    public JwtTokenService(@Value("${jwt.secret}") String secret) {
-        this.secret = secret;
+    public JwtTokenService(JWKSource<SecurityContext> jwkSource) {
+        this.jwtEncoder = new NimbusJwtEncoder(jwkSource);
     }
 
-    private Algorithm getAlgorithm() {
-        return Algorithm.HMAC256(secret);
+    public TokenInfoDTO generateTokenInfo(String username, String role) throws UserNotFound {
+        Instant now = Instant.now();
+        Instant accessTokenExpiresAt = now.plusSeconds(900);
+        Instant refreshTokenExpiresAt = now.plus(7, DAYS);
+
+        String accessToken = jwtEncoder.encode(JwtEncoderParameters.from(
+                JwtClaimsSet.builder()
+                        .issuer(ISSUER)
+                        .issuedAt(now)
+                        .expiresAt(accessTokenExpiresAt)
+                        .subject(username)
+                        .claim("role", role)
+                        .build()
+        )).getTokenValue();
+
+        User user = userDAO.findByUsername(username)
+                .orElseThrow(() -> new UserNotFound("User not found: " + username));
+        UserBasicDTO userBasicDTO = userBasicMapper.toDTO(user);
+
+        TokenInfoDTO tokenInfoDTO = new TokenInfoDTO(
+                "access_token",
+                TokenInfoDTO.RefreshTokenDTO.builder()
+                        .userbasicDTO(userBasicDTO)
+                        .token(UUID.randomUUID())
+                        .revoked(false)
+                        .createdAt(now)
+                        .expiresAt(refreshTokenExpiresAt)
+                        .build(),
+                TokenInfoDTO.TokenInfoValueDTO.builder()
+                        .username(username)
+                        .token(accessToken)
+                        .expiresAt(accessTokenExpiresAt)
+                        .build()
+        );
+
+        RefreshToken refreshToken = refreshTokenMapper.toEntity(tokenInfoDTO.refreshTokenDTO());
+        refreshToken.setUser(user);
+        refreshTokenDAO.save(refreshToken);
+
+        return tokenInfoDTO;
     }
 
-    public TokenInfoDTO generateTokenInfo(String username, String role) throws JWTCreationException {
-        Date issuedAt = new Date();
-        long expirationMillis = 900_000;
-        Date expiresAt = new Date(System.currentTimeMillis() + expirationMillis);
-
-        String token = JWT.create()
-                .withSubject(username)
-                .withClaim("role", role)
-                .withIssuer(ISSUER)
-                .withIssuedAt(issuedAt)
-                .withExpiresAt(expiresAt)
-                .sign(getAlgorithm());
-
-        TokenInfoDTO.TokenInfoValueDTO tokenInfoValue = TokenInfoDTO.TokenInfoValueDTO
-                .builder()
-                .username(username)
-                .token(token)
-                .expiresAt(expiresAt.toInstant())
-                .build();
-        return TokenInfoDTO
-                .builder()
-                .meta("token_info")
-                .tokenInfoValue(tokenInfoValue)
-                .build();
+    @Autowired
+    public void setRefreshTokenDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
-    public String generateToken(String username, String role) throws JWTCreationException {
-        return generateTokenInfo(username, role)
-                .tokenInfoValue()
-                .token();
+    @Autowired
+    public void setUserMapper(UserBasicMapper userBasicMapper) {
+        this.userBasicMapper = userBasicMapper;
     }
 
-    public String validateTokenAndRetrieveSubject(String token) throws JWTVerificationException {
-        JWTVerifier verifier = JWT.require(getAlgorithm())
-                .withIssuer(ISSUER)
-                .build();
-
-        DecodedJWT jwt = verifier.verify(token);
-        return jwt.getSubject();
+    @Autowired
+    public void setRefreshTokenDAO(RefreshTokenDAO refreshTokenDAO) {
+        this.refreshTokenDAO = refreshTokenDAO;
     }
 
-    public String getRolesFromToken(String token) throws JWTVerificationException {
-        JWTVerifier verifier = JWT.require(getAlgorithm())
-                .withIssuer(ISSUER)
-                .build();
-
-        DecodedJWT jwt = verifier.verify(token);
-        return jwt.getClaim("role").asString();
-    }
-
-    public DecodedJWT verifyToken(String token) throws JWTVerificationException {
-        JWTVerifier verifier = JWT.require(getAlgorithm())
-                .withIssuer(ISSUER)
-                .build();
-
-        return verifier.verify(token);
+    @Autowired
+    public void setRefreshTokenMapper(RefreshTokenMapper refreshTokenMapper) {
+        this.refreshTokenMapper = refreshTokenMapper;
     }
 }
 
