@@ -9,6 +9,10 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated(
+    forRemoval = true,
+    since = "0.1.0"
+)
 public interface BlacklistDAO extends CrudRepository<Blacklist, String> {
     @Query(value = "SELECT b FROM Blacklist b JOIN FETCH b.user u WHERE b.token = :token AND u.username = :username")
     Optional<Blacklist> findByToken(@Param("token") String token, @Param("username") String username);
