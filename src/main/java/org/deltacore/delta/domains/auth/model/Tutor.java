@@ -24,6 +24,9 @@ public class Tutor extends GeneralData {
     @Column
     private LocalDateTime endDate;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_monitor_id", nullable = false)
     private User userMonitor;
