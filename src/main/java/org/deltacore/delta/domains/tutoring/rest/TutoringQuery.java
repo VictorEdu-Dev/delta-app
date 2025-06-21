@@ -21,12 +21,12 @@ public class TutoringQuery {
     }
 
     @GetMapping(path = "get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getMonitoring(@PathVariable String id) {
+    public ResponseEntity<?> getTutoring(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 
     @GetMapping(path = "get", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getMonitoring() {
+    public ResponseEntity<?> getTutoring() {
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 
@@ -35,6 +35,11 @@ public class TutoringQuery {
         return tutoringQueryService.findSubjectByCode(code)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping(path = "subjects", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAllSubjects() {
+        return ResponseEntity.ok(tutoringQueryService.findAllSubjects());
     }
 
     @GetMapping(path = "monitor/{username}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -7,7 +7,7 @@
 Permite que o aluno envie arquivos (PDF, imagens ou documentos) em resposta a uma atividade atribuída. Cada arquivo deve ter no máximo 5 MB.
 
 ### Pré-condições:
-- A atividade foi previamente criada por um monitor.
+- A atividade foi previamente criada por um tutor.
 - O aluno tem acesso à atividade e está apto a interagir com ela.
 
 ### Pós-condições:

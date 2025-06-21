@@ -3,7 +3,7 @@ package org.deltacore.delta.domains.tutoring.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.deltacore.delta.shared.model.GeneralData;
-import org.deltacore.delta.domains.auth.model.Monitor;
+import org.deltacore.delta.domains.auth.model.Tutor;
 import org.deltacore.delta.domains.auth.model.User;
 
 import java.time.LocalDateTime;
@@ -44,7 +44,7 @@ public class Tutoring extends GeneralData {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "monitor_id")
-    private Monitor monitor;
+    private Tutor tutor;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")

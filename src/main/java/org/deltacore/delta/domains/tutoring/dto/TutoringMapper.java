@@ -1,6 +1,6 @@
 package org.deltacore.delta.domains.tutoring.dto;
 
-import org.deltacore.delta.domains.profile.dto.UserMapper;
+import org.deltacore.delta.domains.auth.dto.UserMapper;
 import org.deltacore.delta.domains.tutoring.model.Tutoring;
 import org.mapstruct.Mapper;
 

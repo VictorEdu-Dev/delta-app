@@ -1,7 +1,8 @@
-package org.deltacore.delta.domains.profile.dto;
+package org.deltacore.delta.domains.auth.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;
+import org.deltacore.delta.domains.profile.dto.ProfileDTO;
 import org.deltacore.delta.domains.tutoring.dto.TutoringDTO;
 import org.deltacore.delta.domains.auth.model.Roles;
 

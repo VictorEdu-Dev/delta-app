@@ -1,6 +1,6 @@
 package org.deltacore.delta.domains.auth.model;
 
-import org.deltacore.delta.domains.profile.dto.UserDTO;
+import org.deltacore.delta.domains.auth.dto.UserDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

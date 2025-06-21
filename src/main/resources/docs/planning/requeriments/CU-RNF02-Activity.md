@@ -4,10 +4,10 @@ Nome:
 - Verificar Autenticação e Escopo nas Requisições
 
 Ator Principal: 
-- Usuário autenticado (aluno ou monitor)
+- Usuário autenticado (aluno ou tutor)
 
 Descrição:
-- Define o comportamento esperado para autenticação e autorização de rotas no módulo de atividades. O sistema deverá implementar um mecanismo de autenticação baseado em JWT e controle de escopo por tipo de usuário (aluno ou monitor), restringindo ações conforme o papel.
+- Define o comportamento esperado para autenticação e autorização de rotas no módulo de atividades. O sistema deverá implementar um mecanismo de autenticação baseado em JWT e controle de escopo por tipo de usuário (aluno ou tutor), restringindo ações conforme o papel.
 
 ## Pré-condições:
 - A camada de autenticação e geração de tokens JWT ainda será desenvolvida.
@@ -24,7 +24,7 @@ Descrição:
 
 - [x] Middleware verifica a validade do token (assinatura, expiração).
 
-- [x] Middleware extrai e interpreta o papel (ex: aluno, monitor) do payload.
+- [x] Middleware extrai e interpreta o papel (ex: aluno, tutor) do payload.
 
 - [x] Middleware verifica se o papel tem permissão para a rota solicitada.
 

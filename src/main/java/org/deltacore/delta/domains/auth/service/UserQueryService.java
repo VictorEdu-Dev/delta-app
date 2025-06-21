@@ -1,7 +1,7 @@
 package org.deltacore.delta.domains.auth.service;
 
-import org.deltacore.delta.domains.profile.dto.UserDTO;
-import org.deltacore.delta.domains.profile.dto.UserDeltaMapper;
+import org.deltacore.delta.domains.auth.dto.UserDTO;
+import org.deltacore.delta.domains.auth.dto.UserDeltaMapper;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
 import org.deltacore.delta.domains.auth.model.User;
 import org.deltacore.delta.domains.auth.repository.UserDAO;

@@ -9,12 +9,12 @@ Ator Principal:
 - Monitor autenticado
 
 ## Descrição:
-Permite que o monitor visualize todas as informações detalhadas de uma atividade específica, incluindo datas, status, anexos e histórico de alterações realizadas.
+Permite que o tutor visualize todas as informações detalhadas de uma atividade específica, incluindo datas, status, anexos e histórico de alterações realizadas.
 
 ## Pré-condições:
-- O monitor está autenticado.
+- O tutor está autenticado.
 
-- A atividade existe e pertence ao escopo do monitor.
+- A atividade existe e pertence ao escopo do tutor.
 
 ## Pós-condições:
 - Os dados da atividade são exibidos com sucesso.
@@ -41,7 +41,7 @@ Permite que o monitor visualize todas as informações detalhadas de uma ativida
 - Histórico de alterações com data, campo e novo valor
 
 ## Fluxo Alternativo 1: Atividade não encontrada
-Se a atividade não existir ou não pertencer ao monitor, o sistema exibe "Atividade não encontrada ou acesso não autorizado."
+Se a atividade não existir ou não pertencer ao tutor, o sistema exibe "Atividade não encontrada ou acesso não autorizado."
 
 ## Exceções:
 Erro interno ao recuperar os dados: exibe "Erro ao carregar informações da atividade."

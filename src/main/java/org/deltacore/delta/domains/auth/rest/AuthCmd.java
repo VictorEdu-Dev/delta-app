@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.deltacore.delta.domains.auth.dto.LoginRequest;
 import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
-import org.deltacore.delta.domains.profile.dto.UserDTO;
+import org.deltacore.delta.domains.auth.dto.UserDTO;
 import org.deltacore.delta.domains.auth.service.JwtTokenService;
 import org.deltacore.delta.domains.auth.service.UserCommandService;
 import org.deltacore.delta.domains.auth.service.AuthCmdService;
@@ -16,9 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/auth")

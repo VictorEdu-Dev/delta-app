@@ -28,7 +28,6 @@ public class TutoringCommand {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> register(@RequestBody @Valid TutoringDTO monitoring) {
-        if (monitoring == null) return ResponseEntity.badRequest().body("Monitoring data is required");
         TutoringDTO tutoringDTO = monitoringCmdService.registerMonitoring(monitoring);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

@@ -4,7 +4,7 @@
 
 #### ~~RF02: O sistema deve listar todas as atividades cadastradas pelo usuário autenticado, exibindo título, status (pendente, concluída, atrasada), categoria e prazo, organizadas por ordem de expiração (mais próximo primeiro).~~
 
-#### ~~RF03: O sistema deve permitir que o usuário (monitor) edite o título, descrição, prazo e categoria de uma atividade, desde que ela ainda não esteja marcada como concluída. Também deve permitir que o usuário exclua uma atividade em qualquer estado.~~
+#### ~~RF03: O sistema deve permitir que o usuário (tutor) edite o título, descrição, prazo e categoria de uma atividade, desde que ela ainda não esteja marcada como concluída. Também deve permitir que o usuário exclua uma atividade em qualquer estado.~~
 
 #### ~~RF04: O sistema deve permitir que o usuário altere o status de uma atividade para "concluída", registrando a data e hora da conclusão automaticamente.~~
 

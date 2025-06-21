@@ -1,4 +1,4 @@
-package org.deltacore.delta.domains.profile.dto;
+package org.deltacore.delta.domains.auth.dto;
 
 import org.deltacore.delta.domains.auth.model.User;
 import org.mapstruct.Mapper;

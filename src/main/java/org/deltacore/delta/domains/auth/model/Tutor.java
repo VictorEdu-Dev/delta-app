@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Monitor extends GeneralData {
+public class Tutor extends GeneralData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

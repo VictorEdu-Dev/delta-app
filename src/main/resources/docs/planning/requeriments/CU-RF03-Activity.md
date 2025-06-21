@@ -6,7 +6,7 @@
 
 ### Pré-condições:
 - O usuário está autenticado no sistema.
-- O usuário é o criador da atividade ou possui papel de monitor.
+- O usuário é o criador da atividade ou possui papel de tutor.
 - A atividade existe no sistema.
 
 ### Pós-condições:

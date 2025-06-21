@@ -5,12 +5,12 @@ Nome: Listagem de Monitorias
 Ator Principal: Estudante
 
 ## Descrição:
-Este caso de uso permite que o estudante visualize uma lista de todas as monitorias disponíveis. Cada item da lista apresenta informações básicas como disciplina associada, nome do monitor responsável, horários disponíveis e o número de vagas restantes. O objetivo é permitir que o aluno escolha a monitoria mais adequada às suas necessidades acadêmicas e de horário.
+Este caso de uso permite que o estudante visualize uma lista de todas as monitorias disponíveis. Cada item da lista apresenta informações básicas como disciplina associada, nome do tutor responsável, horários disponíveis e o número de vagas restantes. O objetivo é permitir que o aluno escolha a monitoria mais adequada às suas necessidades acadêmicas e de horário.
 
 ## Pré-condições:
 Monitorias já foram cadastradas previamente no sistema.
 
-Cada monitoria possui ao menos os campos: disciplina, monitor responsável, horários e vagas totais/preenchidas.
+Cada monitoria possui ao menos os campos: disciplina, tutor responsável, horários e vagas totais/preenchidas.
 
 ## Pós-condições:
 A lista de monitorias é apresentada ao estudante com informações básicas.
@@ -28,7 +28,7 @@ Para cada monitoria, o sistema mostra:
 
 - Nome da disciplina
 
-- Nome do monitor responsável
+- Nome do tutor responsável
 
 - Horário(s) da monitoria
 
