@@ -1,4 +1,4 @@
-package org.deltacore.delta.domains.auth.dto;
+package org.deltacore.delta.domains.profile.dto;
 
 public record UserBasicDTO(
         Long id,

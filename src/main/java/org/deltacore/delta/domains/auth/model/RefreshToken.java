@@ -2,6 +2,7 @@ package org.deltacore.delta.domains.auth.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.shared.model.GeneralData;
 
 import java.time.Instant;

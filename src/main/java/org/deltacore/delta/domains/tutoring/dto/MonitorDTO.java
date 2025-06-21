@@ -1,7 +1,7 @@
 package org.deltacore.delta.domains.tutoring.dto;
 
 import lombok.Builder;
-import org.deltacore.delta.domains.auth.dto.UserDTO;
+import org.deltacore.delta.domains.profile.dto.UserDTO;
 
 import java.time.LocalDate;
 

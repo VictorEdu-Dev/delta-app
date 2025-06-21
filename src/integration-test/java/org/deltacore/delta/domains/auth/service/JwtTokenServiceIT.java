@@ -3,17 +3,16 @@ package org.deltacore.delta.domains.auth.service;
 import jakarta.transaction.Transactional;
 import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
 import org.deltacore.delta.domains.auth.model.RefreshToken;
-import org.deltacore.delta.domains.auth.model.Roles;
-import org.deltacore.delta.domains.auth.model.User;
+import org.deltacore.delta.domains.profile.model.Roles;
+import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.domains.auth.repository.RefreshTokenDAO;
-import org.deltacore.delta.domains.auth.repository.UserDAO;
+import org.deltacore.delta.domains.profile.repository.UserDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
-import java.util.Random;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

@@ -1,6 +1,6 @@
-package org.deltacore.delta.domains.auth.dto;
+package org.deltacore.delta.domains.profile.dto;
 
-import org.deltacore.delta.domains.auth.model.User;
+import org.deltacore.delta.domains.profile.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

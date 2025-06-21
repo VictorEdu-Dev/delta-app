@@ -1,8 +1,7 @@
-package org.deltacore.delta.domains.auth.model;
+package org.deltacore.delta.domains.profile.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.deltacore.delta.domains.profile.model.Profile;
 import org.deltacore.delta.shared.model.GeneralData;
 import org.deltacore.delta.domains.tutoring.model.Tutoring;
 

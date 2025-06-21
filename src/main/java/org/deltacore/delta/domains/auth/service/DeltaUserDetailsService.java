@@ -1,10 +1,10 @@
 package org.deltacore.delta.domains.auth.service;
 
 import org.deltacore.delta.domains.auth.model.DeltaUserDetails;
-import org.deltacore.delta.domains.auth.dto.UserDTO;
-import org.deltacore.delta.domains.auth.dto.UserDeltaMapper;
-import org.deltacore.delta.domains.auth.model.User;
-import org.deltacore.delta.domains.auth.repository.UserDAO;
+import org.deltacore.delta.domains.profile.dto.UserDTO;
+import org.deltacore.delta.domains.profile.dto.UserDeltaMapper;
+import org.deltacore.delta.domains.profile.model.User;
+import org.deltacore.delta.domains.profile.repository.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

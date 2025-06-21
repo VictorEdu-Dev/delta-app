@@ -1,6 +1,6 @@
-package org.deltacore.delta.domains.auth.repository;
+package org.deltacore.delta.domains.profile.repository;
 
-import org.deltacore.delta.domains.auth.model.Tutor;
+import org.deltacore.delta.domains.profile.model.Tutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

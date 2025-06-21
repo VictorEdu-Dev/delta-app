@@ -1,6 +1,6 @@
 package org.deltacore.delta.domains.auth.rest;
 
-import org.deltacore.delta.domains.auth.service.UserQueryService;
+import org.deltacore.delta.domains.profile.servive.UserQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

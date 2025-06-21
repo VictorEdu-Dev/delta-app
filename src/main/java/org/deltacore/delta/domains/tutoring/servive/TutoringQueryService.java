@@ -5,8 +5,8 @@ import org.deltacore.delta.domains.tutoring.dto.SubjectMapper;
 import org.deltacore.delta.domains.tutoring.dto.MonitorDTO;
 import org.deltacore.delta.domains.tutoring.dto.SubjectDTO;
 import org.deltacore.delta.domains.tutoring.model.Subject;
-import org.deltacore.delta.domains.auth.model.Tutor;
-import org.deltacore.delta.domains.auth.repository.MonitorDAO;
+import org.deltacore.delta.domains.profile.model.Tutor;
+import org.deltacore.delta.domains.profile.repository.MonitorDAO;
 import org.deltacore.delta.domains.tutoring.repository.SubjectDAO;
 import org.springframework.stereotype.Service;
 

@@ -1,15 +1,14 @@
 package org.deltacore.delta.domains.auth.service;
 
-import jakarta.validation.constraints.NotNull;
 import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
 
 import org.deltacore.delta.domains.auth.dto.LoginRequest;
 import org.deltacore.delta.domains.auth.exception.InvalidTokenException;
-import org.deltacore.delta.domains.auth.exception.UserNotFound;
+import org.deltacore.delta.domains.profile.exception.UserNotFound;
 import org.deltacore.delta.domains.auth.model.RefreshToken;
-import org.deltacore.delta.domains.auth.model.User;
+import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.domains.auth.repository.RefreshTokenDAO;
-import org.deltacore.delta.domains.auth.repository.UserDAO;
+import org.deltacore.delta.domains.profile.repository.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;

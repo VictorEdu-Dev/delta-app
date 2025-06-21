@@ -1,6 +1,6 @@
 package org.deltacore.delta.core.config.security;
 
-import org.deltacore.delta.domains.auth.model.Roles;
+import org.deltacore.delta.domains.profile.model.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;

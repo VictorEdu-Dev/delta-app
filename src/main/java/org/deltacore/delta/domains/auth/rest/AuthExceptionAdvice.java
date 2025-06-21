@@ -1,7 +1,7 @@
 package org.deltacore.delta.domains.auth.rest;
 
 import org.deltacore.delta.domains.auth.exception.InvalidTokenException;
-import org.deltacore.delta.domains.auth.exception.UserNotFound;
+import org.deltacore.delta.domains.profile.exception.UserNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

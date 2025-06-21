@@ -2,6 +2,7 @@ package org.deltacore.delta.domains.auth.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import org.deltacore.delta.domains.profile.dto.UserBasicDTO;
 
 import java.time.Instant;
 import java.util.UUID;

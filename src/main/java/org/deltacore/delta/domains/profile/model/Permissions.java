@@ -1,4 +1,4 @@
-package org.deltacore.delta.domains.auth.model;
+package org.deltacore.delta.domains.profile.model;
 
 public enum Permissions {
     // Monitor permissions

@@ -3,8 +3,8 @@ package org.deltacore.delta.domains.tutoring.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.deltacore.delta.shared.model.GeneralData;
-import org.deltacore.delta.domains.auth.model.Tutor;
-import org.deltacore.delta.domains.auth.model.User;
+import org.deltacore.delta.domains.profile.model.Tutor;
+import org.deltacore.delta.domains.profile.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;

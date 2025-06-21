@@ -2,7 +2,7 @@ package org.deltacore.delta.domains.tutoring.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Builder;
-import org.deltacore.delta.domains.auth.dto.UserDTO;
+import org.deltacore.delta.domains.profile.dto.UserDTO;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.deltacore.delta.domains.tutoring.model.Feedback;
 import org.deltacore.delta.shared.model.GeneralData;
-import org.deltacore.delta.domains.auth.model.User;
 
 import java.math.BigDecimal;
 import java.util.List;
