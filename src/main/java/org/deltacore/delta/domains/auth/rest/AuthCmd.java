@@ -5,9 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.deltacore.delta.domains.auth.dto.LoginRequest;
 import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
-import org.deltacore.delta.domains.profile.dto.UserDTO;
 import org.deltacore.delta.domains.auth.service.JwtTokenService;
-import org.deltacore.delta.domains.profile.servive.UserCommandService;
 import org.deltacore.delta.domains.auth.service.AuthCmdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -22,16 +20,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthCmd {
 
     private JwtTokenService jwtService;
-    private UserCommandService userCommandService;
     private AuthenticationManager authManager;
     private AuthCmdService authCmdService;
-
-    @Operation(security = @SecurityRequirement(name = ""))
-    @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody @Valid UserDTO userDTO) {
-        UserDTO savedUser = userCommandService.saveUser(userDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
-    }
 
     @Operation(security = @SecurityRequirement(name = ""))
     @PostMapping("/login")
@@ -63,11 +53,6 @@ public class AuthCmd {
     @Autowired @Lazy
     public void setJwtService(JwtTokenService jwtService) {
         this.jwtService = jwtService;
-    }
-
-    @Autowired @Lazy
-    public void setUserCommandService(UserCommandService userCommandService) {
-        this.userCommandService = userCommandService;
     }
 
     @Autowired @Lazy
