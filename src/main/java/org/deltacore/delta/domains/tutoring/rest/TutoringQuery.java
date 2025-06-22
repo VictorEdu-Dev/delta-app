@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("tutoring/")
+@RequestMapping("/tutoring")
 public class TutoringQuery {
     private final TutoringQueryService tutoringQueryService;
 
@@ -20,29 +20,29 @@ public class TutoringQuery {
         this.tutoringQueryService = tutoringQueryService;
     }
 
-    @GetMapping(path = "get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getTutoring(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 
-    @GetMapping(path = "get", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getTutoring() {
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 
-    @GetMapping(path = "subject/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/subject/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findSubjectByCode(@PathVariable("code") String code) {
         return tutoringQueryService.findSubjectByCode(code)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping(path = "subjects", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/subjects", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAllSubjects() {
         return ResponseEntity.ok(tutoringQueryService.findAllSubjects());
     }
 
-    @GetMapping(path = "monitor/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/monitor/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findMonitorByUserUsername(@PathVariable("username") String username) {
         return tutoringQueryService.findMonitorByUserUsername(username)
                 .map(ResponseEntity::ok)
