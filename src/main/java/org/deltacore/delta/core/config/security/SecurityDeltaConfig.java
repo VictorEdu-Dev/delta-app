@@ -84,7 +84,8 @@ public class SecurityDeltaConfig {
         http.securityMatcher(
                         "/activities/list",
                         "/activities/get/**",
-                        "/activities/search")
+                        "/activities/search",
+                        "/account/register/tutor")
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().hasAnyRole(
                                 Roles.STUDENT.name(),
