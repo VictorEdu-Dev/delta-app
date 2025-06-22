@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface MonitorDAO extends CrudRepository<Tutor,Long> {
+public interface TutorDAO extends CrudRepository<Tutor,Long> {
     @Query(value = "SELECT mo.* FROM monitor mo JOIN user_delta us ON mo.user_monitor_id = us.id WHERE us.username = :username", nativeQuery = true)
     Optional<Tutor> findByUserUsername(@Param("username") String username);
 }
