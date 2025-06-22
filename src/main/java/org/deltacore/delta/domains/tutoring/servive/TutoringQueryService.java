@@ -38,7 +38,7 @@ public class TutoringQueryService {
     }
 
     public List<SubjectDTO> findAllSubjects() {
-        List<Subject> subjects = (List<Subject>) subjectDAO.findAll();
+        List<Subject> subjects = subjectDAO.findAllSubjects();
         return subjects.stream()
                 .map(subjectMapper::toDTO)
                 .toList();
