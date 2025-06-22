@@ -29,7 +29,8 @@ public class AccountCMD {
 
     @PostMapping("/register/tutor")
     public ResponseEntity<?> registerTutor(@RequestBody @Valid TutorDTO tutorDTO) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Tutor registration is not implemented yet.");
+        TutorDTO savedTutor = userCommandService.saveTutor(tutorDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTutor);
     }
 
     @Autowired
