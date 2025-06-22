@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "monitoring_day_times")
 public class DayTimeEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
