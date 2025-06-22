@@ -91,4 +91,13 @@ public class SwaggerConfig {
                 .build();
     }
 
+    @Bean
+    public GroupedOpenApi accountApiGroup() {
+        return GroupedOpenApi.builder()
+                .group("Account API")
+                .pathsToMatch("/account/**")
+                .packagesToScan("org.deltacore.delta.domains.profile")
+                .displayName("Account API")
+                .build();
+    }
 }
