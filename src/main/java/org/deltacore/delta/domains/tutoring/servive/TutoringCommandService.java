@@ -9,7 +9,7 @@ import org.deltacore.delta.domains.tutoring.exception.SubjectNotFoundException;
 import org.deltacore.delta.domains.tutoring.model.Tutoring;
 import org.deltacore.delta.domains.tutoring.repository.DayTimeEntryDAO;
 import org.deltacore.delta.domains.tutoring.repository.TutoringDAO;
-import org.deltacore.delta.domains.profile.repository.MonitorDAO;
+import org.deltacore.delta.domains.profile.repository.TutorDAO;
 import org.deltacore.delta.domains.tutoring.repository.SubjectDAO;
 import org.deltacore.delta.shared.security.AuthenticatedUser;
 import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class TutoringCommandService {
     private AuthenticatedUserProvider userProvider;
-    private final MonitorDAO monitorDAO;
+    private final TutorDAO tutorDAO;
     private final SubjectDAO subjectDAO;
     private final TutoringDAO tutoringDAO;
     private final DayTimeEntryDAO dayTimeEntryDAO;
@@ -29,14 +29,14 @@ public class TutoringCommandService {
     private final TutoringMapper tutoringMapper;
 
 
-    public TutoringCommandService(MonitorDAO monitorDAO,
+    public TutoringCommandService(TutorDAO tutorDAO,
                                   SubjectDAO subjectDAO,
                                   TutoringDAO tutoringDAO,
                                   DayTimeEntryDAO dayTimeEntryDAO,
                                   TutoringMapper tutoringMapper,
                                   SubjectMapper subjectMapper,
                                   MonitorMapper monitorMapper) {
-        this.monitorDAO = monitorDAO;
+        this.tutorDAO = tutorDAO;
         this.subjectDAO = subjectDAO;
         this.subjectMapper = subjectMapper;
         this.monitorMapper = monitorMapper;
@@ -51,7 +51,7 @@ public class TutoringCommandService {
         AuthenticatedUser currentUser = userProvider.current()
                 .orElseThrow(() -> new UserNotFound("User not authenticated"));
 
-        tutoringToSave.setTutor(monitorDAO.findByUserUsername(currentUser.username())
+        tutoringToSave.setMonitor(tutorDAO.findByUserUsername(currentUser.username())
                 .orElseThrow(() -> new UserNotFound("Monitor not found for user: " + currentUser.username())));
         tutoringToSave.setSubject(subjectDAO.findByCode(monitoring.subject().code())
                 .orElseThrow(() -> new SubjectNotFoundException("Subject not found for code: " + monitoring.subject().code())));
