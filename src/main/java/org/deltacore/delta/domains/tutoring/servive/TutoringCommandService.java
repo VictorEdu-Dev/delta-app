@@ -16,6 +16,7 @@ import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TutoringCommandService {
@@ -45,6 +46,7 @@ public class TutoringCommandService {
         this.tutoringMapper = tutoringMapper;
     }
 
+    @Transactional
     public TutoringDTO registerMonitoring(TutoringDTO monitoring) {
         Tutoring tutoringToSave = tutoringMapper.toEntity(monitoring);
 
