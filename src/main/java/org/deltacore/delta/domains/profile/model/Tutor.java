@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "monitor")
 public class Tutor extends GeneralData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +25,10 @@ public class Tutor extends GeneralData {
     private LocalDateTime endDate;
 
     @Column(nullable = false)
-    private boolean active = true;
+    private boolean isActive;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_monitor_id", nullable = false)
+    @JoinColumn(name = "user_monitor_id", nullable = false, unique = true)
     private User userMonitor;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "monitor")
