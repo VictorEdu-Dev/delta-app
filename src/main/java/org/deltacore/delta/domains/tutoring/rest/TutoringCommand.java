@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
-@RequestMapping("tutoring/")
+@RequestMapping("/tutoring")
 public class TutoringCommand {
 
     private final TutoringCommandService monitoringCmdService;
@@ -24,7 +24,7 @@ public class TutoringCommand {
     }
 
     @PostMapping(
-            path = "register",
+            path = "/register",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> register(@RequestBody @Valid TutoringDTO monitoring) {
