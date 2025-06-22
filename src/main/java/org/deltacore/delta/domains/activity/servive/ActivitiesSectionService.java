@@ -19,6 +19,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -130,6 +131,7 @@ public class ActivitiesSectionService {
                 .toList();
     }
 
+    @Transactional
     public ActivityDTO updateActivity(Long id, ActivityDTO updatedActivity) {
         if (id == null || id <= 0) {
             String msg = messageSource.getMessage(
