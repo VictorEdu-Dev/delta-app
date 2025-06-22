@@ -44,7 +44,7 @@ public class Tutoring extends GeneralData {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "monitor_id")
-    private Tutor tutor;
+    private Tutor monitor;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
