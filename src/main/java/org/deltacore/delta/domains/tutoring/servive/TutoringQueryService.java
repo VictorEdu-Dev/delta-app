@@ -6,7 +6,7 @@ import org.deltacore.delta.domains.tutoring.dto.MonitorDTO;
 import org.deltacore.delta.domains.tutoring.dto.SubjectDTO;
 import org.deltacore.delta.domains.tutoring.model.Subject;
 import org.deltacore.delta.domains.profile.model.Tutor;
-import org.deltacore.delta.domains.profile.repository.MonitorDAO;
+import org.deltacore.delta.domains.profile.repository.TutorDAO;
 import org.deltacore.delta.domains.tutoring.repository.SubjectDAO;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +16,16 @@ import java.util.Optional;
 @Service
 public class TutoringQueryService {
 
-    private final MonitorDAO monitorDAO;
+    private final TutorDAO tutorDAO;
     private final SubjectDAO subjectDAO;
     private final SubjectMapper subjectMapper;
     private final MonitorMapper monitorMapper;
 
-    public TutoringQueryService(MonitorDAO monitorDAO,
+    public TutoringQueryService(TutorDAO tutorDAO,
                                 SubjectDAO subjectDAO,
                                 SubjectMapper subjectMapper,
                                 MonitorMapper monitorMapper) {
-        this.monitorDAO = monitorDAO;
+        this.tutorDAO = tutorDAO;
         this.subjectDAO = subjectDAO;
         this.subjectMapper = subjectMapper;
         this.monitorMapper = monitorMapper;
@@ -46,7 +46,7 @@ public class TutoringQueryService {
 
     public Optional<MonitorDTO> findMonitorByUserUsername(String username) {
         if (username == null || username.isBlank()) return Optional.empty();
-        Optional<Tutor> monitor = monitorDAO.findByUserUsername(username.toLowerCase());
+        Optional<Tutor> monitor = tutorDAO.findByUserUsername(username.toLowerCase());
         return monitor.map(monitorMapper::toDTO);
     }
 
