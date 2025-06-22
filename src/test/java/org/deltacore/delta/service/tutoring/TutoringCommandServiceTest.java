@@ -10,7 +10,7 @@ import org.deltacore.delta.domains.tutoring.model.Tutoring;
 import org.deltacore.delta.domains.tutoring.repository.DayTimeEntryDAO;
 import org.deltacore.delta.domains.tutoring.repository.SubjectDAO;
 import org.deltacore.delta.domains.tutoring.repository.TutoringDAO;
-import org.deltacore.delta.domains.profile.repository.MonitorDAO;
+import org.deltacore.delta.domains.profile.repository.TutorDAO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ class TutoringCommandServiceUnitTest {
     private DayTimeEntryDAO dayTimeEntryDAO;
 
     @Mock
-    private MonitorDAO monitorDAO;
+    private TutorDAO tutorDAO;
 
     @Mock
     private SubjectMapper subjectMapper;
