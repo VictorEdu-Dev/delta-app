@@ -1,10 +1,12 @@
 package org.deltacore.delta.domains.profile.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 import org.deltacore.delta.domains.tutoring.dto.TutoringDTO;
 
 import java.time.LocalDateTime;
 
+@Builder(toBuilder = true)
 public record TutorDTO(
         Long id,
 
@@ -13,12 +15,10 @@ public record TutorDTO(
 
         LocalDateTime endDate,
 
-        boolean active,
+        boolean isActive,
 
-        @NotNull(message = "{tutor.user.not.null}")
         UserBasicDTO userMonitor,
 
-        @NotNull(message = "user.tutorings.not.empty")
         TutoringDTO tutoring
 ) {}
 
