@@ -1,16 +1,21 @@
 package org.deltacore.delta.domains.activity.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.deltacore.delta.domains.tutoring.model.Subject;
 import org.deltacore.delta.shared.model.GeneralData;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,10 +52,12 @@ public class Activity extends GeneralData {
     private ActivityStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "activity")
+    @ToString.Exclude
     private List<VideoLesson> videoUrl;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
+    @ToString.Exclude
     private Subject subject;
 
     @Column(name = "complete", nullable = false)
@@ -60,6 +67,22 @@ public class Activity extends GeneralData {
     private LocalDateTime completionTimestamp;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "activity")
+    @ToString.Exclude
     private List<ActivityFiles> files;
 
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Activity activity = (Activity) o;
+        return getId() != null && Objects.equals(getId(), activity.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
 }
