@@ -14,4 +14,7 @@ public interface SubjectDAO extends CrudRepository<Subject, Long> {
 
     @Query(value = "SELECT * FROM subject WHERE is_active = :condition", nativeQuery = true)
     List<Subject> findByIsActive(@Param("condition") Boolean condition);
+
+    @Query("SELECT s FROM Subject s LEFT JOIN FETCH s.tutoring")
+    List<Subject> findAllSubjects();
 }
