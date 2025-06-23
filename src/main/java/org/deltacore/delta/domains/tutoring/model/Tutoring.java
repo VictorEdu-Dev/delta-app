@@ -80,6 +80,9 @@ public class Tutoring extends GeneralData {
 
     @Override
     public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+        return getId() != null ? getId().hashCode() :
+                (this instanceof HibernateProxy
+                        ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
+                        : getClass().hashCode());
     }
 }
