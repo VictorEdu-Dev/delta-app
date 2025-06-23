@@ -1,5 +1,7 @@
 package org.deltacore.delta.domains.profile.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import org.deltacore.delta.domains.tutoring.dto.TutoringDTO;
@@ -10,6 +12,7 @@ import java.util.List;
 
 @Builder(toBuilder = true)
 public record UserDTO(
+        @Schema(hidden = true)
         Long id,
 
         @NotBlank(message = "{user.username.notblank}")
@@ -35,12 +38,16 @@ public record UserDTO(
         @Pattern(regexp = ".*[^a-zA-Z0-9].*", message = "{user.password.pattern.special}")
         String passwordHash,
 
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         LocalDateTime createdAt,
 
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         Roles role,
 
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         ProfileDTO profile,
 
+        @Schema(hidden = true)
         List<TutoringDTO>tutorings
 ) {}
 
