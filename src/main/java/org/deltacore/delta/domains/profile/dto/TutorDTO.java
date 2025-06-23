@@ -1,5 +1,6 @@
 package org.deltacore.delta.domains.profile.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import org.deltacore.delta.domains.tutoring.dto.TutoringDTO;
@@ -17,6 +18,7 @@ public record TutorDTO(
 
         boolean isActive,
 
+        @Schema(hidden = true)
         UserBasicDTO userMonitor,
 
         TutoringDTO tutoring
