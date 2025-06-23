@@ -38,7 +38,7 @@ public class User extends GeneralData {
     private LocalDateTime createdAt;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", unique = true)
     @ToString.Exclude
     private Profile profile;
 
