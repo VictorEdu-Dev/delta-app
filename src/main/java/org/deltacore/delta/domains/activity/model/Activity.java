@@ -1,10 +1,11 @@
 package org.deltacore.delta.domains.activity.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.deltacore.delta.domains.tutoring.model.Subject;
 import org.deltacore.delta.shared.model.GeneralData;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
@@ -66,6 +67,7 @@ public class Activity extends GeneralData {
     private LocalDateTime completionTimestamp;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "activity")
+    @Fetch(FetchMode.JOIN)
     @ToString.Exclude
     private List<ActivityFiles> files;
 
@@ -82,6 +84,9 @@ public class Activity extends GeneralData {
 
     @Override
     public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+        return getId() != null ? getId().hashCode() :
+                (this instanceof HibernateProxy
+                        ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
+                        : getClass().hashCode());
     }
 }
