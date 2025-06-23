@@ -1,5 +1,7 @@
 package org.deltacore.delta.domains.tutoring.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import org.deltacore.delta.domains.profile.dto.UserDTO;
@@ -10,6 +12,7 @@ import java.util.List;
 
 @Builder
 public record TutoringDTO(
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         Long id,
 
         @Size(max = 150, message = "{tutoring.description.size}")
@@ -26,7 +29,6 @@ public record TutoringDTO(
         @Min(value = 1, message = "{tutoring.vacancies.min}")
         Integer vacancies,
 
-
         @GabeModality(message = "{tutoring.mode.compliant}")
         String mode,
 
@@ -36,8 +38,13 @@ public record TutoringDTO(
         LocalDateTime createdAt,
 
         SubjectDTO subject,
+
+        @Schema(hidden = true)
         MonitorDTO monitor,
+
         List<DayTimeEntryDTO> daysOfWeek,
+
+        @Schema(hidden = true)
         List<UserDTO> users
 ) {
 }
