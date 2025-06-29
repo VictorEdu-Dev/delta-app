@@ -30,7 +30,7 @@ public class AuthCmdService {
                                  AuthenticationManager authManager,
                                  JwtTokenService jwtService) {
         Authentication authentication = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username(), request.password())
+                new UsernamePasswordAuthenticationToken(request.username().toLowerCase(), request.password())
         );
 
         String username = authentication.getName();
