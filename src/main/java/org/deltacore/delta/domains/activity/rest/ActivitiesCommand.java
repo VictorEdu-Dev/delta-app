@@ -2,8 +2,8 @@ package org.deltacore.delta.domains.activity.rest;
 
 import org.deltacore.delta.domains.activity.dto.ActivityDTO;
 import org.deltacore.delta.domains.activity.dto.ActivityFilesDTO;
-import org.deltacore.delta.domains.activity.dto.OnCreate;
-import org.deltacore.delta.domains.activity.dto.OnUpdate;
+import org.deltacore.delta.shared.dto.OnCreate;
+import org.deltacore.delta.shared.dto.OnUpdate;
 import org.deltacore.delta.domains.activity.servive.ActivitiesSectionService;
 import org.deltacore.delta.domains.activity.servive.ActivityUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
