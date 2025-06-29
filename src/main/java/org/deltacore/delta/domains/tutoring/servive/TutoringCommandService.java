@@ -1,11 +1,11 @@
 package org.deltacore.delta.domains.tutoring.servive;
 
 import org.deltacore.delta.domains.profile.exception.UserNotFound;
-import org.deltacore.delta.domains.tutoring.dto.MonitorMapper;
-import org.deltacore.delta.domains.tutoring.dto.TutoringDTO;
-import org.deltacore.delta.domains.tutoring.dto.TutoringMapper;
-import org.deltacore.delta.domains.tutoring.dto.SubjectMapper;
+import org.deltacore.delta.domains.profile.model.Tutor;
+import org.deltacore.delta.domains.tutoring.dto.*;
+import org.deltacore.delta.domains.tutoring.exception.ConflictException;
 import org.deltacore.delta.domains.tutoring.exception.SubjectNotFoundException;
+import org.deltacore.delta.domains.tutoring.model.DayTimeEntry;
 import org.deltacore.delta.domains.tutoring.model.Tutoring;
 import org.deltacore.delta.domains.tutoring.repository.DayTimeEntryDAO;
 import org.deltacore.delta.domains.tutoring.repository.TutoringDAO;
@@ -18,6 +18,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class TutoringCommandService {
     private AuthenticatedUserProvider userProvider;
@@ -28,6 +32,7 @@ public class TutoringCommandService {
     private final SubjectMapper subjectMapper;
     private final MonitorMapper monitorMapper;
     private final TutoringMapper tutoringMapper;
+    private DayTimeEntryMapper dayTimeEntryMapper;
 
 
     public TutoringCommandService(TutorDAO tutorDAO,
@@ -50,20 +55,52 @@ public class TutoringCommandService {
     public TutoringDTO registerMonitoring(TutoringDTO monitoring) {
         Tutoring tutoringToSave = tutoringMapper.toEntity(monitoring);
 
-        AuthenticatedUser currentUser = userProvider.current()
-                .orElseThrow(() -> new UserNotFound("User not authenticated"));
+        String username = userProvider.current()
+                .orElseThrow(() -> new UserNotFound("User not authenticated"))
+                .username();
+        Optional<Tutor> optionalTutor = tutorDAO.findByUserUsername(username);
+        optionalTutor.ifPresent(tutor -> {
+            Tutoring t = tutor.getTutoring();
+            if (t != null) {
+                throw new ConflictException("User already has an active tutoring session");
+            }
+        });
 
-        tutoringToSave.setMonitor(tutorDAO.findByUserUsername(currentUser.username())
-                .orElseThrow(() -> new UserNotFound("Monitor not found for user: " + currentUser.username())));
+        tutoringToSave.setMonitor(tutorDAO.findByUserUsername(username)
+                .orElseThrow(() -> new UserNotFound("Monitor not found")));
         tutoringToSave.setSubject(subjectDAO.findByCode(monitoring.subject().code())
-                .orElseThrow(() -> new SubjectNotFoundException("Subject not found for code: " + monitoring.subject().code())));
+                .orElseThrow(() -> new SubjectNotFoundException("Subject not found")));
+
+
+        tutoringToSave.setCreatedAt(LocalDateTime.now());
+        tutoringToSave.setIsActive(true);
 
         tutoringToSave = tutoringDAO.save(tutoringToSave);
+
+        if (monitoring.daysOfWeek() != null && !monitoring.daysOfWeek().isEmpty()) {
+            Tutoring finalTutoringToSave = tutoringToSave;
+            List<DayTimeEntry> entries = monitoring.daysOfWeek().stream()
+                    .map(entryDTO -> {
+                        DayTimeEntry entry = dayTimeEntryMapper.toEntity(entryDTO);
+                        entry.setTutoring(finalTutoringToSave);
+                        return entry;
+                    }).toList();
+
+            dayTimeEntryDAO.saveAll(entries);
+            tutoringToSave.setDaysOfWeek(entries);
+        }
+
         return tutoringMapper.toDTO(tutoringToSave);
+
     }
 
     @Autowired @Lazy
     public void setUserProvider(AuthenticatedUserProvider userProvider) {
         this.userProvider = userProvider;
+    }
+
+    @Autowired @Lazy
+    public void setDayTimeEntryMapper(DayTimeEntryMapper dayTimeEntryMapper) {
+        this.dayTimeEntryMapper = dayTimeEntryMapper;
     }
 }
