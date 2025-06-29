@@ -49,5 +49,9 @@ public record UserDTO(
 
         @Schema(hidden = true)
         List<TutoringDTO>tutorings
-) {}
+) {
+        public UserDTO {
+                if (email != null) email = email.trim();
+        }
+}
 
