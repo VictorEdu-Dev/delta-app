@@ -12,7 +12,7 @@ public interface TutorDAO extends CrudRepository<Tutor,Long> {
 
     @Query(value = "SELECT t.* " +
             "FROM monitor t " +
-            "JOIN user_monitor u ON t.user_monitor_id = u.id " +
+            "JOIN user_delta u ON t.user_monitor_id = u.id " +
             "WHERE u.username = :username ",
             nativeQuery = true)
     Optional<Tutor> findByUserUsername(@Param("username") String username);
