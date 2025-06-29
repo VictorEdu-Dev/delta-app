@@ -8,11 +8,12 @@ import org.deltacore.delta.shared.model.GeneralData;
 import java.time.Instant;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper=true)
+@Getter
+@Setter
+@ToString
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Builder
 @Entity
 public class RefreshToken extends GeneralData {
     @Id
@@ -24,6 +25,7 @@ public class RefreshToken extends GeneralData {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
     private User user;
 
     @Column(nullable = false)
