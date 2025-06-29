@@ -12,7 +12,6 @@ import java.util.List;
 
 @Builder
 public record TutoringDTO(
-        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         Long id,
 
         @Size(max = 150, message = "{tutoring.description.size}")
@@ -39,12 +38,10 @@ public record TutoringDTO(
 
         SubjectDTO subject,
 
-        @Schema(hidden = true)
         MonitorDTO monitor,
 
         List<DayTimeEntryDTO> daysOfWeek,
 
-        @Schema(hidden = true)
         List<UserDTO> users
 ) {
 }
