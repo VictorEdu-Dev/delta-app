@@ -9,15 +9,17 @@ import org.deltacore.delta.shared.model.GeneralData;
 
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@ToString
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Achievement extends GeneralData {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private AchievementCondition condition;
     private String urlImage;
     private String description;
