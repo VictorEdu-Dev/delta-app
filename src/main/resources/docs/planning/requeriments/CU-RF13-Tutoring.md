@@ -32,7 +32,7 @@ O sistema armazena todos os dados fornecidos e os torna disponíveis para futura
 - [x] Se o formulário for enviado com dados faltando ou inválidos, o sistema destaca os campos com erro e exibe mensagens apropriadas para correção.
 
 ### Exceções:
-- [ ] Se ocorrer erro no servidor ao salvar a monitoria, o sistema exibe a mensagem: “Erro ao cadastrar monitoria. Tente novamente.”
+- [x] Se ocorrer erro no servidor ao salvar a monitoria, o sistema exibe a mensagem: “Erro ao cadastrar monitoria. Tente novamente.”
 
 ### Requisitos Não Funcionais:
 - O cadastro deve ser processado em até 2 segundos em condições normais.
