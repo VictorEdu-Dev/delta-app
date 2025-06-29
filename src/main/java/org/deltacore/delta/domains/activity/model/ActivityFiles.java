@@ -6,8 +6,9 @@ import org.deltacore.delta.shared.model.GeneralData;
 
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @Entity
 @NoArgsConstructor
