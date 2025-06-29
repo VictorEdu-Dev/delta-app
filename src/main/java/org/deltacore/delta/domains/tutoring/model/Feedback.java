@@ -8,22 +8,25 @@ import org.deltacore.delta.shared.model.GeneralData;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
 @Builder
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 public class Feedback extends GeneralData {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String comment;
     private Integer rating;
     private LocalDateTime submittedAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
+    @ToString.Exclude
     private Profile profile;
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Tutoring tutoring;
 }
