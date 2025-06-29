@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import org.deltacore.delta.domains.profile.dto.UserDTO;
+import org.deltacore.delta.shared.dto.OnCreate;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ public record TutoringDTO(
         @GabeModality(message = "{tutoring.mode.compliant}")
         String mode,
 
-        @NotNull(message = "{tutoring.is_active.not_null}")
+        @NotNull(message = "{tutoring.is_active.not_null}", groups =  OnCreate.class)
         Boolean isActive,
 
         LocalDateTime createdAt,
