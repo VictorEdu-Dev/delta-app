@@ -1,5 +1,6 @@
 package org.deltacore.delta.shared.security;
 
+import org.deltacore.delta.domains.profile.exception.UserNotFound;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +27,18 @@ public class AuthenticatedUserProvider {
                 .collect(Collectors.toSet());
 
         return Optional.of(new AuthenticatedUser(username, roles));
+    }
+
+    public String currentUsername() {
+        return current()
+                .map(AuthenticatedUser::username)
+                .orElseThrow(() -> new UserNotFound("No authenticated user found"));
+    }
+
+    public Set<String> currentRoles() {
+        return current()
+                .map(AuthenticatedUser::roles)
+                .orElseThrow(() -> new UserNotFound("No authenticated user found"));
     }
 }
 
