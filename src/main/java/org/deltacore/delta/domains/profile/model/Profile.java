@@ -8,9 +8,10 @@ import org.deltacore.delta.shared.model.GeneralData;
 import java.math.BigDecimal;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Builder
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -40,8 +41,10 @@ public class Profile extends GeneralData {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User user;
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "profile")
+    @ToString.Exclude
     private List<Feedback> feedbacks;
 }
