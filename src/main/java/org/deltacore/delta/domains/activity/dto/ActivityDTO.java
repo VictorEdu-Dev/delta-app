@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.Builder;
 import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.model.ActivityType;
+import org.deltacore.delta.shared.dto.OnCreate;
 import org.hibernate.validator.constraints.URL;
 
 import java.math.BigDecimal;
