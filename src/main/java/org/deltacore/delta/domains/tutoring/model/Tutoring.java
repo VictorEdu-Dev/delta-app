@@ -5,11 +5,9 @@ import lombok.*;
 import org.deltacore.delta.domains.profile.model.Tutor;
 import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.shared.model.GeneralData;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -46,12 +44,12 @@ public class Tutoring extends GeneralData {
     private LocalDateTime createdAt;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "monitor_id")
+    @JoinColumn(name = "monitor_id", unique = true)
     @ToString.Exclude
     private Tutor monitor;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subject_id")
+    @JoinColumn(name = "subject_id", unique = true)
     @ToString.Exclude
     private Subject subject;
 
@@ -62,27 +60,7 @@ public class Tutoring extends GeneralData {
     @ToString.Exclude
     private List<User> users;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "monitoring_id")
+    @OneToMany(mappedBy = "tutoring", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
     private List<DayTimeEntry> daysOfWeek;
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
-        Tutoring tutoring = (Tutoring) o;
-        return getId() != null && Objects.equals(getId(), tutoring.getId());
-    }
-
-    @Override
-    public final int hashCode() {
-        return getId() != null ? getId().hashCode() :
-                (this instanceof HibernateProxy
-                        ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
-                        : getClass().hashCode());
-    }
 }
