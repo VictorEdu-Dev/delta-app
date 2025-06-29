@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.deltacore.delta.shared.model.GeneralData;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
