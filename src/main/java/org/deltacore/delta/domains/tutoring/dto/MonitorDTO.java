@@ -5,7 +5,7 @@ import org.deltacore.delta.domains.profile.dto.UserDTO;
 
 import java.time.LocalDate;
 
-@Builder
+@Builder(toBuilder = true)
 public record MonitorDTO(
         Long id,
         LocalDate startDate,
