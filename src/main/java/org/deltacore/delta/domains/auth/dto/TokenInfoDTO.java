@@ -7,20 +7,20 @@ import org.deltacore.delta.domains.profile.dto.UserBasicDTO;
 import java.time.Instant;
 import java.util.UUID;
 
-@Builder
+@Builder(toBuilder = true)
 public record TokenInfoDTO(
         String meta,
         RefreshTokenDTO refreshTokenDTO,
         TokenInfoValueDTO tokenInfoValue
 ) {
-    @Builder
+    @Builder(toBuilder = true)
     public record TokenInfoValueDTO(
             String username,
             String token,
             Instant expiresAt
     ) {}
 
-    @Builder
+    @Builder(toBuilder = true)
     public record RefreshTokenDTO(
             Long id,
 
