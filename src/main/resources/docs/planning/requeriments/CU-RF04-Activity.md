@@ -3,19 +3,19 @@
 - Nome: Alteração de Status para Concluída
 - Ator Principal: Usuário autenticado (Monitor ou Aluno)
 ### Descrição:
-- Este caso de uso permite que o usuário altere o status de uma atividade para "concluída". Ao realizar essa ação, o sistema registra automaticamente a data e a hora da conclusão. A alteração só é permitida se o usuário estiver logado como monitor ou aluno. Esta autenticação e autorização pode ser ignorada no início. O sistema atualmente ainda não possui autenticação e autorização englobados, por decisão de projeto.
+- Este caso de uso permite que o usuário altere o status de uma atividade para "concluída". Ao realizar essa ação, o sistema registra automaticamente a data e a hora da conclusão. A alteração só é permitida se o usuário estiver logado como tutor ou aluno. Esta autenticação e autorização pode ser ignorada no início. O sistema atualmente ainda não possui autenticação e autorização englobados, por decisão de projeto.
 
 ### Pré-condições:
 - O usuário está autenticado no sistema. - pode ignorar
-- O usuário é aluno ou possui papel de monitor. - ignorar
+- O usuário é aluno ou possui papel de tutor. - ignorar
 - A atividade existe no sistema.
 - A atividade ainda não está marcada como concluída.
 
 ### Pós-condições:
 - A atividade tem seu status alterado para "concluída".
-- Apoós a conclusão, a atividade não pode ser editada ou excluída, exceto por usuários com permissões especiais (como o monitor).
+- Apoós a conclusão, a atividade não pode ser editada ou excluída, exceto por usuários com permissões especiais (como o tutor).
 - A data e hora da conclusão são registradas automaticamente.
-- O sistema impede futuras edições da atividade (exceto por usuários com permissões especiais, como o monitor).
+- O sistema impede futuras edições da atividade (exceto por usuários com permissões especiais, como o tutor).
 
 ### Fluxo Principal:
 

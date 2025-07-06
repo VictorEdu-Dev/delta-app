@@ -1,6 +1,6 @@
 # Delta App - API Backend
 
-![Delta APP](https://img.shields.io/badge/Delta%20APP-0.1.1-blue)
+![Delta APP](https://img.shields.io/badge/Delta%20APP-0.2.0-blue)
 
 [English version](README.en.md) • [Versão em português](README.md)
 
