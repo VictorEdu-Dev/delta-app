@@ -89,7 +89,9 @@ public class TutoringCommandService {
             tutoringToSave.setDaysOfWeek(entries);
         }
 
-        return tutoringMapper.toDTO(tutoringToSave);
+        TutoringDTO tutoringDTO = tutoringMapper.toDTO(tutoringToSave);
+        tutoringDTO.monitor().userMonitor().toBuilder().passwordHash("*****************").build();
+        return tutoringDTO;
 
     }
 
