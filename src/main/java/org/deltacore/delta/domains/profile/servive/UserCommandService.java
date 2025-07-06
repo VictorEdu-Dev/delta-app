@@ -1,5 +1,6 @@
 package org.deltacore.delta.domains.profile.servive;
 
+import org.deltacore.delta.domains.auth.exception.UserAlreadyExists;
 import org.deltacore.delta.domains.profile.dto.*;
 import org.deltacore.delta.domains.profile.exception.ConflictException;
 import org.deltacore.delta.domains.profile.exception.UserNotFound;
@@ -41,7 +42,9 @@ public class UserCommandService {
     }
 
     public UserDTO saveUser(UserDTO userDTO) {
-        User user;
+        User user = userDAO.findByUsername(userDTO.username()).orElse(null);
+        if (user != null && userDTO.id() == null)
+            throw new UserAlreadyExists(userDTO.username());
 
         boolean isNewUser = userDTO.id() == null || userDTO.id() == 0;
 
