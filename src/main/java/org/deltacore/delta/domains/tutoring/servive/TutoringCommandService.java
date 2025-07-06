@@ -90,9 +90,21 @@ public class TutoringCommandService {
         }
 
         TutoringDTO tutoringDTO = tutoringMapper.toDTO(tutoringToSave);
-        tutoringDTO.monitor().userMonitor().toBuilder().passwordHash("*****************").build();
-        return tutoringDTO;
 
+        var maskedUser = tutoringDTO.monitor().userMonitor()
+                .toBuilder()
+                .passwordHash("*****************")
+                .build();
+
+        var updatedMonitor = tutoringDTO.monitor()
+                .toBuilder()
+                .userMonitor(maskedUser)
+                .build();
+
+        return tutoringDTO
+                .toBuilder()
+                .monitor(updatedMonitor)
+                .build();
     }
 
     @Transactional
