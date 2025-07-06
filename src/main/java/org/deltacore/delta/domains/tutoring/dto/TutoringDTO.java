@@ -1,7 +1,5 @@
 package org.deltacore.delta.domains.tutoring.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 import org.deltacore.delta.domains.profile.dto.UserDTO;
@@ -11,7 +9,7 @@ import org.hibernate.validator.constraints.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Builder
+@Builder(toBuilder = true)
 public record TutoringDTO(
         Long id,
 
