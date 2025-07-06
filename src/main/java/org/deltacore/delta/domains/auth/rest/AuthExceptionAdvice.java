@@ -1,6 +1,7 @@
 package org.deltacore.delta.domains.auth.rest;
 
 import org.deltacore.delta.domains.auth.exception.InvalidTokenException;
+import org.deltacore.delta.domains.auth.exception.UserAlreadyExists;
 import org.deltacore.delta.domains.profile.exception.UserNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +24,12 @@ public class AuthExceptionAdvice {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Map.of("Error:", ex.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleException(UserAlreadyExists ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("Error:", "User already exists: " + ex.getMessage()));
     }
 }
