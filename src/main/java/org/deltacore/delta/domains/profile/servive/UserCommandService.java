@@ -42,15 +42,20 @@ public class UserCommandService {
     }
 
     public UserDTO saveUser(UserDTO userDTO) {
-        User user = userDAO.findByUsername(userDTO.username()).orElse(null);
+        String username = userDTO.username().toLowerCase();
+        User user = userDAO.findByUsername(username).orElse(null);
         if (user != null && userDTO.id() == null)
-            throw new UserAlreadyExists(userDTO.username());
+            throw new UserAlreadyExists(username);
 
         boolean isNewUser = userDTO.id() == null || userDTO.id() == 0;
 
         if (isNewUser) {
             String encodedPassword = bCryptPasswordEncoder.encode(userDTO.passwordHash());
-            UserDTO newUserDTO = userDTO.toBuilder().passwordHash(encodedPassword).build();
+            UserDTO newUserDTO = userDTO
+                    .toBuilder()
+                    .username(username)
+                    .passwordHash(encodedPassword)
+                    .build();
             user = userDeltaMapper.toEntity(newUserDTO);
             user.setCreatedAt(LocalDateTime.now());
             user.setRole(Roles.STUDENT);
