@@ -75,7 +75,15 @@ public class JwtTokenService {
         refreshToken.setUser(user);
         refreshTokenDAO.save(refreshToken);
 
-        return tokenInfoDTO;
+        TokenInfoDTO.RefreshTokenDTO refreshTokenDTO = tokenInfoDTO
+                .refreshTokenDTO()
+                .toBuilder()
+                .id(refreshToken.getId())
+                .build();
+        return tokenInfoDTO
+                .toBuilder()
+                .refreshTokenDTO(refreshTokenDTO)
+                .build();
     }
 
     @Autowired
