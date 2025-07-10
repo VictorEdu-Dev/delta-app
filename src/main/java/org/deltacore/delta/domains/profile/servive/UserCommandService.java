@@ -1,10 +1,15 @@
 package org.deltacore.delta.domains.profile.servive;
 
+import jakarta.validation.Valid;
 import org.deltacore.delta.domains.auth.exception.UserAlreadyExists;
 import org.deltacore.delta.domains.profile.dto.*;
 import org.deltacore.delta.domains.profile.exception.ConflictException;
+import org.deltacore.delta.domains.profile.exception.IllegalArgumentException;
+import org.deltacore.delta.domains.profile.exception.ProfileNotFound;
 import org.deltacore.delta.domains.profile.exception.UserNotFound;
+import org.deltacore.delta.domains.profile.model.Profile;
 import org.deltacore.delta.domains.profile.model.Tutor;
+import org.deltacore.delta.domains.profile.repository.ProfileDAO;
 import org.deltacore.delta.domains.profile.repository.TutorDAO;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
 import org.deltacore.delta.domains.profile.model.Roles;
@@ -17,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -29,6 +35,8 @@ public class UserCommandService {
     private TutorDAO tutorDAO;
     private TutorMapper tutorMapper;
     private UserBasicMapper userBasicMapper;
+    private ProfileMapper profileMapper;
+    private ProfileDAO profileDAO;
     private AuthenticatedUserProvider authenticatedUser;
 
     @Autowired
@@ -95,6 +103,67 @@ public class UserCommandService {
                 .build();
     }
 
+    @Transactional
+    public ProfileDTO createProfile(ProfileDTO profileDTO, User user) {
+        if (user.getProfile() != null)
+            throw new ConflictException("User already has a profile. Please update the existing profile instead.");
+
+        Profile p = profileMapper.toEntity(profileDTO);
+
+        if (p.getTotalScore() == null)
+            p.setTotalScore(BigDecimal.ZERO);
+        if (p.getLevel() == null)
+            p.setLevel(0);
+
+        profileDAO.save(p);
+        user.setProfile(p);
+        userDAO.save(user);
+
+        return profileMapper.toDTO(p);
+    }
+
+    @Transactional
+    public void deleteProfile(String typeDeletion, User user) {
+        switch (typeDeletion) {
+            case "total-delete" -> totalDelete(user);
+            case "safe-delete" -> safeDelete(user);
+            default -> throw new IllegalArgumentException("Invalid delete type. Delete type should be \"total-delete\" or \"safe-delete\"");
+        }
+    }
+
+    private void safeDelete(User user) {
+        Profile profile = user.getProfile();
+        if (profile == null)
+            throw new ProfileNotFound("User has no profile to delete");
+
+        user.setProfile(null);
+        userDAO.save(user);
+
+        profileDAO.delete(profile);
+    }
+
+    private void totalDelete(User user) {
+        Profile profile = user.getProfile();
+        if (profile == null)
+            throw new ProfileNotFound("User has no profile to delete");
+
+        user.setProfile(null);
+        userDAO.save(user);
+
+        profileDAO.delete(profile);
+        userDAO.delete(user);
+    }
+
+    @Transactional
+    public ProfileDTO updateProfile(@Valid ProfileDTO profileDTO, User user) {
+        Profile profile = user.getProfile();
+        if (profile == null)
+            throw new ProfileNotFound("User has no profile to update");
+        profileMapper.updateEntityFromDto(profileDTO, profile);
+
+        return profileMapper.toDTO(profile);
+    }
+
     @Autowired(required = false) @Lazy
     public void setTutorDAO(TutorDAO tutorDAO) {
         this.tutorDAO = tutorDAO;
@@ -108,6 +177,16 @@ public class UserCommandService {
     @Autowired(required = false) @Lazy
     public void setAuthenticatedUser(AuthenticatedUserProvider authenticatedUser) {
         this.authenticatedUser = authenticatedUser;
+    }
+
+    @Autowired(required = false) @Lazy
+    public void setProfileMapper(ProfileMapper profileMapper) {
+        this.profileMapper = profileMapper;
+    }
+
+    @Autowired(required = false) @Lazy
+    public void setProfileDAO(ProfileDAO profileDAO) {
+        this.profileDAO = profileDAO;
     }
 
     @Autowired(required = false) @Lazy
