@@ -92,7 +92,10 @@ public class SecurityDeltaConfig {
                         "/activities/list",
                         "/activities/get/**",
                         "/activities/search",
-                        "/account/register/tutor")
+                        "/account/register/tutor",
+                        "/account/profile/create",
+                        "/account/profile/delete",
+                        "/account/profile/update")
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().hasAnyRole(
                                 Roles.STUDENT.name(),
