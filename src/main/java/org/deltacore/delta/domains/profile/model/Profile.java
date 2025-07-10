@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.deltacore.delta.domains.tutoring.model.Feedback;
 import org.deltacore.delta.shared.model.GeneralData;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,9 +25,8 @@ public class Profile extends GeneralData {
     @Column(length = 100)
     private String name;
 
-    @Lob
-    @Column(name = "profile_image", columnDefinition = "BYTEA")
-    private byte[] profileImage;
+    @Column(name = "profile_image", length = 1000)
+    private String profileImage;
 
     @Column(length = 15, unique = true)
     private String phoneNumber;
@@ -38,13 +39,4 @@ public class Profile extends GeneralData {
 
     @Column(length = 150)
     private String bio;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @ToString.Exclude
-    private User user;
-
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "profile")
-    @ToString.Exclude
-    private List<Feedback> feedbacks;
 }
