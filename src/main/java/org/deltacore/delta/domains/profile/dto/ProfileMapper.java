@@ -1,10 +1,14 @@
 package org.deltacore.delta.domains.profile.dto;
 
-import org.mapstruct.Mapper;
+import org.deltacore.delta.domains.profile.model.Profile;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
-    ProfileDTO toDto(ProfileDTO profile);
+    ProfileDTO toDTO(Profile profile);
 
-    ProfileDTO toEntity(ProfileDTO profileDto);
+    Profile toEntity(ProfileDTO profileDto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateEntityFromDto(ProfileDTO dto, @MappingTarget Profile profile);
 }
