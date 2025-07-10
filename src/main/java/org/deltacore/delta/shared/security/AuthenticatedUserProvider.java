@@ -1,6 +1,10 @@
 package org.deltacore.delta.shared.security;
 
 import org.deltacore.delta.domains.profile.exception.UserNotFound;
+import org.deltacore.delta.domains.profile.model.User;
+import org.deltacore.delta.domains.profile.repository.UserDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class AuthenticatedUserProvider {
+    private UserDAO userDAO;
 
     public Optional<AuthenticatedUser> current() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -39,6 +44,16 @@ public class AuthenticatedUserProvider {
         return current()
                 .map(AuthenticatedUser::roles)
                 .orElseThrow(() -> new UserNotFound("No authenticated user found"));
+    }
+
+    public User currentUser() {
+        return userDAO.findByUsername(currentUsername())
+                .orElseThrow(() -> new UserNotFound("No authenticated user found with username: " + currentUsername()));
+    }
+
+    @Autowired @Lazy
+    private void setUserDAO(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 }
 
