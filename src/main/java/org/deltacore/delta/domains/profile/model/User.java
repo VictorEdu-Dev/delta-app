@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.deltacore.delta.domains.tutoring.model.Tutoring;
 import org.deltacore.delta.shared.model.GeneralData;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
@@ -37,8 +39,9 @@ public class User extends GeneralData {
 
     private LocalDateTime createdAt;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id", unique = true)
+    @Fetch(FetchMode.JOIN)
     @ToString.Exclude
     private Profile profile;
 
