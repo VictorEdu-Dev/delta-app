@@ -19,14 +19,23 @@ public class Feedback extends GeneralData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(length = 150)
     private String comment;
+
+    @Column
     private Integer rating;
+
+    @Column
     private LocalDateTime submittedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id")
+
     @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
-    @ManyToOne(fetch = FetchType.LAZY)
+
     @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tutoring_id", nullable = false)
     private Tutoring tutoring;
 }
