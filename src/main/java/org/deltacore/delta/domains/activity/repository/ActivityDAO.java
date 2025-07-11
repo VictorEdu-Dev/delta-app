@@ -1,5 +1,6 @@
 package org.deltacore.delta.domains.activity.repository;
 
+import org.deltacore.delta.domains.activity.dto.ActivityMiniatureDTO;
 import org.deltacore.delta.domains.activity.model.Activity;
 import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.model.ActivityType;
@@ -53,4 +54,11 @@ public interface ActivityDAO extends CrudRepository<Activity, Long> {
 
     @Query(value = "SELECT title FROM activity WHERE title = ?1", nativeQuery = true)
     Optional<String> findActByTitle(String title);
+
+    @Query(value = "SELECT new org.deltacore.delta.domains.activity.dto.ActivityMiniatureDTO(u.id, u.title, u.status, u.activityType, u.maxScore, u.recommendedLevel, u.deadline) FROM Activity u " +
+                    "WHERE (:status IS NULL OR u.status = :status) " +
+                    "AND (:activityType IS NULL OR u.activityType = :activityType) ")
+    Page<ActivityMiniatureDTO> findActivitiesMiniature(@Param("status") ActivityStatus status,
+                                                       @Param("activityType") ActivityType activityType,
+                                                       Pageable pageable);
 }
