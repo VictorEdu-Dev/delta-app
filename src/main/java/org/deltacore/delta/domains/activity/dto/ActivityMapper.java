@@ -14,7 +14,9 @@ public interface ActivityMapper {
             forRemoval = true,
             since = "0.1.0"
     )
-    ActivityTsdtDTO toTsdtDTO(Activity activity);
+    ActivityMiniatureDTO toTsdtDTO(Activity activity);
+
+    ActivityMiniatureDTO toMiniatureDTO(Activity activity);
 
     void updateEntityFromDto(ActivityDTO dto, @MappingTarget Activity entity);
 }
