@@ -3,7 +3,7 @@ package org.deltacore.delta.domains.activity.servive;
 import org.deltacore.delta.domains.activity.dto.ActivityDTO;
 import org.deltacore.delta.domains.activity.dto.ActivityFilterDTO;
 import org.deltacore.delta.domains.activity.dto.ActivityMapper;
-import org.deltacore.delta.domains.activity.dto.ActivityTsdtDTO;
+import org.deltacore.delta.domains.activity.dto.ActivityMiniatureDTO;
 import org.deltacore.delta.shared.exception.ConflictException;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
 import org.deltacore.delta.domains.activity.model.Activity;
@@ -122,7 +122,7 @@ public class ActivitiesSectionService {
             forRemoval = true,
             since = "0.1.0"
     )
-    public List<ActivityTsdtDTO> getActivitiesWithTitleStatusTypeAndDeadline() {
+    public List<ActivityMiniatureDTO> getActivitiesWithTitleStatusTypeAndDeadline() {
         List<Activity> act = (List<Activity>) activityDAO.findAllActivities(DEFAULT_LIMIT);
         if (act.isEmpty()) return Collections.emptyList();
         return act
