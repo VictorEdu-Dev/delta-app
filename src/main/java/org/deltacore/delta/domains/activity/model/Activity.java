@@ -55,7 +55,7 @@ public class Activity extends GeneralData {
     @ToString.Exclude
     private List<VideoLesson> videoUrl;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id")
     @ToString.Exclude
     private Subject subject;
@@ -67,7 +67,6 @@ public class Activity extends GeneralData {
     private LocalDateTime completionTimestamp;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "activity")
-    @Fetch(FetchMode.JOIN)
     @ToString.Exclude
     private List<ActivityFiles> files;
 }
