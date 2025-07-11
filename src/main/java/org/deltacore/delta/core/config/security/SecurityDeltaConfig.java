@@ -90,6 +90,7 @@ public class SecurityDeltaConfig {
         commonSecurityConfig(http);
         http.securityMatcher(
                         "/activities/list",
+                        "/activities/list-miniatures",
                         "/activities/get/**",
                         "/activities/search",
                         "/account/register/tutor",
