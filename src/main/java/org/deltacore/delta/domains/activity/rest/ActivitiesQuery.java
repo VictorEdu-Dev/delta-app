@@ -9,8 +9,10 @@ import org.deltacore.delta.domains.activity.dto.ActivityFilterDTO;
 import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.model.ActivityType;
 import org.deltacore.delta.domains.activity.servive.ActivitiesSectionService;
+import org.deltacore.delta.domains.activity.servive.ActivityQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.function.Function;
 
 @RestController
 @RequestMapping("/activities")
@@ -28,6 +32,7 @@ public class ActivitiesQuery {
 
     private final MessageSource messageSource;
     private final ActivitiesSectionService activitiesService;
+    private ActivityQueryService activityQueryService;
 
     @Autowired
     public ActivitiesQuery(MessageSource messageSource, ActivitiesSectionService activitiesService) {
@@ -66,11 +71,31 @@ public class ActivitiesQuery {
                     @ApiResponse(responseCode = "400", description = "Parâmetros inválidos")
             }
     )
-    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getFilteredActivities(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size,
             @Valid @RequestBody ActivityFilterDTO filters) {
+
+        return handlePagedRequest(page, size, filters, pageable ->
+                activitiesService.getActivitiesFiltered(pageable, filters));
+    }
+
+    @PostMapping(value = "/list-miniatures", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getActivitiesMiniatures(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @Valid @RequestBody ActivityFilterDTO filters) {
+
+        return handlePagedRequest(page, size, filters, pageable ->
+                activityQueryService.getActivityMiniature(pageable, filters));
+    }
+
+    private ResponseEntity<?> handlePagedRequest(
+            int page,
+            int size,
+            ActivityFilterDTO filters,
+            Function<Pageable, Object> fetcher) {
 
         if (size <= MIN_SIZE_PAGE || size > MAX_SIZE_PAGE) {
             String msg = messageSource.getMessage(
@@ -89,8 +114,7 @@ public class ActivitiesQuery {
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("deadline").ascending());
-
-        return ResponseEntity.ok(activitiesService.getActivitiesFiltered(pageable, filters));
+        return ResponseEntity.ok(fetcher.apply(pageable));
     }
 
     @Operation(summary = "Obter atividade pelo ID",
@@ -105,5 +129,10 @@ public class ActivitiesQuery {
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getActivityById(@PathVariable Long id) {
         return ResponseEntity.ok(activitiesService.loadActivityData(id));
+    }
+
+    @Autowired @Lazy
+    public void setActivityQueryService(ActivityQueryService activityQueryService) {
+        this.activityQueryService = activityQueryService;
     }
 }
