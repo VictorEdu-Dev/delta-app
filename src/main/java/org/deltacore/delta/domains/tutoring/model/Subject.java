@@ -32,7 +32,7 @@ public class Subject extends GeneralData {
     @Column(nullable = false)
     private Boolean isActive;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subject")
     @ToString.Exclude
     private List<Activity> activity;
 
