@@ -13,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
@@ -99,6 +102,34 @@ public class ActivitiesSectionService {
         List<ActivityDTO> activities = searchDetailed(search);
         if (activities.isEmpty()) return getLimitedActivities("");
         return activities;
+    }
+
+    public Page<ActivityDTO> getFilteredActivities(String search, int page, int size, ActivityFilterDTO filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("deadline").ascending());
+
+        Specification<Activity> spec = Specification.where(null);
+
+        if (search != null && !search.trim().isEmpty()) {
+            String pattern = "%" + search.toLowerCase() + "%";
+            spec = spec.and((root, query, builder) -> builder.or(
+                    builder.like(builder.lower(root.get("title")), pattern),
+                    builder.like(builder.lower(root.get("description")), pattern)
+            ));
+        }
+
+        if (filter != null) {
+            if (filter.status() != null) {
+                spec = spec.and((root, query, builder) ->
+                        builder.equal(root.get("status"), filter.status()));
+            }
+            if (filter.activityType() != null) {
+                spec = spec.and((root, query, builder) ->
+                        builder.equal(root.get("activityType"), filter.activityType()));
+            }
+        }
+
+        Page<Activity> pageResult = activityDAO.findAll(spec, pageable);
+        return pageResult.map(activityMapper::toDTO);
     }
 
     protected List<ActivityDTO> searchDetailed(String search) {
