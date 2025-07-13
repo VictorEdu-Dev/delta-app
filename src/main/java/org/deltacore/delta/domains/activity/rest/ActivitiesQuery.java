@@ -50,9 +50,14 @@ public class ActivitiesQuery {
                     @ApiResponse(responseCode = "400", description = "Parâmetro de pesquisa inválido")
             }
     )
-    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> searchActivities(@RequestParam("q") String search) {
-        return ResponseEntity.ok(activitiesService.getLimitedActivities(search));
+    @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchActivities(
+            @RequestParam("q") String search,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size,
+            @Valid @RequestBody ActivityFilterDTO filters) {
+
+        return ResponseEntity.ok(activitiesService.getFilteredActivities(search, page, size, filters));
     }
 
     @Operation(
