@@ -1,6 +1,7 @@
 package org.deltacore.delta.domains.auth.rest;
 
 import org.deltacore.delta.domains.profile.servive.UserQueryService;
+import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/auth")
 public class AuthQuery {
 
+    private AuthenticatedUserProvider authenticatedUser;
     private final UserQueryService userQueryService;
 
     @Autowired
@@ -20,9 +22,14 @@ public class AuthQuery {
         this.userQueryService = userQueryService;
     }
 
-    @GetMapping(path = "/get/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getUserUsername(@PathVariable String username) {
+    @GetMapping(path = "/get-user-info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUserUsername() {
         return ResponseEntity
-                .ok(userQueryService.getUserUsername(username));
+                .ok(userQueryService.getUserUsername(authenticatedUser));
+    }
+
+    @Autowired
+    public void setAuthenticatedUser(AuthenticatedUserProvider authenticatedUser) {
+        this.authenticatedUser = authenticatedUser;
     }
 }
