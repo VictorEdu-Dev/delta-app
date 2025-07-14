@@ -6,7 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = ProfileMapper.class)
 public interface UserDeltaMapper {
 
     User toEntity(UserDTO userDTO);
