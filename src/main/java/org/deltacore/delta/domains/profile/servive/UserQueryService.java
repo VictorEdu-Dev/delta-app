@@ -5,8 +5,10 @@ import org.deltacore.delta.domains.profile.dto.UserDeltaMapper;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
 import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.domains.profile.repository.UserDAO;
+import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,13 +24,17 @@ public class UserQueryService {
         this.userDeltaMapper = userDeltaMapper;
     }
 
-    public Optional<UserDTO> getUserUsername(String username) {
-        if(username == null) return Optional.empty();
+    @Transactional
+    public UserDTO getUserUsername(AuthenticatedUserProvider authenticatedUser) {
+        if (authenticatedUser.currentUser() == null) throw new ResourceNotFoundException("User not authenticated.");
+        String username = authenticatedUser.currentUsername();
 
-        Optional<User> user = Optional.ofNullable(userDAO.findByUsername(username).orElseThrow(
-                () -> new ResourceNotFoundException("User not found with username: " + username)
-        ));
+        User user = userDAO.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
 
-        return user.map(userDeltaMapper::toDTO);
+        UserDTO dto = userDeltaMapper.toDTO(user);
+        return dto
+                .toBuilder()
+                .passwordHash("******************")
+                .build();
     }
 }
