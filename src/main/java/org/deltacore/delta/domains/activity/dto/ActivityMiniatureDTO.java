@@ -12,5 +12,6 @@ public record ActivityMiniatureDTO(
         ActivityStatus status,
         ActivityType activityType,
         BigDecimal maxScore,
+        String imageUrl,
         Integer recommendedLevel,
         LocalDateTime deadline) {}
