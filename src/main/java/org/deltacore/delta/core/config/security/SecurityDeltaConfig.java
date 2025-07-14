@@ -61,7 +61,7 @@ public class SecurityDeltaConfig {
     @Order(2)
     public SecurityFilterChain adminSecurityChain(HttpSecurity http) throws Exception {
         commonSecurityConfig(http);
-        http.securityMatcher("/admin/**", "/settings/**", "/auth/get/**")
+        http.securityMatcher("/admin/**", "/settings/**")
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().hasRole(Roles.ADMIN.name()))
                 .exceptionHandling(exceptions ->
@@ -96,7 +96,8 @@ public class SecurityDeltaConfig {
                         "/account/register/tutor",
                         "/account/profile/create",
                         "/account/profile/delete",
-                        "/account/profile/update")
+                        "/account/profile/update",
+                        "/auth/get-user-info")
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().hasAnyRole(
                                 Roles.STUDENT.name(),
