@@ -35,7 +35,7 @@ public class Activity extends GeneralData {
     @Column(nullable = false)
     private ActivityType activityType;
 
-    @Column(length = 150)
+    @Column(length = 1000)
     private String imageUrl;
 
     @Column(nullable = false)
