@@ -11,6 +11,7 @@ import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,19 +23,19 @@ public class AccountCMD {
     private AuthenticatedUserProvider authenticatedUser;
 
     @Operation(security = @SecurityRequirement(name = ""))
-    @PostMapping("/register")
+    @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> register(@RequestBody @Valid UserDTO userDTO) {
         UserDTO savedUser = userCommandService.saveUser(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
-    @PostMapping("/register/tutor")
+    @PostMapping(value = "/register/tutor", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> registerTutor(@RequestBody @Valid TutorDTO tutorDTO) {
         TutorDTO savedTutor = userCommandService.saveTutor(tutorDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTutor);
     }
 
-    @PostMapping("/profile/create")
+    @PostMapping(value = "/profile/create", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createProfile(@RequestBody @Valid ProfileDTO profileDTO) {
         ProfileDTO profile = userCommandService.createProfile(profileDTO, authenticatedUser.currentUser());
         return ResponseEntity
@@ -50,7 +51,7 @@ public class AccountCMD {
                 .build();
     }
 
-    @PatchMapping("/profile/update")
+    @PatchMapping(value = "/profile/update", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProfile(@RequestBody @Valid ProfileDTO profileDTO) {
         ProfileDTO updatedProfile = userCommandService.updateProfile(profileDTO, authenticatedUser.currentUser());
         return ResponseEntity
