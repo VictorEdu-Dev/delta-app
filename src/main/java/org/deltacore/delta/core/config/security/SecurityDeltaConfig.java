@@ -4,15 +4,18 @@ import org.deltacore.delta.domains.profile.model.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -47,18 +50,22 @@ public class SecurityDeltaConfig {
     }
 
     @Bean
-    @Order(1)
+    @Order(2)
     public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http) throws Exception {
         commonSecurityConfig(http);
-
         return http
-                .securityMatcher("/auth/login/**", "/auth/register/**", "/auth/refresh/**", "/auth/revoke/**")
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .securityMatcher("/auth/login/**",
+                        "/auth/register/**",
+                        "/auth/refresh/**",
+                        "/auth/revoke/**",
+                        "/account/register/**")
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll())
                 .build();
     }
 
     @Bean
-    @Order(2)
+    @Order(3)
     public SecurityFilterChain adminSecurityChain(HttpSecurity http) throws Exception {
         commonSecurityConfig(http);
         http.securityMatcher("/admin/**", "/settings/**")
@@ -71,7 +78,7 @@ public class SecurityDeltaConfig {
     }
 
     @Bean
-    @Order(3)
+    @Order(4)
     public SecurityFilterChain monitorSecurityChain(HttpSecurity http) throws Exception {
         commonSecurityConfig(http);
         http.securityMatcher("/activities/monitor/**", "/tutoring/**")
@@ -85,13 +92,12 @@ public class SecurityDeltaConfig {
     }
 
     @Bean
-    @Order(4)
+    @Order(5)
     public SecurityFilterChain studentSecurityChain(HttpSecurity http) throws Exception {
         commonSecurityConfig(http);
         http.securityMatcher(
                         "/activities/list",
                         "/activities/list-miniatures",
-                        "/activities/get/**",
                         "/activities/search",
                         "/account/register/tutor",
                         "/account/profile/create",
@@ -110,9 +116,11 @@ public class SecurityDeltaConfig {
     }
 
     @Bean
-    @Order(5)
+    @Order(6)
     public SecurityFilterChain defaultSecurityChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        http.authorizeHttpRequests(auth ->
+                        auth
+                                .anyRequest().permitAll())
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
@@ -123,7 +131,8 @@ public class SecurityDeltaConfig {
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "https://delta-front-sage.vercel.app"
+                "https://delta-front-sage.vercel.app",
+                "https://myxml.in"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "Cache-Control", "X-Requested-With"));
