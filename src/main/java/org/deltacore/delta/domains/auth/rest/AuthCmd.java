@@ -38,8 +38,8 @@ public class AuthCmd {
                             schema = @Schema(implementation = LoginRequest.class),
                             examples = @ExampleObject(value = """
                 {
-                  "username": "admin@gmail.com",
-                  "password": "Ab_12345@"
+                  "username": "andrezaminhaex123",
+                  "password": "Aa_12345@"
                 }
                 """)
                     )
