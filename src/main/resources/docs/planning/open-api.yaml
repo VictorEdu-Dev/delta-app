@@ -1,0 +1,284 @@
+swagger: "2.0"
+info:
+  title: "Delta Core API"
+  description: "API para gerenciamento de monitorias, trilhas de aprendizagem e atividades da plataforma Delta."
+  version: "0.2.0"
+  contact:
+    name: "Victor Eduardo"
+    email: "suporte@delta.ufc.br"
+  license:
+    name: "UFC"
+
+host: "api.delta.ufc.br"
+basePath: "/api/v1"
+schemes:
+  - https
+
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+
+security:
+  - bearerAuth: []
+
+paths:
+  /account/register:
+    post:
+      tags:
+        - account-cmd
+      operationId: register
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/UserDTO"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/UserDTO"
+
+  /account/register/tutor:
+    post:
+      tags:
+        - account-cmd
+      operationId: registerTutor
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/TutorDTO"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+
+  /account/profile/create:
+    post:
+      tags:
+        - account-cmd
+      operationId: createProfile
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/ProfileDTO"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+
+  /account/profile/update:
+    patch:
+      tags:
+        - account-cmd
+      operationId: updateProfile
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: "#/definitions/ProfileDTO"
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+
+  /account/profile/delete:
+    delete:
+      tags:
+        - account-cmd
+      operationId: deleteProfile
+      parameters:
+        - name: type
+          in: query
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+
+definitions:
+  ProfileDTO:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 100
+        minLength: 1
+      profileImage:
+        type: string
+      phoneNumber:
+        type: string
+        pattern: "\\d{10,15}"
+      totalScore:
+        type: number
+      level:
+        type: integer
+        format: int32
+      bio:
+        type: string
+        maxLength: 150
+        minLength: 0
+
+  UserDTO:
+    type: object
+    required:
+      - passwordHash
+      - username
+    properties:
+      username:
+        type: string
+        maxLength: 50
+        minLength: 3
+        pattern: "^[a-zA-Z][a-zA-Z0-9._-]*$"
+      email:
+        type: string
+        maxLength: 255
+        pattern: "^[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,255}\\.[a-zA-Z]{2,}$"
+      passwordHash:
+        type: string
+        maxLength: 70
+        minLength: 6
+      createdAt:
+        type: string
+        format: date-time
+      role:
+        type: string
+        enum:
+          - ADMIN
+          - MONITOR
+          - STUDENT
+          - FREE
+      profile:
+        $ref: "#/definitions/ProfileDTO"
+
+  TutorDTO:
+    type: object
+    required:
+      - startDate
+    properties:
+      id:
+        type: integer
+        format: int64
+      startDate:
+        type: string
+        format: date-time
+      endDate:
+        type: string
+        format: date-time
+      isActive:
+        type: boolean
+      tutoring:
+        $ref: "#/definitions/TutoringDTO"
+
+  TutoringDTO:
+    type: object
+    required:
+      - vacancies
+    properties:
+      id:
+        type: integer
+        format: int64
+      description:
+        type: string
+        maxLength: 150
+        minLength: 0
+      urlThumbnail:
+        type: string
+        maxLength: 1000
+        minLength: 0
+      location:
+        type: string
+        maxLength: 50
+        minLength: 0
+      vacancies:
+        type: integer
+        format: int32
+        minimum: 1
+      mode:
+        type: string
+      isActive:
+        type: boolean
+      createdAt:
+        type: string
+        format: date-time
+      subject:
+        $ref: "#/definitions/SubjectDTO"
+      monitor:
+        $ref: "#/definitions/MonitorDTO"
+      daysOfWeek:
+        type: array
+        items:
+          $ref: "#/definitions/DayTimeEntryDTO"
+      users:
+        type: array
+        items:
+          $ref: "#/definitions/UserDTO"
+
+  SubjectDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      code:
+        type: string
+      name:
+        type: string
+      isActive:
+        type: boolean
+
+  MonitorDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      startDate:
+        type: string
+        format: date
+      endDate:
+        type: string
+        format: date
+      userMonitor:
+        $ref: "#/definitions/UserDTO"
+      monitoring:
+        type: object
+        required:
+          - vacancies
+
+  DayTimeEntryDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      dayOfWeek:
+        type: string
+        enum:
+          - MONDAY
+          - TUESDAY
+          - WEDNESDAY
+          - THURSDAY
+          - FRIDAY
+          - SATURDAY
+          - SUNDAY
+      times:
+        type: array
+        items:
+          type: string
+          format: date-time
+      duration:
+        type: integer
+        format: int32
