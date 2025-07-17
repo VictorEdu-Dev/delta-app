@@ -129,7 +129,8 @@ public class SecurityDeltaConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "https://delta-front-sage.vercel.app",
-                "https://delta-app-410394653851.southamerica-east1.run.app"
+                "https://delta-app-410394653851.southamerica-east1.run.app",
+                "https://delta-app-ekp2l6euwq-rj.a.run.app"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "Cache-Control", "X-Requested-With"));
