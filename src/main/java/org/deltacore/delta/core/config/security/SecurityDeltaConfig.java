@@ -81,6 +81,7 @@ public class SecurityDeltaConfig {
         http.securityMatcher("/activities/monitor/**", "/tutoring/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/tutoring/subjects", "/tutoring/register").hasAnyRole(Roles.STUDENT.name(), Roles.MONITOR.name(), Roles.ADMIN.name())
+                        .requestMatchers("/activities/monitor/**").hasAnyRole(Roles.ADMIN.name(), Roles.MONITOR.name())
                         .anyRequest().hasAnyRole(Roles.MONITOR.name(), Roles.ADMIN.name()))
                 .exceptionHandling(exceptions ->
                         exceptions.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
