@@ -10,5 +10,4 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 EXPOSE 8080
 COPY --from=build /app/target/delta-0.0.1-SNAPSHOT.jar app.jar
-ENV PORT=8080
 ENTRYPOINT ["sh", "-c", "java -Dserver.port=$PORT -jar app.jar"]
