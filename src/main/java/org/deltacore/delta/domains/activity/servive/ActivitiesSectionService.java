@@ -31,7 +31,6 @@ import java.util.*;
 
 @Service
 public class ActivitiesSectionService {
-    private static final int DEFAULT_LIMIT = 20;
     private static final LocalDateTime DEFAULT_END_DATE = LocalDateTime.of(3000, 12, 31, 23, 59);
 
     private final ActivityMapper activityMapper;
@@ -50,23 +49,13 @@ public class ActivitiesSectionService {
         this.messageSource = messageSource;
     }
 
-    public ActivityDTO saveActivity(ActivityDTO activity) {
+    public ActivityDTO saveActivity(ActivityDTO.ActivityRegister activity) {
         Optional<String> actDouble = activityDAO.findActByTitle(activity.title());
         if (actDouble.isPresent()) throw new ConflictException(activity.title() + " already exists!");
 
         Activity activityForSave = activityMapper.toEntity(activity);
-        setDefaultValues(activityForSave);
-
+        activityForSave.setDefaultValues();
         return activityMapper.toDTO(activityDAO.save(activityForSave));
-    }
-
-    private void setDefaultValues(Activity activityForSave) {
-        if (activityForSave.getStatus() == null) {
-            activityForSave.setStatus(ActivityStatus.PENDING);
-        }
-        if (activityForSave.getDeadline() == null) {
-            activityForSave.setDeadline(LocalDateTime.now().plusDays(7));
-        }
     }
 
     public PagedModel<EntityModel<ActivityDTO>> getActivitiesFiltered(Pageable pageable, ActivityFilterDTO filters) {
@@ -83,25 +72,6 @@ public class ActivitiesSectionService {
 
         return pagedResourcesAssembler
                 .toModel(activities, activity -> EntityModel.of(activityMapper.toDTO(activity)));
-    }
-
-    // Isso vai quebrar em algum momento se não implementar pesquisa paginada
-    public List<ActivityDTO> getLimitedActivities(String search) {
-        if (search == null || search.trim().isEmpty()) {
-            List<Activity> activities = Optional
-                    .ofNullable((List<Activity>) activityDAO.findAllActivities(DEFAULT_LIMIT))
-                    .orElse(Collections.emptyList());
-
-            return activities
-                    .isEmpty() ? Collections.emptyList() : activities
-                    .stream()
-                    .map(activityMapper::toDTO)
-                    .toList();
-        }
-
-        List<ActivityDTO> activities = searchDetailed(search);
-        if (activities.isEmpty()) return getLimitedActivities("");
-        return activities;
     }
 
     public Page<ActivityDTO> getFilteredActivities(String search, int page, int size, ActivityFilterDTO filter) {
@@ -132,36 +102,6 @@ public class ActivitiesSectionService {
         return pageResult.map(activityMapper::toDTO);
     }
 
-    protected List<ActivityDTO> searchDetailed(String search) {
-        final String[] words = search.split("\\s+");
-        final Set<String> setWords = new HashSet<>(Arrays.asList(words));
-
-        Set<Activity> activities = new HashSet<>();
-
-        setWords.forEach(word -> {
-            Optional<List<Activity>> found = Optional.ofNullable((List<Activity>) activityDAO.findActivitiesByTitle(word));
-            found.ifPresent(activities::addAll);
-        });
-        // Tem que implementar paginação aqui
-        return  activities
-                .stream()
-                .map(activityMapper::toDTO)
-                .toList();
-    }
-
-    @Deprecated(
-            forRemoval = true,
-            since = "0.1.0"
-    )
-    public List<ActivityMiniatureDTO> getActivitiesWithTitleStatusTypeAndDeadline() {
-        List<Activity> act = (List<Activity>) activityDAO.findAllActivities(DEFAULT_LIMIT);
-        if (act.isEmpty()) return Collections.emptyList();
-        return act
-                .stream()
-                .map(activityMapper::toTsdtDTO)
-                .toList();
-    }
-
     @Transactional
     public ActivityDTO updateActivity(Long id, ActivityDTO updatedActivity) {
         if (id == null || id <= 0) {
@@ -188,8 +128,6 @@ public class ActivitiesSectionService {
                 });
 
         activityMapper.updateEntityFromDto(updatedActivity, activity);
-        // Esqueci de mencionar que ao buscar uma entidade, ela se torna gerenciada. Portanto, é só alterar os campos com setters.
-        // Encaminhei a responsabilidade disso para o MapStruct, mas poderia ser feito aqui também.
         return activityMapper.toDTO(activity);
     }
 
@@ -224,9 +162,7 @@ public class ActivitiesSectionService {
                 .orElseThrow(() -> new ResourceNotFoundException("error.activity.not.found"));
 
         if (activity.isCompleted()) throw new ConflictException("conflict.activity.completed");
-
-        activity.setCompleted(true);
-        activity.setCompletionTimestamp(LocalDateTime.now());
+        activity.markAsCompleted();
 
         return activityMapper.toDTO(activity);
     }
