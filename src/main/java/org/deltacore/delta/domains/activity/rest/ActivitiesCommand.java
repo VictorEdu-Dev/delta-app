@@ -4,13 +4,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.deltacore.delta.domains.activity.dto.ActivityDTO;
 import org.deltacore.delta.domains.activity.dto.ActivityFilesDTO;
+import org.deltacore.delta.domains.activity.servive.ActivityCreation;
 import org.deltacore.delta.shared.dto.OnCreate;
 import org.deltacore.delta.shared.dto.OnUpdate;
 import org.deltacore.delta.domains.activity.servive.ActivitiesSectionService;
 import org.deltacore.delta.domains.activity.servive.ActivityUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,7 @@ import java.util.List;
 public class ActivitiesCommand {
     private final ActivitiesSectionService activitiesService;
     private final ActivityUploadService activityUploadService;
+    private ActivityCreation activityCreation;
 
     @Autowired
     public ActivitiesCommand(ActivitiesSectionService activitiesService, ActivityUploadService activityUploadService) {
@@ -37,7 +41,7 @@ public class ActivitiesCommand {
             summary = "Criar nova atividade",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
-                    content = @Content(schema = @Schema(implementation = ActivityDTO.class))
+                    content = @Content(schema = @Schema(implementation = ActivityDTO.ActivityRegister.class))
             ),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Atividade criada com sucesso",
@@ -45,10 +49,10 @@ public class ActivitiesCommand {
                     @ApiResponse(responseCode = "400", description = "Dados inválidos")
             }
     )
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> saveActivity(@RequestBody @Validated(OnCreate.class) ActivityDTO activity) {
+    @PostMapping(value = "/create",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO.ActivityRegister activity) {
         return ResponseEntity
-                .ok(activitiesService.saveActivity(activity));
+                .ok(activityCreation.saveActivity(activity));
     }
 
     @Operation(
@@ -128,6 +132,11 @@ public class ActivitiesCommand {
 
         List<ActivityFilesDTO> metadataList = activityUploadService.uploadAndSaveFiles(files, id);
         return ResponseEntity.ok(metadataList);
+    }
+
+    @Autowired @Lazy
+    private void setActivityCreation(ActivityCreation activityCreation) {
+        this.activityCreation = activityCreation;
     }
 
 }
