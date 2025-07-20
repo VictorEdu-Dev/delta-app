@@ -8,13 +8,7 @@ import org.mapstruct.MappingTarget;
 public interface ActivityMapper {
     ActivityDTO toDTO(Activity activity);
 
-    Activity toEntity(ActivityDTO activityDTO);
-
-    @Deprecated(
-            forRemoval = true,
-            since = "0.1.0"
-    )
-    ActivityMiniatureDTO toTsdtDTO(Activity activity);
+    Activity toEntity(ActivityDTO.ActivityRegister activityDTO);
 
     ActivityMiniatureDTO toMiniatureDTO(Activity activity);
 
