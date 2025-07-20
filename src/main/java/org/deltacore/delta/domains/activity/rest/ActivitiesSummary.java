@@ -17,13 +17,4 @@ public class ActivitiesSummary {
     public ActivitiesSummary(ActivitiesSectionService activitiesService) {
         this.activitiesService = activitiesService;
     }
-
-    @Deprecated(
-            forRemoval = true,
-            since = "0.1.0"
-    )
-    @GetMapping(value = "/list-activities-tsdt", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getActivitiesSummary() {
-        return ResponseEntity.ok(activitiesService.getActivitiesWithTitleStatusTypeAndDeadline());
-    }
 }
