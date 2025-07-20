@@ -36,7 +36,8 @@ public class Subject extends GeneralData {
     @ToString.Exclude
     private List<Activity> activity;
 
+    @ToString.Exclude
     @OneToOne(mappedBy = "subject", cascade = CascadeType.DETACH)
-    @Fetch(FetchMode.JOIN)
+    @Fetch(FetchMode.SELECT)
     private Tutoring tutoring;
 }
