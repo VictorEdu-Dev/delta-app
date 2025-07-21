@@ -42,7 +42,11 @@ public record ActivityDTO(
         LocalDateTime deadline,
 
         boolean completed,
-        LocalDateTime completionTimestamp
+        LocalDateTime completionTimestamp,
+
+        List<ActivityFilesDTO> files,
+
+        List<ActivityRegister.LinkActivityDTO> links
 ) {
         @Builder(toBuilder = true)
         public record ActivityRegister(
@@ -65,6 +69,16 @@ public record ActivityDTO(
                 LocalDate deadline,
 
                 @NotBlank(message = "{activity.subject.not.blank}")
-                String subjectCode
-        ) {}
+                String subjectCode,
+
+                List<LinkActivityDTO> links
+        ) {
+                public record LinkActivityDTO(
+                        @URL(message = "Link must be a valid URL.", regexp = "^(https?|ftp)://.*")
+                        String link,
+
+                        @Size(max = 500, message = "{activity.link.description.size}")
+                        String description
+                ) {}
+        }
 }
