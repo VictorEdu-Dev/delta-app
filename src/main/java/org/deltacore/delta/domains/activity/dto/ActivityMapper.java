@@ -4,7 +4,7 @@ import org.deltacore.delta.domains.activity.model.Activity;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {LinkActivityMapper.class, ActivityFilesMapper.class})
 public interface ActivityMapper {
     ActivityDTO toDTO(Activity activity);
 
