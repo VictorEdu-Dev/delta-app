@@ -53,5 +53,21 @@ public record UserDTO(
         public UserDTO {
                 if (email != null) email = email.trim();
         }
+
+        @Builder(toBuilder = true)
+        public record UserSimpleDTO(
+                @Schema(hidden = true)
+                Long id,
+
+                @NotBlank(message = "{user.username.notblank}")
+                @Size(min = 3, max = 50, message = "{user.username.size}")
+                @Pattern(
+                        regexp = "^[a-zA-Z][a-zA-Z0-9._-]*$",
+                        message = "{user.username.pattern}"
+                )
+                String username,
+
+                ProfileDTO.ProfileSimpleDTO profile
+        ) {}
 }
 
