@@ -1,14 +1,16 @@
 package org.deltacore.delta.domains.activity.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.deltacore.delta.domains.activity.dto.ActivityDTO;
+import org.deltacore.delta.domains.activity.dto.ActivityDTO.ActivityRegister;
 import org.deltacore.delta.domains.activity.dto.ActivityFilesDTO;
-import org.deltacore.delta.domains.activity.servive.ActivityCreation;
-import org.deltacore.delta.shared.dto.OnCreate;
+import org.deltacore.delta.domains.activity.model.ActivityCreation;
 import org.deltacore.delta.shared.dto.OnUpdate;
 import org.deltacore.delta.domains.activity.servive.ActivitiesSectionService;
 import org.deltacore.delta.domains.activity.servive.ActivityUploadService;
@@ -41,7 +43,7 @@ public class ActivitiesCommand {
             summary = "Criar nova atividade",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
-                    content = @Content(schema = @Schema(implementation = ActivityDTO.ActivityRegister.class))
+                    content = @Content(schema = @Schema(implementation = ActivityRegister.class))
             ),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Atividade criada com sucesso",
@@ -53,6 +55,41 @@ public class ActivitiesCommand {
     public ResponseEntity<?> saveActivity(@RequestBody @Valid ActivityDTO.ActivityRegister activity) {
         return ResponseEntity
                 .ok(activityCreation.saveActivity(activity));
+    }
+
+    @Operation(
+            summary = "Upload de arquivos para atividade",
+            description = "Faz upload de múltiplos arquivos para uma atividade existente.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Upload realizado com sucesso",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = ActivityFilesDTO.class)))),
+                    @ApiResponse(responseCode = "415", description = "Tipo de arquivo não suportado")
+            }
+    )
+    @PostMapping(value = "/files/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> uploadFiles(
+            @Parameter(description = "Arquivos para upload", required = true,
+                    content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                            array = @ArraySchema(schema = @Schema(type = "string", format = "binary"))
+                    ))
+            @RequestPart("files")
+            MultipartFile[] files,
+
+            @Parameter(description = "ID da atividade", required = true)
+            @PathVariable
+            Long id) throws IOException {
+
+        for (MultipartFile file : files) {
+            if(file.isEmpty()) continue;
+            String type = file.getContentType();
+            if (type == null || !FileType.contains(type)) {
+                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                        .body("Unsupported file type: " + file.getOriginalFilename());
+            }
+        }
+
+        List<ActivityFilesDTO> metadataList = activityUploadService.uploadAndSaveFiles(files, id);
+        return ResponseEntity.ok(metadataList);
     }
 
     @Operation(
@@ -103,35 +140,6 @@ public class ActivitiesCommand {
     public ResponseEntity<ActivityDTO> markActivityAsCompleted(@PathVariable Long id) {
         ActivityDTO updatedActivity = activitiesService.completeActivity(id);
         return ResponseEntity.ok(updatedActivity);
-    }
-
-    @Operation(
-            summary = "Upload de arquivos para uma atividade",
-            description = "Permite enviar um ou mais arquivos para a atividade especificada pelo ID",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    required = true,
-                    content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
-            ),
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Arquivos enviados com sucesso",
-                            content = @Content(schema = @Schema(implementation = ActivityFilesDTO.class))),
-                    @ApiResponse(responseCode = "415", description = "Tipo de arquivo não suportado")
-            }
-    )
-    @PostMapping(value = "/files/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadFiles(@RequestParam("file") MultipartFile[] files, @PathVariable Long id) throws IOException {
-
-        for (MultipartFile file : files) {
-            if(file.isEmpty()) continue;
-            String type = file.getContentType();
-            if (type == null || !FileType.contains(type)) {
-                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                        .body("Unsupported file type: " + file.getOriginalFilename());
-            }
-        }
-
-        List<ActivityFilesDTO> metadataList = activityUploadService.uploadAndSaveFiles(files, id);
-        return ResponseEntity.ok(metadataList);
     }
 
     @Autowired @Lazy
