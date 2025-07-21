@@ -6,10 +6,14 @@ import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.model.ActivityType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.NonNullApi;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -35,4 +39,9 @@ public interface ActivityDAO extends CrudRepository<Activity, Long>, JpaSpecific
     Page<ActivityMiniatureDTO> findActivitiesMiniature(@Param("status") ActivityStatus status,
                                                        @Param("activityType") ActivityType activityType,
                                                        Pageable pageable);
+    @Override
+    @NonNull
+    @EntityGraph(attributePaths = {"files", "links"})
+    Page<Activity> findAll(Specification<Activity> spec, @NonNull Pageable pageable);
+
 }
