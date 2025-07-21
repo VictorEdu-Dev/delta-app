@@ -17,6 +17,9 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface TutoringMapper {
     Tutoring toEntity(TutoringDTO tutoringDTO);
     TutoringDTO toDTO(Tutoring tutoring);
+
+    TutoringDTO.TutoringEssentialDTO toEssentialDTO(Tutoring tutoring);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateEntityFromDto(TutoringDTO dto, @MappingTarget Tutoring tutoring);
 }
