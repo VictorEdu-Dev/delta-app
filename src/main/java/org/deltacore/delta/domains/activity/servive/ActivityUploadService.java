@@ -72,10 +72,6 @@ public class ActivityUploadService {
 
             ActivityFilesDTO dto = processAndUploadFile(file);
             ActivityFilesDTO savedDto = saveMetadata(dto, activity.get());
-            savedDto = savedDto.toBuilder()
-                    .activity(activityMapper.toDTO(activity.get()))
-                    .build();
-
             metadataList.add(savedDto);
         }
 
@@ -98,7 +94,7 @@ public class ActivityUploadService {
                 .fileName(fileName)
                 .fileType(file.getContentType())
                 .size(file.getSize())
-                .filePath(FOLDER_PATH)
+                .filePath(objectName.replace(fileName, ""))
                 .build();
     }
 
