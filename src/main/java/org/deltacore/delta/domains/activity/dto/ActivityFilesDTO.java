@@ -18,8 +18,6 @@ public record ActivityFilesDTO(
     String filePath,
 
     @Min(value = 1)
-    Long size,
-
-    ActivityDTO activity
+    Long size
 ) {
 }
