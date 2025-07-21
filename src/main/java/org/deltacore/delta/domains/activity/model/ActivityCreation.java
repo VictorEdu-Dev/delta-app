@@ -1,8 +1,9 @@
-package org.deltacore.delta.domains.activity.servive;
+package org.deltacore.delta.domains.activity.model;
 
 import org.deltacore.delta.domains.activity.dto.ActivityDTO;
+import org.deltacore.delta.domains.activity.dto.ActivityDTO.ActivityRegister;
 import org.deltacore.delta.domains.activity.dto.ActivityMapper;
-import org.deltacore.delta.domains.activity.model.Activity;
+import org.deltacore.delta.domains.activity.dto.LinkActivityMapper;
 import org.deltacore.delta.domains.activity.repository.ActivityDAO;
 import org.deltacore.delta.domains.tutoring.model.Subject;
 import org.deltacore.delta.domains.tutoring.repository.SubjectDAO;
@@ -23,7 +24,7 @@ public class ActivityCreation {
     private ActivityMapper mapper;
     private MessageSource messageSource;
 
-    public ActivityDTO saveActivity(ActivityDTO.ActivityRegister activity) {
+    public ActivityDTO saveActivity(ActivityRegister activity) {
         if (activityDAO.findActByTitle(activity.title()).isPresent())
             throw new ConflictException(getMessage("error.activity.duplicate"));
 
