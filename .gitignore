@@ -36,3 +36,5 @@ build/
 src/main/resources/application-dev.properties
 bk_delta.sh
 src/main/resources/bootstrap.properties
+
+delta-core-app-ee2d9eba3643.json
