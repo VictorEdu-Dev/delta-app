@@ -43,4 +43,35 @@ public record TutoringDTO(
 
         List<UserDTO> users
 ) {
+        public record TutoringEssentialDTO(
+                Long id,
+
+                @Size(max = 150, message = "{tutoring.description.size}")
+                String description,
+
+                @Size(max = 1000, message = "{tutoring.urlThumbnail.size}")
+                @URL(message = "{tutoring.urlThumbnail.format}", regexp = "^(https?|ftp)://.*")
+                String urlThumbnail,
+
+                @Size(max = 50, message = "{tutoring.location.size}")
+                String location,
+
+                @NotNull(message = "{tutoring.vacancies.min}")
+                @Min(value = 1, message = "{tutoring.vacancies.min}")
+                Integer vacancies,
+
+                @GabeModality(message = "{tutoring.mode.compliant}")
+                String mode,
+
+                @NotNull(message = "{tutoring.is_active.not_null}", groups =  OnCreate.class)
+                Boolean isActive,
+
+                LocalDateTime createdAt,
+
+                SubjectDTO subject,
+
+                List<DayTimeEntryDTO> daysOfWeek,
+
+                List<UserDTO.UserSimpleDTO> users
+        ){}
 }
