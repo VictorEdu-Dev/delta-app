@@ -33,7 +33,8 @@ public class ActivityFiles extends GeneralData {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
 }
