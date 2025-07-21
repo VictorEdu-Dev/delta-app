@@ -1,6 +1,7 @@
 package org.deltacore.delta.domains.tutoring.rest;
 
 import org.deltacore.delta.domains.tutoring.servive.TutoringQueryService;
+import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tutoring")
 public class TutoringQuery {
     private final TutoringQueryService tutoringQueryService;
+    private AuthenticatedUserProvider authenticatedUserProvider;
 
     @Autowired
     public TutoringQuery(TutoringQueryService tutoringQueryService) {
@@ -27,7 +29,9 @@ public class TutoringQuery {
 
     @GetMapping(path = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getTutoring() {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+        String monitor = authenticatedUserProvider.currentUsername();
+        return ResponseEntity
+                .ok(tutoringQueryService.getTutoring(monitor));
     }
 
     @GetMapping(path = "/subject/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,5 +53,8 @@ public class TutoringQuery {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
+    @Autowired
+    public void setAuthenticatedUserProvider(AuthenticatedUserProvider authenticatedUserProvider) {
+        this.authenticatedUserProvider = authenticatedUserProvider;
+    }
 }
