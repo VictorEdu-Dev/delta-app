@@ -8,6 +8,7 @@ import org.deltacore.delta.shared.model.GeneralData;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -58,9 +59,9 @@ public class Tutoring extends GeneralData {
             joinColumns = @JoinColumn(name = "monitoring_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @ToString.Exclude
-    private List<User> users;
+    private Set<User> users;
 
     @OneToMany(mappedBy = "tutoring", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
-    private List<DayTimeEntry> daysOfWeek;
+    private Set<DayTimeEntry> daysOfWeek;
 }
