@@ -49,15 +49,6 @@ public class ActivitiesSectionService {
         this.messageSource = messageSource;
     }
 
-    public ActivityDTO saveActivity(ActivityDTO.ActivityRegister activity) {
-        Optional<String> actDouble = activityDAO.findActByTitle(activity.title());
-        if (actDouble.isPresent()) throw new ConflictException(activity.title() + " already exists!");
-
-        Activity activityForSave = activityMapper.toEntity(activity);
-        activityForSave.setDefaultValues();
-        return activityMapper.toDTO(activityDAO.save(activityForSave));
-    }
-
     public PagedModel<EntityModel<ActivityDTO>> getActivitiesFiltered(Pageable pageable, ActivityFilterDTO filters) {
         Page<Activity> activities = activityDAO.findActivitiesByFilters(
                 filters.status(),
@@ -157,6 +148,7 @@ public class ActivitiesSectionService {
         return activityMapper.toDTO(activityToBeLoaded);
     }
 
+    @Transactional
     public ActivityDTO completeActivity(Long activityId) {
         Activity activity = activityDAO.findById(activityId)
                 .orElseThrow(() -> new ResourceNotFoundException("error.activity.not.found"));
