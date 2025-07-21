@@ -65,6 +65,7 @@ public class ActivitiesSectionService {
                 .toModel(activities, activity -> EntityModel.of(activityMapper.toDTO(activity)));
     }
 
+    @Transactional
     public Page<ActivityDTO> getFilteredActivities(String search, int page, int size, ActivityFilterDTO filter) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("deadline").ascending());
 
