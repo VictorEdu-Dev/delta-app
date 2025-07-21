@@ -7,6 +7,7 @@ import org.deltacore.delta.shared.model.GeneralData;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -65,7 +66,7 @@ public class Activity extends GeneralData {
     @ToString.Exclude
     private Subject subject;
 
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "activity", orphanRemoval = true)
+    @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
     @ToString.Exclude
     private List<ActivityFiles> files;
 
@@ -76,7 +77,7 @@ public class Activity extends GeneralData {
             name = "activity_links",
             joinColumns = @JoinColumn(name = "activity_id")
     )
-    private List<LinkActivity> links;
+    private Set<LinkActivity> links;
 
     public void markAsCompleted() {
         this.completed = true;
