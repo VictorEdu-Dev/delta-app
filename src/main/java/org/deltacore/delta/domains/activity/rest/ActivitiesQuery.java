@@ -2,14 +2,16 @@ package org.deltacore.delta.domains.activity.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.deltacore.delta.domains.activity.dto.ActivityFilterDTO;
 import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.model.ActivityType;
 import org.deltacore.delta.domains.activity.servive.ActivitiesSectionService;
-import org.deltacore.delta.domains.activity.servive.ActivityCreation;
+import org.deltacore.delta.domains.activity.servive.ActivityDownloadService;
 import org.deltacore.delta.domains.activity.servive.ActivityQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -18,12 +20,16 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URL;
 import java.util.function.Function;
 
+@Validated
 @RestController
 @RequestMapping("/activities")
 public class ActivitiesQuery {
@@ -34,6 +40,7 @@ public class ActivitiesQuery {
     private final MessageSource messageSource;
     private final ActivitiesSectionService activitiesService;
     private ActivityQueryService activityQueryService;
+    private ActivityDownloadService activityDownloadService;
 
     @Autowired
     public ActivitiesQuery(MessageSource messageSource, ActivitiesSectionService activitiesService) {
@@ -133,12 +140,67 @@ public class ActivitiesQuery {
             }
     )
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getActivityById(@PathVariable Long id) {
+    public ResponseEntity<?> getActivityById(
+            @Parameter(description = "ID positivo da atividade", example = "1", required = true)
+            @PathVariable
+            @Positive(message = "{error.file.id.invalid}")
+            Long id) {
         return ResponseEntity.ok(activitiesService.loadActivityData(id));
     }
+
+    @Operation(summary = "Download de arquivo da atividade",
+            description = "Faz o download do arquivo associado à atividade pelo ID do arquivo.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Arquivo baixado com sucesso",
+                            content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)),
+                    @ApiResponse(responseCode = "400", description = "ID inválido"),
+                    @ApiResponse(responseCode = "404", description = "Arquivo não encontrado")
+            })
+    @GetMapping(value = "/get-file/{id}")
+    public ResponseEntity<byte[]> download(
+            @Parameter(description = "ID positivo do arquivo", example = "1", required = true)
+            @PathVariable
+            @Positive(message = "{error.file.id.invalid}")
+            Long id) {
+        byte[] data = activityDownloadService.loadActivityFile(id);
+
+        String objectName = activityDownloadService.getObjectNameByFileId(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + objectName.substring(objectName.lastIndexOf('/') + 1) + "\"")
+                .contentLength(data.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(data);
+    }
+
+    @Operation(summary = "Gerar link assinado para arquivo da atividade",
+            description = "Gera um link temporário para acessar o arquivo no navegador.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Link assinado gerado",
+                            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)),
+                    @ApiResponse(responseCode = "400", description = "ID inválido"),
+                    @ApiResponse(responseCode = "404", description = "Arquivo não encontrado"),
+                    @ApiResponse(responseCode = "500", description = "Erro ao gerar link assinado")
+            })
+    @GetMapping(value = "/get-file-link/{id}")
+    public ResponseEntity<String> link(
+            @Parameter(description = "ID positivo do arquivo", example = "1", required = true)
+            @PathVariable
+            @Positive(message = "{error.file.id.invalid}")
+            Long id) throws Exception {
+        URL signedUrl = activityDownloadService.getSignedUrlByFileId(id);
+        return ResponseEntity.ok(signedUrl.toString());
+    }
+
+
 
     @Autowired @Lazy
     public void setActivityQueryService(ActivityQueryService activityQueryService) {
         this.activityQueryService = activityQueryService;
+    }
+
+    @Autowired @Lazy
+    private void setActivityDownloadService(ActivityDownloadService activityDownloadService) {
+        this.activityDownloadService = activityDownloadService;
     }
 }
