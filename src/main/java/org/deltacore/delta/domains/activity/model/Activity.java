@@ -33,7 +33,7 @@ public class Activity extends GeneralData {
     @Column(length = 1000)
     private String imageUrl;
 
-    @Column(name = "difficulty_level", nullable = false)
+    @Column(name = "recommended_level", nullable = false)
     private Integer difficultyLevel;
 
     @Setter(AccessLevel.NONE)
@@ -65,13 +65,18 @@ public class Activity extends GeneralData {
     @ToString.Exclude
     private Subject subject;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "activity", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER, mappedBy = "activity", orphanRemoval = true)
     @ToString.Exclude
     private List<ActivityFiles> files;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "activity", orphanRemoval = true)
+
     @ToString.Exclude
-    private List<VideoLesson> videoUrl;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "activity_links",
+            joinColumns = @JoinColumn(name = "activity_id")
+    )
+    private List<LinkActivity> links;
 
     public void markAsCompleted() {
         this.completed = true;
@@ -99,6 +104,13 @@ public class Activity extends GeneralData {
     }
 
     public void setImageUrl() {
-        this.imageUrl = "https://cdn.pixabay.com/photo/2020/09/23/03/54/background-5594879_1280.jpg";
+        String[] urls = {
+                "https://cdn.pixabay.com/photo/2020/09/23/03/54/background-5594879_1280.jpg",
+                "https://cdn.pixabay.com/photo/2025/07/21/01/27/01-27-35-553_960_720.jpg",
+                "https://cdn.pixabay.com/photo/2025/07/21/01/27/01-27-07-133_960_720.jpg",
+                "https://cdn.pixabay.com/photo/2025/07/21/01/25/01-25-58-776_960_720.jpg"
+        };
+        int randomIndex = (int) (Math.random() * urls.length);
+        this.imageUrl = urls[randomIndex];
     }
 }
