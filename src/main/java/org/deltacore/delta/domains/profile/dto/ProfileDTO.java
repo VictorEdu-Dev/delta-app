@@ -22,4 +22,10 @@ public record ProfileDTO(
 
         @Size(max = 150, message = "{profile.bio.size}")
         String bio
-) {}
+) {
+        @Builder(toBuilder = true)
+        public record ProfileSimpleDTO(
+                String name,
+                String profileImage) {
+        }
+}
