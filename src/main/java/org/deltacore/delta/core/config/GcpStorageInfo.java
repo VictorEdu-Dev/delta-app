@@ -18,4 +18,7 @@ public class GcpStorageInfo {
 
     @Value("${gcp.folder.path.img}")
     private String folderPathImage;
+
+    @Value("${gcp.folder.path.profile}")
+    private String folderPathProfile;
 }
