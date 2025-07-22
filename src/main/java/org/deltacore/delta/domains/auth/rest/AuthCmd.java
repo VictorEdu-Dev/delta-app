@@ -9,9 +9,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.deltacore.delta.domains.auth.dto.LoginRequest;
+import org.deltacore.delta.domains.auth.dto.LoginRequest.LoginChangePasswordRequest;
 import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
 import org.deltacore.delta.domains.auth.service.JwtTokenService;
 import org.deltacore.delta.domains.auth.service.AuthCmdService;
+import org.deltacore.delta.shared.security.AuthenticatedUser;
+import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -28,6 +31,7 @@ public class AuthCmd {
     private JwtTokenService jwtService;
     private AuthenticationManager authManager;
     private AuthCmdService authCmdService;
+    private AuthenticatedUserProvider authenticatedUser;
 
     @Operation(
             summary = "Autenticar usuário",
@@ -50,13 +54,40 @@ public class AuthCmd {
             },
             security = @SecurityRequirement(name = "")
     )
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest login) {
         TokenInfoDTO token = authCmdService.getToken(login, authManager, jwtService);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(token);
+    }
+
+    @Operation(
+            summary = "Alterar senha do usuário",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = LoginChangePasswordRequest.class),
+                            examples = @ExampleObject(value = """
+                {
+                  "currentPassword": "Aa_12345@",
+                  "newPassword": "Aa_12345@_new"
+                }
+                """)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Senha alterada com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Dados inválidos")
+            }
+    )
+    @PatchMapping(value = "/change-password", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> changePassword(@RequestBody @Valid LoginChangePasswordRequest login) {
+        authCmdService.changePassword(login, authManager, authenticatedUser);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 
     @Operation(
@@ -131,6 +162,11 @@ public class AuthCmd {
     @Autowired
     public void setAuthManager(AuthenticationManager authManager) {
         this.authManager = authManager;
+    }
+
+    @Autowired @Lazy
+    private void setAuthenticatedUser(AuthenticatedUserProvider authenticatedUser) {
+        this.authenticatedUser = authenticatedUser;
     }
 
 }
