@@ -137,6 +137,7 @@ public class ActivitiesSectionService {
         activityDAO.delete(activityToBeDeleted);
     }
 
+    @Transactional
     public ActivityDTO loadActivityData(Long id) {
         Activity activityToBeLoaded = activityDAO.findById(id)
                 .orElseThrow(() -> {
