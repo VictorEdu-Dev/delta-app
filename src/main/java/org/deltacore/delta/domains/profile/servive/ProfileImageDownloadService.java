@@ -2,7 +2,6 @@ package org.deltacore.delta.domains.profile.servive;
 
 import com.google.cloud.storage.*;
 import org.deltacore.delta.core.config.GcpStorageInfo;
-import org.deltacore.delta.domains.profile.exception.ConflictException;
 import org.deltacore.delta.domains.profile.exception.ProfileNotFoundException;
 import org.deltacore.delta.domains.profile.model.Profile;
 import org.deltacore.delta.domains.profile.model.User;
@@ -28,8 +27,11 @@ public class ProfileImageDownloadService {
         this.messageSource = messageSource;
     }
 
-    public byte[] downloadProfileImage(String fileName, User user) {
-        checkProfile(fileName, user);
+    public byte[] downloadProfileImage(User user) {
+        Profile profile = user.getProfile();
+        if (profile == null || profile.getId() == null)
+            throw new ProfileNotFoundException(getMessage("profile.not_found", user.getId()));
+        String fileName = profile.getProfileImage();
 
         String folder = gcpStorageInfo.getFolderPathProfile();
         if (!folder.endsWith("/")) folder += "/";
@@ -43,8 +45,13 @@ public class ProfileImageDownloadService {
         return blob.getContent();
     }
 
-    public URL getSignedUrlForProfileImage(String fileName, User user) {
-        checkProfile(fileName, user);
+    public URL getSignedUrlForProfileImage(User user) {
+        Profile profile = user.getProfile();
+        if (profile == null || profile.getId() == null)
+            throw new ProfileNotFoundException(getMessage("profile.not_found", user.getId()));
+        String fileName = profile.getProfileImage();
+        if (fileName == null || fileName.isEmpty())
+            throw new ProfileNotFoundException(getMessage("profile.image.not_found", user.getId()));
 
         String objectName = gcpStorageInfo.getFolderPathProfile() + fileName;
         BlobInfo blobInfo = BlobInfo.newBuilder(BlobId.of(gcpStorageInfo.getBucketName(), objectName)).build();
@@ -52,15 +59,6 @@ public class ProfileImageDownloadService {
         return storage.signUrl(blobInfo, 15, TimeUnit.MINUTES,
                 Storage.SignUrlOption.withV4Signature(),
                 Storage.SignUrlOption.httpMethod(HttpMethod.GET));
-    }
-
-    private void checkProfile(String fileName, User user) {
-        Profile profile = user.getProfile();
-        if (profile == null || profile.getId() == null)
-            throw new ProfileNotFoundException(getMessage("profile.not_found", user.getId()));
-        if(profile.getProfileImage() == null || profile.getProfileImage().isEmpty())
-            throw new ProfileNotFoundException(getMessage("profile.image.not_found", user.getId()));
-        if(!profile.getProfileImage().equals(fileName)) throw new ConflictException(getMessage("profile.image.conflict", user.getId()));
     }
 
     private String getMessage(String code, Object... args) {

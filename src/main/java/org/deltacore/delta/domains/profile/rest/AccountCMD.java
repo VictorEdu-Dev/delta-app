@@ -11,7 +11,6 @@ import org.deltacore.delta.domains.activity.dto.ActivityFilesDTO;
 import org.deltacore.delta.domains.profile.dto.ProfileDTO;
 import org.deltacore.delta.domains.profile.dto.TutorDTO;
 import org.deltacore.delta.domains.profile.dto.UserDTO;
-import org.deltacore.delta.domains.profile.servive.ProfileImageDownloadService;
 import org.deltacore.delta.domains.profile.servive.ProfileImageUploadService;
 import org.deltacore.delta.domains.profile.servive.UserCommandService;
 import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URL;
 
 @RestController
 @RequestMapping("/account")
@@ -33,7 +31,6 @@ public class AccountCMD {
     private UserCommandService userCommandService;
     private AuthenticatedUserProvider authenticatedUser;
     private ProfileImageUploadService profileImageUploadService;
-    private ProfileImageDownloadService profileImageDownloadService;
 
     @Operation(
             summary = "Registrar um novo usuário",
@@ -165,60 +162,6 @@ public class AccountCMD {
         return ResponseEntity.status(HttpStatus.CREATED).body(uploadedFile);
     }
 
-    @Operation(
-            summary = "Download da imagem de perfil do usuário",
-            description = "Retorna a imagem de perfil do usuário no formato JPEG ou PNG.",
-            tags = {"Gerenciamento de Foto de Perfil"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Imagem de perfil retornada com sucesso.",
-                            content = @Content(mediaType = MediaType.IMAGE_JPEG_VALUE + ", " + MediaType.APPLICATION_JSON_VALUE)
-                    ),
-                    @ApiResponse(responseCode = "404", description = "Usuário ou imagem de perfil não encontrados.",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(example = "{\"timestamp\":\"2025-07-22T10:00:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Imagem de perfil não encontrada.\",\"path\":\"/api/profile/download-photo-profile\"}"))
-    ),
-                    @ApiResponse(responseCode = "409", description = "A imagem de perfil com o ID fornecido não corresponde ao usuário associado a ela.",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(example = "{\"timestamp\":\"2025-07-22T10:00:00\",\"status\":409,\"error\":\"Conflict\",\"message\":\"A imagem de perfil com o ID fornecido não corresponde ao usuário associado a ela.\",\"path\":\"/api/profile/download-photo-profile\"}"))
-                    ),
-                    @ApiResponse(responseCode = "500", description = "Erro interno inesperado.",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(example = "{\"timestamp\":\"2025-07-22T10:00:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Ocorreu um erro inesperado.\",\"path\":\"/api/profile/download-photo-profile\"}"))
-                    )
-            }
-    )
-    @GetMapping(value = "/profile/download-photo-profile", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<byte[]> downloadProfileImage(@RequestParam("fileName") String fileName) {
-        byte[] imageData = profileImageDownloadService.downloadProfileImage(fileName, authenticatedUser.currentUser());
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageData);
-    }
-
-    @Operation(
-            summary = "Obtém URL assinada para acesso temporário à imagem de perfil",
-            description = "Gera uma URL assinada válida por 15 minutos para acesso direto à imagem de perfil armazenada no GCP Storage.",
-            tags = {"Gerenciamento de Foto de Perfil"},
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "URL assinada gerada com sucesso.",
-                            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE + ", " + MediaType.APPLICATION_JSON_VALUE)
-                    ),
-                    @ApiResponse(responseCode = "404", description = "Usuário ou imagem de perfil não encontrados.",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(example = "{\"timestamp\":\"2025-07-22T10:00:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Imagem de perfil não encontrada.\",\"path\":\"/api/profile/photo-profile-url\"}"))
-                    ),
-                    @ApiResponse(responseCode = "500", description = "Erro interno inesperado.",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(example = "{\"timestamp\":\"2025-07-22T10:00:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Ocorreu um erro inesperado.\",\"path\":\"/api/profile/photo-profile-url\"}"))
-                    )
-            }
-    )
-    @GetMapping("/profile/photo-profile-url")
-    public ResponseEntity<String> getSignedUrl(@RequestParam("fileName") String fileName) {
-        URL signedUrl = profileImageDownloadService.getSignedUrlForProfileImage(fileName, authenticatedUser.currentUser());
-        return ResponseEntity.ok(signedUrl.toString());
-    }
-
-
-
     @Autowired @Lazy
     public void setUserCommandService(UserCommandService userCommandService) {
         this.userCommandService = userCommandService;
@@ -232,10 +175,5 @@ public class AccountCMD {
     @Autowired @Lazy
     public void setProfileImageUploadService(ProfileImageUploadService profileImageUploadService) {
         this.profileImageUploadService = profileImageUploadService;
-    }
-
-    @Autowired @Lazy
-    public void setProfileImageDownloadService(ProfileImageDownloadService profileImageDownloadService) {
-        this.profileImageDownloadService = profileImageDownloadService;
     }
 }
