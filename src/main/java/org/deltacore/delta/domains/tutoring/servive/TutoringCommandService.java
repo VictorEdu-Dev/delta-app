@@ -1,18 +1,16 @@
 package org.deltacore.delta.domains.tutoring.servive;
 
-import org.deltacore.delta.domains.profile.exception.UserNotFound;
+import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
 import org.deltacore.delta.domains.profile.model.Tutor;
 import org.deltacore.delta.domains.tutoring.dto.*;
 import org.deltacore.delta.domains.tutoring.exception.ConflictException;
 import org.deltacore.delta.domains.tutoring.exception.SubjectNotFoundException;
-import org.deltacore.delta.domains.tutoring.exception.TutoringNotFound;
 import org.deltacore.delta.domains.tutoring.model.DayTimeEntry;
 import org.deltacore.delta.domains.tutoring.model.Tutoring;
 import org.deltacore.delta.domains.tutoring.repository.DayTimeEntryDAO;
 import org.deltacore.delta.domains.tutoring.repository.TutoringDAO;
 import org.deltacore.delta.domains.profile.repository.TutorDAO;
 import org.deltacore.delta.domains.tutoring.repository.SubjectDAO;
-import org.deltacore.delta.shared.security.AuthenticatedUser;
 import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -67,7 +65,7 @@ public class TutoringCommandService {
         });
 
         tutoringToSave.setMonitor(tutorDAO.findByUserUsername(username)
-                .orElseThrow(() -> new UserNotFound("Monitor not found")));
+                .orElseThrow(() -> new UserNotFoundException("Monitor not found")));
         tutoringToSave.setSubject(subjectDAO.findByCode(monitoring.subject().code())
                 .orElseThrow(() -> new SubjectNotFoundException("Subject not found")));
 
@@ -112,7 +110,7 @@ public class TutoringCommandService {
     public TutoringDTO updateMonitoring(TutoringDTO updatedDTO) {
         String username = userProvider.currentUsername();
         Tutor tutor = tutorDAO.findByUserUsername(username)
-                .orElseThrow(() -> new UserNotFound("Monitor not found"));
+                .orElseThrow(() -> new UserNotFoundException("Monitor not found"));
         Tutoring existing = tutor.getTutoring();
 
         tutoringMapper.updateEntityFromDto(updatedDTO, existing);
@@ -132,7 +130,7 @@ public class TutoringCommandService {
     private void chooseActTutoring(boolean force) {
         String username = userProvider.currentUsername();
         Tutor tutor = tutorDAO.findByUserUsername(username)
-                .orElseThrow(() -> new UserNotFound("Monitor not found"));
+                .orElseThrow(() -> new UserNotFoundException("Monitor not found"));
 
         Tutoring existing = tutor.getTutoring();
         existing.setIsActive(force);
