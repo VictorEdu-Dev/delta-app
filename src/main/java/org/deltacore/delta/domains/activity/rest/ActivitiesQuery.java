@@ -51,7 +51,7 @@ public class ActivitiesQuery {
     @Operation(summary = "Pesquisar atividades pelo termo",
             description = "Pesquisa atividades cujo conteúdo ou título contenha o termo informado",
             parameters = {
-                    @Parameter(name = "q", description = "Termo de pesquisa", required = true, example = "engenharia")
+                    @Parameter(name = "q", description = "Termo de pesquisa", required = true, example = "atividade")
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Lista de atividades filtradas"),
