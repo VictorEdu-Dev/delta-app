@@ -6,7 +6,7 @@ import org.deltacore.delta.domains.profile.dto.*;
 import org.deltacore.delta.domains.profile.exception.ConflictException;
 import org.deltacore.delta.domains.profile.exception.IllegalArgumentException;
 import org.deltacore.delta.domains.profile.exception.ProfileNotFound;
-import org.deltacore.delta.domains.profile.exception.UserNotFound;
+import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
 import org.deltacore.delta.domains.profile.model.Profile;
 import org.deltacore.delta.domains.profile.model.Tutor;
 import org.deltacore.delta.domains.profile.repository.ProfileDAO;
@@ -83,11 +83,11 @@ public class UserCommandService {
     @Transactional
     public TutorDTO saveTutor(TutorDTO tutorDTO) {
         String username = authenticatedUser.current().
-                orElseThrow(() -> new UserNotFound("User not authenticated")).username();
+                orElseThrow(() -> new UserNotFoundException("User not authenticated")).username();
         Optional<Tutor> tutor = tutorDAO.findByUserUsername(username);
         if (tutor.isPresent()) throw new ConflictException("Tutor already exists for user: " + username);
         User user = userDAO.findByUsername(username)
-                .orElseThrow(() -> new UserNotFound("User not found or invalid with username: " + username));
+                .orElseThrow(() -> new UserNotFoundException("User not found or invalid with username: " + username));
 
         user.setRole(Roles.MONITOR);
         UserBasicDTO userBasicDTO = userBasicMapper.toDTO(user);
