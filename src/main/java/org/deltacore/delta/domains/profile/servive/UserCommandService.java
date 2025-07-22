@@ -155,10 +155,26 @@ public class UserCommandService {
     }
 
     @Transactional
-    public ProfileDTO updateProfile(@Valid ProfileDTO profileDTO, User user) {
-        Profile profile = user.getProfile();
+    public ProfileDTO updateProfile(ProfileDTO.ProfileUpdateDTO profileDTO, User user) {
+        User userA = userDAO.findById(user.getId())
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + user.getId()));
+        Profile profile = userA.getProfile();
+
         if (profile == null)
             throw new ProfileNotFound("User has no profile to update");
+
+        String username = profileDTO.userInfo().username().toLowerCase();
+        String email = profileDTO.userInfo().email().toLowerCase();
+
+        userDAO.findByUsername(username).ifPresent(existingUser -> {
+            if (!existingUser.getId().equals(userA.getId())) {
+                throw new UserAlreadyExists("Username already exists: " + username);
+            }
+        });
+
+        userA.setUsername(username);
+        userA.setEmail(email);
+
         profileMapper.updateEntityFromDto(profileDTO, profile);
 
         return profileMapper.toDTO(profile);
