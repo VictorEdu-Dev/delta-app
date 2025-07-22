@@ -1,11 +1,10 @@
 package org.deltacore.delta.domains.profile.servive;
 
-import jakarta.validation.Valid;
 import org.deltacore.delta.domains.auth.exception.UserAlreadyExists;
 import org.deltacore.delta.domains.profile.dto.*;
 import org.deltacore.delta.domains.profile.exception.ConflictException;
 import org.deltacore.delta.domains.profile.exception.IllegalArgumentException;
-import org.deltacore.delta.domains.profile.exception.ProfileNotFound;
+import org.deltacore.delta.domains.profile.exception.ProfileNotFoundException;
 import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
 import org.deltacore.delta.domains.profile.model.Profile;
 import org.deltacore.delta.domains.profile.model.Tutor;
@@ -134,7 +133,7 @@ public class UserCommandService {
     private void safeDelete(User user) {
         Profile profile = user.getProfile();
         if (profile == null)
-            throw new ProfileNotFound("User has no profile to delete");
+            throw new ProfileNotFoundException("User has no profile to delete");
 
         user.setProfile(null);
         userDAO.save(user);
@@ -145,7 +144,7 @@ public class UserCommandService {
     private void totalDelete(User user) {
         Profile profile = user.getProfile();
         if (profile == null)
-            throw new ProfileNotFound("User has no profile to delete");
+            throw new ProfileNotFoundException("User has no profile to delete");
 
         user.setProfile(null);
         userDAO.save(user);
@@ -161,7 +160,7 @@ public class UserCommandService {
         Profile profile = userA.getProfile();
 
         if (profile == null)
-            throw new ProfileNotFound("User has no profile to update");
+            throw new ProfileNotFoundException("User has no profile to update");
 
         String username = profileDTO.userInfo().username().toLowerCase();
         String email = profileDTO.userInfo().email().toLowerCase();
