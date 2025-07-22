@@ -41,11 +41,6 @@ public class User extends GeneralData {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id", unique = true)
-    @Fetch(FetchMode.JOIN)
     @ToString.Exclude
     private Profile profile;
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "users")
-    @ToString.Exclude
-    private List<Tutoring> tutorings;
 }
