@@ -152,11 +152,14 @@ public class ActivitiesQuery {
             description = "Faz o download do arquivo associado à atividade pelo ID do arquivo.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Arquivo baixado com sucesso",
-                            content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE)),
-                    @ApiResponse(responseCode = "400", description = "ID inválido"),
-                    @ApiResponse(responseCode = "404", description = "Arquivo não encontrado")
+                            content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE + ", " + MediaType.APPLICATION_JSON_VALUE)),
+                    @ApiResponse(responseCode = "400", description = "ID inválido",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+                    @ApiResponse(responseCode = "404", description = "Arquivo não encontrado",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
             })
-    @GetMapping(value = "/get-file/{id}")
+    @GetMapping(value = "/get-file/{id}",
+            produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<byte[]> download(
             @Parameter(description = "ID positivo do arquivo", example = "1", required = true)
             @PathVariable
@@ -177,7 +180,7 @@ public class ActivitiesQuery {
             description = "Gera um link temporário para acessar o arquivo no navegador.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Link assinado gerado",
-                            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE)),
+                            content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE + ", " + MediaType.APPLICATION_JSON_VALUE)),
                     @ApiResponse(responseCode = "400", description = "ID inválido"),
                     @ApiResponse(responseCode = "404", description = "Arquivo não encontrado"),
                     @ApiResponse(responseCode = "500", description = "Erro ao gerar link assinado")
