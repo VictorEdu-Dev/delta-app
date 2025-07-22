@@ -1,9 +1,8 @@
 package org.deltacore.delta.domains.profile.rest;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.deltacore.delta.domains.profile.exception.ConflictException;
+import org.deltacore.delta.domains.profile.exception.*;
 import org.deltacore.delta.domains.profile.exception.IllegalArgumentException;
-import org.deltacore.delta.domains.profile.exception.ProfileNotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,28 +16,42 @@ import java.util.Map;
 public class AccountAdvice {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Map<String, Object>> handleConflictException(ConflictException ex, HttpServletRequest request) {
-        return getMapResponseEntity(request, ex.getMessage());
+        return getMapResponseEntity(request, ex.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleConflictException(IllegalArgumentException ex, HttpServletRequest request) {
-        return getMapResponseEntity(request, ex.getMessage());
+        return getMapResponseEntity(request, ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ProfileNotFound.class)
-    public ResponseEntity<Map<String, Object>> handleConflictException(ProfileNotFound ex, HttpServletRequest request) {
-        return getMapResponseEntity(request, ex.getMessage());
+    @ExceptionHandler(ProfileNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleConflictException(ProfileNotFoundException ex, HttpServletRequest request) {
+        return getMapResponseEntity(request, ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    private ResponseEntity<Map<String, Object>> getMapResponseEntity(HttpServletRequest request, String message) {
+    @ExceptionHandler(EmptyFileException.class)
+    public ResponseEntity<Map<String, Object>> handleEmptyFileException(EmptyFileException ex, HttpServletRequest request) {
+        return getMapResponseEntity(request, ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ProfileImageTooLargeException.class)
+    public ResponseEntity<Map<String, Object>> handleProfileImageTooLargeException(ProfileImageTooLargeException ex, HttpServletRequest request) {
+        return getMapResponseEntity(request, ex.getMessage(), HttpStatus.PAYLOAD_TOO_LARGE);
+    }
+
+    @ExceptionHandler(InvalidFileTypeException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidFileTypeException(InvalidFileTypeException ex, HttpServletRequest request) {
+        return getMapResponseEntity(request, ex.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    private ResponseEntity<Map<String, Object>> getMapResponseEntity(HttpServletRequest request, String message, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", Instant.now().toString());
-        body.put("status", HttpStatus.CONFLICT.value());
-        body.put("error", "Conflict");
+        body.put("status", status.value());
         body.put("message", message);
         body.put("path", request.getRequestURI());
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+        return ResponseEntity.status(status).body(body);
     }
 
 }
