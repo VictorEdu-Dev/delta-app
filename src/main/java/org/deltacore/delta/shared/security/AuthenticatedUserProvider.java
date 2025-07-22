@@ -1,6 +1,6 @@
 package org.deltacore.delta.shared.security;
 
-import org.deltacore.delta.domains.profile.exception.UserNotFound;
+import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
 import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.domains.profile.repository.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,18 +37,18 @@ public class AuthenticatedUserProvider {
     public String currentUsername() {
         return current()
                 .map(AuthenticatedUser::username)
-                .orElseThrow(() -> new UserNotFound("No authenticated user found"));
+                .orElseThrow(() -> new UserNotFoundException("No authenticated user found"));
     }
 
     public Set<String> currentRoles() {
         return current()
                 .map(AuthenticatedUser::roles)
-                .orElseThrow(() -> new UserNotFound("No authenticated user found"));
+                .orElseThrow(() -> new UserNotFoundException("No authenticated user found"));
     }
 
     public User currentUser() {
         return userDAO.findByUsername(currentUsername())
-                .orElseThrow(() -> new UserNotFound("No authenticated user found with username: " + currentUsername()));
+                .orElseThrow(() -> new UserNotFoundException("No authenticated user found with username: " + currentUsername()));
     }
 
     @Autowired @Lazy
