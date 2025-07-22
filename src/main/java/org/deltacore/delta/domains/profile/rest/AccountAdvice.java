@@ -44,6 +44,11 @@ public class AccountAdvice {
         return getMapResponseEntity(request, ex.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
+    @ExceptionHandler(ProfileImageNotSetException.class)
+    public ResponseEntity<Map<String, Object>> handleProfileImageNotSetException(ProfileImageNotSetException ex, HttpServletRequest request) {
+        return getMapResponseEntity(request, ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<Map<String, Object>> getMapResponseEntity(HttpServletRequest request, String message, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", Instant.now().toString());
