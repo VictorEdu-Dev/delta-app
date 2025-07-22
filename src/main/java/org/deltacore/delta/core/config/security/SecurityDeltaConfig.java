@@ -104,7 +104,8 @@ public class SecurityDeltaConfig {
                         "/account/profile/create",
                         "/account/profile/delete",
                         "/account/profile/update",
-                        "/auth/get-user-info")
+                        "/auth/get-user-info",
+                        "/auth/change-password")
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().hasAnyRole(
                                 Roles.STUDENT.name(),
