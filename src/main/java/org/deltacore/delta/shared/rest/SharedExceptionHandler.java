@@ -1,5 +1,6 @@
 package org.deltacore.delta.shared.rest;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.deltacore.delta.shared.exception.ConflictException;
 import org.deltacore.delta.domains.activity.exception.LargeFileException;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
@@ -12,14 +13,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.nio.file.NoSuchFileException;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class ControllerExceptionHandler {
+public class SharedExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
@@ -94,6 +97,32 @@ public class ControllerExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("Error:", ex.getMessage());
         body.put("Status:", HttpStatus.PAYLOAD_TOO_LARGE.value());
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(body);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleAllExceptions(Exception ex, HttpServletRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", Instant.now().toString());
+        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        body.put("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        body.put("message", "Ocorreu um erro interno inesperado.");
+        body.put("details", ex.getMessage());
+        body.put("path", request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Map<String, Object>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex, HttpServletRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", Instant.now().toString());
+        body.put("status", HttpStatus.PAYLOAD_TOO_LARGE.value());
+        body.put("error", HttpStatus.PAYLOAD_TOO_LARGE.getReasonPhrase());
+        body.put("message", "O tamanho do arquivo enviado excede o limite permitido.");
+        body.put("details", ex.getMessage());
+        body.put("path", request.getRequestURI());
+
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(body);
     }
 }
