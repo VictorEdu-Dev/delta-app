@@ -1,12 +1,12 @@
 package org.deltacore.delta.domains.activity.servive;
 
 import org.deltacore.delta.domains.activity.dto.*;
+import org.deltacore.delta.domains.activity.dto.ActivityDTO.ActivityRegister.LinkActivityDTO;
 import org.deltacore.delta.domains.activity.model.ActivityFiles;
 import org.deltacore.delta.domains.activity.repository.ActivityFilesDAO;
 import org.deltacore.delta.shared.exception.ConflictException;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
 import org.deltacore.delta.domains.activity.model.Activity;
-import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.repository.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -153,9 +153,12 @@ public class ActivitiesSectionService {
         List<ActivityFiles> activityFiles = activityFilesDAO.findByActivityId(id);
         List<ActivityFilesDTO> activityFilesDTO = activityFiles.stream().map(activityFilesMapper::toDTO).toList();
 
+        List<LinkActivityDTO> linkActivityDTO = activityDAO.findLinksByActivityId(id);
+
         return activityDTO
                 .toBuilder()
                 .files(activityFilesDTO)
+                .links(linkActivityDTO)
                 .build();
     }
 
