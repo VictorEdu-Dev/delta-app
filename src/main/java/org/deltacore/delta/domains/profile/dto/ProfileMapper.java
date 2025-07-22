@@ -10,5 +10,5 @@ public interface ProfileMapper {
     Profile toEntity(ProfileDTO profileDto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateEntityFromDto(ProfileDTO dto, @MappingTarget Profile profile);
+    void updateEntityFromDto(ProfileDTO.ProfileUpdateDTO dto, @MappingTarget Profile profile);
 }
