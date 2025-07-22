@@ -22,4 +22,21 @@ public record LoginRequest(
                         @Pattern(regexp = ".*\\d.*", message = "{user.password.pattern.digit}")
                         @Pattern(regexp = ".*[^a-zA-Z0-9].*", message = "{user.password.pattern.special}")
                         String password) {
+    public record LoginChangePasswordRequest(
+            @NotBlank(message = "{user.current.password.not.blank}")
+            @Size(min = 6, message = "{user.password.size}")
+            @Pattern(regexp = ".*[A-Z].*", message = "{user.password.pattern.uppercase}")
+            @Pattern(regexp = ".*[a-z].*", message = "{user.password.pattern.lowercase}")
+            @Pattern(regexp = ".*\\d.*", message = "{user.password.pattern.digit}")
+            @Pattern(regexp = ".*[^a-zA-Z0-9].*", message = "{user.password.pattern.special}")
+            String currentPassword,
+
+            @NotBlank(message = "{user.new.password.not.blank}")
+            @Size(min = 6, message = "{user.password.size}")
+            @Pattern(regexp = ".*[A-Z].*", message = "{user.password.pattern.uppercase}")
+            @Pattern(regexp = ".*[a-z].*", message = "{user.password.pattern.lowercase}")
+            @Pattern(regexp = ".*\\d.*", message = "{user.password.pattern.digit}")
+            @Pattern(regexp = ".*[^a-zA-Z0-9].*", message = "{user.password.pattern.special}")
+            String newPassword) {
+    }
 }
