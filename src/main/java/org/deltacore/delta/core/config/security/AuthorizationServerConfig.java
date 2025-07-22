@@ -77,46 +77,38 @@ public class AuthorizationServerConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
-        // Exemplo de cliente para CLIENT_CREDENTIALS flow (ideal para API-API)
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("api-client")
-                .clientSecret("{noop}secret") // AVISO: Em produção, use um PasswordEncoder adequado (ex: BCryptPasswordEncoder)
+                .clientSecret("{noop}secret")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS) // Para comunicação máquina-máquina
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .scope("api.read")
                 .scope("api.write")
-                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build()) // APIs geralmente não requerem consentimento manual
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
                 .tokenSettings(TokenSettings.builder()
-                        .accessTokenTimeToLive(Duration.ofMinutes(15)) // Tempo de vida do token de acesso
-                        .reuseRefreshTokens(false) // Para client_credentials, refresh tokens são menos comuns
+                        .accessTokenTimeToLive(Duration.ofMinutes(15))
+                        .reuseRefreshTokens(false)
                         .build())
                 .build();
-        // Para produção, você injetaria um JdbcTemplate aqui e usaria JdbcRegisteredClientRepository
-        return new InMemoryRegisteredClientRepository(registeredClient); // AVISO: Apenas para desenvolvimento!
+        return new InMemoryRegisteredClientRepository(registeredClient);
     }
 
-    // Serviço de Autorização (Usar JdbcOAuth2AuthorizationService em produção)
     @Bean
     public OAuth2AuthorizationService authorizationService(RegisteredClientRepository registeredClientRepository) {
-        // Para produção, você injetaria um JdbcTemplate aqui e usaria JdbcOAuth2AuthorizationService
-        return new InMemoryOAuth2AuthorizationService(); // AVISO: Apenas para desenvolvimento!
+        return new InMemoryOAuth2AuthorizationService();
     }
 
-    // Serviço de Consentimento de Autorização (Usar JdbcOAuth2AuthorizationConsentService em produção)
-    // Para APIs sem front-end e fluxos como client_credentials, este serviço pode ser menos crítico.
     @Bean
     public OAuth2AuthorizationConsentService authorizationConsentService(RegisteredClientRepository registeredClientRepository) {
-        // Para produção, você injetaria um JdbcTemplate aqui e usaria JdbcOAuth2AuthorizationConsentService
-        return new InMemoryOAuth2AuthorizationConsentService(); // AVISO: Apenas para desenvolvimento!
+        return new InMemoryOAuth2AuthorizationConsentService();
     }
 
-    // Gerador de Tokens (incluindo JwtGenerator para tokens de acesso JWT)
     @Bean
     public OAuth2TokenGenerator<?> tokenGenerator(JWKSource<SecurityContext> jwkSource) {
-        NimbusJwtEncoder jwtEncoder = new NimbusJwtEncoder(jwkSource); // Usa a JWKSource para criar o encoder
+        NimbusJwtEncoder jwtEncoder = new NimbusJwtEncoder(jwkSource);
         JwtGenerator jwtGenerator = new JwtGenerator(jwtEncoder);
 
-        jwtGenerator.setJwtCustomizer(jwtCustomizer()); // Adiciona o customizador de JWT
+        jwtGenerator.setJwtCustomizer(jwtCustomizer());
 
         OAuth2AccessTokenGenerator accessTokenGenerator = new OAuth2AccessTokenGenerator();
         OAuth2RefreshTokenGenerator refreshTokenGenerator = new OAuth2RefreshTokenGenerator();
