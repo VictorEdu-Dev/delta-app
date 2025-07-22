@@ -30,6 +30,11 @@ public class AccountQuery {
                     @ApiResponse(responseCode = "200", description = "Imagem de perfil retornada com sucesso.",
                             content = @Content(mediaType = MediaType.IMAGE_JPEG_VALUE + ", " + MediaType.APPLICATION_JSON_VALUE)
                     ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Usuário não autenticado ou token inválido.",
+                            content = @Content
+                    ),
                     @ApiResponse(responseCode = "404", description = "Usuário ou imagem de perfil não encontrados.",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(example = "{\"timestamp\":\"2025-07-22T10:00:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Imagem de perfil não encontrada.\",\"path\":\"/api/profile/download-photo-profile\"}"))
@@ -53,6 +58,11 @@ public class AccountQuery {
             responses = {
                     @ApiResponse(responseCode = "200", description = "URL assinada gerada com sucesso.",
                             content = @Content(mediaType = MediaType.TEXT_PLAIN_VALUE + ", " + MediaType.APPLICATION_JSON_VALUE)
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Usuário não autenticado ou token inválido.",
+                            content = @Content
                     ),
                     @ApiResponse(responseCode = "404", description = "Usuário ou imagem de perfil não encontrados.",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
