@@ -11,6 +11,7 @@ import org.deltacore.delta.domains.activity.dto.ActivityFilesDTO;
 import org.deltacore.delta.domains.profile.dto.ProfileDTO;
 import org.deltacore.delta.domains.profile.dto.TutorDTO;
 import org.deltacore.delta.domains.profile.dto.UserDTO;
+import org.deltacore.delta.domains.profile.servive.ProfileDeleteService;
 import org.deltacore.delta.domains.profile.servive.ProfileImageUploadService;
 import org.deltacore.delta.domains.profile.servive.UserCommandService;
 import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
@@ -31,6 +32,7 @@ public class AccountCMD {
     private UserCommandService userCommandService;
     private AuthenticatedUserProvider authenticatedUser;
     private ProfileImageUploadService profileImageUploadService;
+    private ProfileDeleteService profileDeleteService;
 
     @Operation(
             summary = "Registrar um novo usuário",
@@ -137,6 +139,11 @@ public class AccountCMD {
                                     schema = @Schema(example = "{\"timestamp\":\"2023-10-26T10:00:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Não é possível carregar um arquivo vazio.\",\"path\":\"/api/profile/image/upload-profile\"}"))
                     ),
                     @ApiResponse(
+                            responseCode = "401",
+                            description = "Usuário não autenticado ou token inválido.",
+                            content = @Content
+                    ),
+                    @ApiResponse(
                             responseCode = "413",
                             description = "Carga Útil Muito Grande: A imagem de perfil excede o tamanho máximo permitido (5 MB).",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -162,6 +169,33 @@ public class AccountCMD {
         return ResponseEntity.status(HttpStatus.CREATED).body(uploadedFile);
     }
 
+    @Operation(
+            summary = "Excluir imagem de perfil",
+            description = "Remove a imagem de perfil do usuário atualmente autenticado.",
+            tags = {"Gerenciamento de Foto de Perfil"},
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Imagem de perfil excluída com sucesso"
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Erro ao excluir a imagem de perfil. Pode ocorrer se não houver imagem para excluir.",
+                            content = @Content
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Usuário não autenticado ou token inválido.",
+                            content = @Content
+                    )
+            }
+    )
+    @DeleteMapping(value = "/profile/delete-photo-profile")
+    public ResponseEntity<?> deleteProfileImage() {
+        profileDeleteService.removeProfileImage(authenticatedUser.currentUser().getProfile());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @Autowired @Lazy
     public void setUserCommandService(UserCommandService userCommandService) {
         this.userCommandService = userCommandService;
@@ -175,5 +209,10 @@ public class AccountCMD {
     @Autowired @Lazy
     public void setProfileImageUploadService(ProfileImageUploadService profileImageUploadService) {
         this.profileImageUploadService = profileImageUploadService;
+    }
+
+    @Autowired @Lazy
+    public void setProfileDeleteService(ProfileDeleteService profileDeleteService) {
+        this.profileDeleteService = profileDeleteService;
     }
 }
