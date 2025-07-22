@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Builder
+@Builder(toBuilder = true)
 public record ActivityDTO(
         Long id,
         @NotBlank(message = "{activity.title.not.blank}")
