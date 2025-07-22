@@ -6,7 +6,7 @@ import org.deltacore.delta.domains.auth.dto.RefreshTokenMapper;
 import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
 import org.deltacore.delta.domains.profile.dto.UserBasicDTO;
 import org.deltacore.delta.domains.profile.dto.UserBasicMapper;
-import org.deltacore.delta.domains.profile.exception.UserNotFound;
+import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
 import org.deltacore.delta.domains.auth.model.RefreshToken;
 import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.domains.auth.repository.RefreshTokenDAO;
@@ -36,7 +36,7 @@ public class JwtTokenService {
         this.jwtEncoder = new NimbusJwtEncoder(jwkSource);
     }
 
-    public TokenInfoDTO generateTokenInfo(String username, String role) throws UserNotFound {
+    public TokenInfoDTO generateTokenInfo(String username, String role) throws UserNotFoundException {
         Instant now = Instant.now();
         Instant accessTokenExpiresAt = now.plusSeconds(900);
         Instant refreshTokenExpiresAt = now.plus(7, DAYS);
@@ -52,7 +52,7 @@ public class JwtTokenService {
         )).getTokenValue();
 
         User user = userDAO.findByUsername(username)
-                .orElseThrow(() -> new UserNotFound("User not found: " + username));
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
         UserBasicDTO userBasicDTO = userBasicMapper.toDTO(user);
 
         TokenInfoDTO tokenInfoDTO = new TokenInfoDTO(
