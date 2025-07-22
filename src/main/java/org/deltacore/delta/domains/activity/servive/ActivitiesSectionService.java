@@ -1,9 +1,8 @@
 package org.deltacore.delta.domains.activity.servive;
 
-import org.deltacore.delta.domains.activity.dto.ActivityDTO;
-import org.deltacore.delta.domains.activity.dto.ActivityFilterDTO;
-import org.deltacore.delta.domains.activity.dto.ActivityMapper;
-import org.deltacore.delta.domains.activity.dto.ActivityMiniatureDTO;
+import org.deltacore.delta.domains.activity.dto.*;
+import org.deltacore.delta.domains.activity.model.ActivityFiles;
+import org.deltacore.delta.domains.activity.repository.ActivityFilesDAO;
 import org.deltacore.delta.shared.exception.ConflictException;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
 import org.deltacore.delta.domains.activity.model.Activity;
@@ -28,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ActivitiesSectionService {
@@ -35,6 +35,8 @@ public class ActivitiesSectionService {
 
     private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
+    private ActivityFilesDAO activityFilesDAO;
+    private ActivityFilesMapper activityFilesMapper;
     private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
     private final MessageSource messageSource;
 
@@ -147,7 +149,14 @@ public class ActivitiesSectionService {
                             LocaleContextHolder.getLocale());
                     return new ResourceNotFoundException(msg);
                 });
-        return activityMapper.toDTO(activityToBeLoaded);
+        ActivityDTO activityDTO = activityMapper.toDTO(activityToBeLoaded);
+        List<ActivityFiles> activityFiles = activityFilesDAO.findByActivityId(id);
+        List<ActivityFilesDTO> activityFilesDTO = activityFiles.stream().map(activityFilesMapper::toDTO).toList();
+
+        return activityDTO
+                .toBuilder()
+                .files(activityFilesDTO)
+                .build();
     }
 
     @Transactional
@@ -159,5 +168,15 @@ public class ActivitiesSectionService {
         activity.markAsCompleted();
 
         return activityMapper.toDTO(activity);
+    }
+
+    @Autowired
+    private void setActivityFilesDAO(ActivityFilesDAO activityFilesDAO) {
+        this.activityFilesDAO = activityFilesDAO;
+    }
+
+    @Autowired
+    private void setActivityFilesMapper(ActivityFilesMapper activityFilesMapper) {
+        this.activityFilesMapper = activityFilesMapper;
     }
 }
