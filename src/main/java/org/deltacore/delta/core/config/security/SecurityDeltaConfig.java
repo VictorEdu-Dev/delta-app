@@ -104,6 +104,9 @@ public class SecurityDeltaConfig {
                         "/account/profile/create",
                         "/account/profile/delete",
                         "/account/profile/update",
+                        "/account/profile/upload-photo-profile",
+                        "/account/profile/download-photo-profile",
+                        "/account/profile/photo-profile-url",
                         "/auth/get-user-info",
                         "/auth/change-password")
                 .authorizeHttpRequests(auth -> auth
