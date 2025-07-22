@@ -66,13 +66,12 @@ public class Activity extends GeneralData {
     @ToString.Exclude
     private Subject subject;
 
-//    @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
-//    @ToString.Exclude
-//    private List<ActivityFiles> files;
-
+    @OneToMany(mappedBy = "activity", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @ToString.Exclude
+    private List<ActivityFiles> files;
 
     @ToString.Exclude
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
             name = "activity_links",
             joinColumns = @JoinColumn(name = "activity_id")
