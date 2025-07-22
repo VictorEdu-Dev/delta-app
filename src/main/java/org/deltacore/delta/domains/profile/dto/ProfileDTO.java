@@ -13,7 +13,10 @@ public record ProfileDTO(
 
         String profileImage,
 
-        @Pattern(regexp = "\\d{10,15}", message = "{profile.phone.pattern}")
+        @Pattern(
+                regexp = "^\\d{11}$",
+                message = "{profile.phone.pattern}"
+        )
         String phoneNumber,
 
         BigDecimal totalScore,
