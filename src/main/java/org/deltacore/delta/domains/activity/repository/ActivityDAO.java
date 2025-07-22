@@ -1,21 +1,19 @@
 package org.deltacore.delta.domains.activity.repository;
 
+import org.deltacore.delta.domains.activity.dto.ActivityDTO.ActivityRegister.LinkActivityDTO;
 import org.deltacore.delta.domains.activity.dto.ActivityMiniatureDTO;
 import org.deltacore.delta.domains.activity.model.Activity;
 import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.model.ActivityType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.NonNullApi;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface ActivityDAO extends CrudRepository<Activity, Long>, JpaSpecificationExecutor<Activity> {
@@ -39,9 +37,13 @@ public interface ActivityDAO extends CrudRepository<Activity, Long>, JpaSpecific
     Page<ActivityMiniatureDTO> findActivitiesMiniature(@Param("status") ActivityStatus status,
                                                        @Param("activityType") ActivityType activityType,
                                                        Pageable pageable);
-    @Override
-    @NonNull
-    @EntityGraph(attributePaths = {"links"})
-    Page<Activity> findAll(Specification<Activity> spec, @NonNull Pageable pageable);
+
+    @Query(value = """
+        SELECT DISTINCT l.link, l.description
+        FROM activity a
+        INNER JOIN activity_links l ON a.id = l.activity_id
+        WHERE a.id = :activityId
+    """, nativeQuery = true)
+    List<LinkActivityDTO> findLinksByActivityId(@Param("activityId") Long activityId);
 
 }
