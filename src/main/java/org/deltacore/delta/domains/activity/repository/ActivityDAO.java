@@ -41,7 +41,7 @@ public interface ActivityDAO extends CrudRepository<Activity, Long>, JpaSpecific
                                                        Pageable pageable);
     @Override
     @NonNull
-    @EntityGraph(attributePaths = {"files", "links"})
+    @EntityGraph(attributePaths = {"links"})
     Page<Activity> findAll(Specification<Activity> spec, @NonNull Pageable pageable);
 
 }
