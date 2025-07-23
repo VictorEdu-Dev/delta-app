@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -148,18 +149,31 @@ public class ActivitiesQuery {
         return ResponseEntity.ok(activitiesService.loadActivityData(id));
     }
 
-    @Operation(summary = "Download de arquivo da atividade",
+    @Operation(
+            summary = "Download de arquivo da atividade",
             description = "Faz o download do arquivo associado à atividade pelo ID do arquivo.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Arquivo baixado com sucesso",
-                            content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE + ", " + MediaType.APPLICATION_JSON_VALUE)),
+                    @ApiResponse(responseCode = "200", description = "Arquivo retornado com sucesso",
+                            content = {
+                                    @Content(mediaType = FileType.APPLICATION_PDF),
+                                    @Content(mediaType = FileType.IMAGE_JPEG),
+                                    @Content(mediaType = FileType.IMAGE_PNG),
+                                    @Content(mediaType = FileType.APPLICATION_DOC),
+                                    @Content(mediaType = FileType.APPLICATION_DOCX)
+                            }),
                     @ApiResponse(responseCode = "400", description = "ID inválido",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
                     @ApiResponse(responseCode = "404", description = "Arquivo não encontrado",
-                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
-            })
-    @GetMapping(value = "/get-file/{id}",
-            produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+            }
+    )
+    @GetMapping(value = "/get-file/{id}", produces = {
+            FileType.APPLICATION_PDF,
+            FileType.IMAGE_JPEG,
+            FileType.IMAGE_PNG,
+            FileType.APPLICATION_DOC,
+            FileType.APPLICATION_DOCX
+    })
     public ResponseEntity<byte[]> download(
             @Parameter(description = "ID positivo do arquivo", example = "1", required = true)
             @PathVariable
@@ -170,9 +184,9 @@ public class ActivitiesQuery {
         String objectName = activityDownloadService.getObjectNameByFileId(id);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + objectName.substring(objectName.lastIndexOf('/') + 1) + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + objectName.substring(objectName.lastIndexOf('/') + 1) + "\"")
                 .contentLength(data.length)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentType(MediaTypeFactory.getMediaType(objectName).orElse(MediaType.APPLICATION_OCTET_STREAM))
                 .body(data);
     }
 
