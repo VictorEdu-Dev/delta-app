@@ -7,12 +7,14 @@ import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.model.ActivityType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +25,6 @@ public interface ActivityDAO extends CrudRepository<Activity, Long>, JpaSpecific
             "AND a.deadline BETWEEN :startDate AND :endDate")
     Page<Activity> findActivitiesByFilters(@Param("status") ActivityStatus status,
                                            @Param("activityType") ActivityType activityType,
-                                           @Param("startDate") LocalDateTime startDate,
-                                           @Param("endDate") LocalDateTime endDate,
                                            Pageable pageable);
 
 
@@ -46,4 +46,8 @@ public interface ActivityDAO extends CrudRepository<Activity, Long>, JpaSpecific
     """, nativeQuery = true)
     List<LinkActivityDTO> findLinksByActivityId(@Param("activityId") Long activityId);
 
+    // Está fazendo LEFT JOIN com subject e tutoring
+    @NonNull
+    @EntityGraph(attributePaths = {"subject", "subject.tutoring"})
+    Page<Activity> findAll(Specification<Activity> specification, @NonNull Pageable pageable);
 }
