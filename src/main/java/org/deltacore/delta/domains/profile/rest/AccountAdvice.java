@@ -3,6 +3,7 @@ package org.deltacore.delta.domains.profile.rest;
 import jakarta.servlet.http.HttpServletRequest;
 import org.deltacore.delta.domains.profile.exception.*;
 import org.deltacore.delta.domains.profile.exception.IllegalArgumentException;
+import org.deltacore.delta.shared.exception.AdviceStruct;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class AccountAdvice {
+public class AccountAdvice extends AdviceStruct {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<Map<String, Object>> handleConflictException(ConflictException ex, HttpServletRequest request) {
         return getMapResponseEntity(request, ex.getMessage(), HttpStatus.CONFLICT);
@@ -48,15 +49,4 @@ public class AccountAdvice {
     public ResponseEntity<Map<String, Object>> handleProfileImageNotSetException(ProfileImageNotSetException ex, HttpServletRequest request) {
         return getMapResponseEntity(request, ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
-
-    private ResponseEntity<Map<String, Object>> getMapResponseEntity(HttpServletRequest request, String message, HttpStatus status) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", Instant.now().toString());
-        body.put("status", status.value());
-        body.put("message", message);
-        body.put("path", request.getRequestURI());
-
-        return ResponseEntity.status(status).body(body);
-    }
-
 }
