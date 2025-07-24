@@ -3,6 +3,8 @@ package org.deltacore.delta.domains.activity.servive;
 import org.deltacore.delta.domains.activity.dto.*;
 import org.deltacore.delta.domains.activity.dto.ActivityDTO.ActivityRegister.LinkActivityDTO;
 import org.deltacore.delta.domains.activity.model.ActivityFiles;
+import org.deltacore.delta.domains.activity.model.ActivityStatus;
+import org.deltacore.delta.domains.activity.model.ActivityType;
 import org.deltacore.delta.domains.activity.repository.ActivityFilesDAO;
 import org.deltacore.delta.shared.exception.ConflictException;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
@@ -53,47 +55,14 @@ public class ActivitiesSectionService {
 
     public PagedModel<EntityModel<ActivityDTO>> getActivitiesFiltered(Pageable pageable, ActivityFilterDTO filters) {
         Page<Activity> activities = activityDAO.findActivitiesByFilters(
-                filters.status(),
-                filters.activityType(),
-                filters.startDate() != null ? filters.startDate().atStartOfDay()
-                        : LocalDate.now().atStartOfDay(),
-                filters.endDate() != null ? filters.endDate().atTime(LocalTime.MAX)
-                        : DEFAULT_END_DATE,
+                ActivityStatus.valueOf(filters.status()),
+                ActivityType.valueOf(filters.activityType()),
                 pageable);
 
         if (activities.isEmpty()) return PagedModel.empty();
 
         return pagedResourcesAssembler
                 .toModel(activities, activity -> EntityModel.of(activityMapper.toDTO(activity)));
-    }
-
-    @Transactional
-    public Page<ActivityDTO> getFilteredActivities(String search, int page, int size, ActivityFilterDTO filter) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("deadline").ascending());
-
-        Specification<Activity> spec = Specification.where(null);
-
-        if (search != null && !search.trim().isEmpty()) {
-            String pattern = "%" + search.toLowerCase() + "%";
-            spec = spec.and((root, query, builder) -> builder.or(
-                    builder.like(builder.lower(root.get("title")), pattern),
-                    builder.like(builder.lower(root.get("description")), pattern)
-            ));
-        }
-
-        if (filter != null) {
-            if (filter.status() != null) {
-                spec = spec.and((root, query, builder) ->
-                        builder.equal(root.get("status"), filter.status()));
-            }
-            if (filter.activityType() != null) {
-                spec = spec.and((root, query, builder) ->
-                        builder.equal(root.get("activityType"), filter.activityType()));
-            }
-        }
-
-        Page<Activity> pageResult = activityDAO.findAll(spec, pageable);
-        return pageResult.map(activityMapper::toDTO);
     }
 
     @Transactional
