@@ -8,12 +8,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.deltacore.delta.domains.auth.dto.LoginRequest;
+import org.deltacore.delta.domains.auth.dto.*;
 import org.deltacore.delta.domains.auth.dto.LoginRequest.LoginChangePasswordRequest;
-import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
+import org.deltacore.delta.domains.auth.model.RecoveryCode;
 import org.deltacore.delta.domains.auth.service.JwtTokenService;
 import org.deltacore.delta.domains.auth.service.AuthCmdService;
-import org.deltacore.delta.shared.security.AuthenticatedUser;
 import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -88,6 +87,102 @@ public class AuthCmd {
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .build();
+    }
+
+    @Operation(
+            summary = "Solicitar código para recuperação de senha",
+            description = "Gera e envia um código de recuperação de 6 dígitos para o e-mail do usuário. O código expira em 5 minutos.",
+            tags = "Recuperação de Senha",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ForgotPasswordRequest.class),
+                            examples = @ExampleObject(value = """
+                            {
+                              "email": "victorgostosao@email.com"
+                            }
+                        """)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Código enviado para o e-mail com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "E-mail inválido ou não cadastrado")
+            }
+    )
+    @PostMapping(value = "/forgot-password", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> forgotPassword(@RequestBody @Valid ForgotPasswordRequest request) {
+        authCmdService.sendRecoveryCode(request, RecoveryCode.Reason.FORGOT_PASSWORD);
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(
+            summary = "Validar código de recuperação",
+            description = "Valida o código de recuperação enviado para o e-mail do usuário. Se for válido e ainda estiver no prazo, permite redefinir a senha.",
+            tags = "Recuperação de Senha",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = VerifyCodeRequest.class),
+                            examples = @ExampleObject(value = """
+                            {
+                              "email": "jgcleite@email.com",
+                              "code": "123456"
+                            }
+                        """)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Código válido"),
+                    @ApiResponse(responseCode = "400", description = "Código inválido ou expirado")
+            }
+    )
+    @PostMapping(value = "/verify-code", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> verifyCode(@RequestBody @Valid VerifyCodeRequest request) {
+        boolean valid = authCmdService.verifyRecoveryCode(
+                request
+                        .email()
+                        .replaceAll("\\s+", "")
+                        .toLowerCase(),
+                request.code(), RecoveryCode.Reason.FORGOT_PASSWORD);
+        if (valid) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired code.");
+        }
+    }
+
+    @Operation(
+            summary = "Redefinir senha",
+            description = "Redefine a senha de um usuário utilizando um código de recuperação válido previamente enviado por e-mail.",
+            tags = "Recuperação de Senha",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PasswordResetRequest.class),
+                            examples = @ExampleObject(value = """
+                            {
+                              "email": "vander@eemail.com",
+                              "code": "123456",
+                              "newPassword": "NovaSenhaSegura@123"
+                            }
+                        """)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Senha redefinida com sucesso"),
+                    @ApiResponse(responseCode = "400", description = "Código inválido, expirado ou dados inconsistentes")
+            }
+    )
+    @PostMapping(value = "/reset-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid PasswordResetRequest request) {
+        authCmdService.resetPassword(request
+                .email()
+                .replaceAll("\\s+", "")
+                .toLowerCase(), request.code(), request.newPassword());
+        return ResponseEntity.ok().build();
     }
 
     @Operation(
