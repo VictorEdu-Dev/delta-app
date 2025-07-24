@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.deltacore.delta.domains.activity.dto.ActivityFilterDTO;
 import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.model.ActivityType;
@@ -62,11 +63,11 @@ public class ActivitiesQuery {
     @PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> searchActivities(
             @RequestParam("q") String search,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size,
+            @RequestParam(value = "page", defaultValue = "0") @Valid @PositiveOrZero int page,
+            @RequestParam(value = "size", defaultValue = "20") @Valid @PositiveOrZero int size,
             @Valid @RequestBody ActivityFilterDTO filters) {
 
-        return ResponseEntity.ok(activitiesService.getFilteredActivities(search, page, size, filters));
+        return ResponseEntity.ok(activityQueryService.getFilteredActivities(search, page, size, filters));
     }
 
     @Operation(
@@ -93,16 +94,6 @@ public class ActivitiesQuery {
 
         return handlePagedRequest(page, size, filters, pageable ->
                 activitiesService.getActivitiesFiltered(pageable, filters));
-    }
-
-    @PostMapping(value = "/list-miniatures", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getActivitiesMiniatures(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size,
-            @Valid @RequestBody ActivityFilterDTO filters) {
-
-        return handlePagedRequest(page, size, filters, pageable ->
-                activityQueryService.getActivityMiniature(pageable, filters));
     }
 
     private ResponseEntity<?> handlePagedRequest(
