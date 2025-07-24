@@ -55,6 +55,9 @@ public class SecurityDeltaConfig {
                         "/auth/register/**",
                         "/auth/refresh/**",
                         "/auth/revoke/**",
+                        "/auth/forgot-password/**",
+                        "/auth/verify-code/**",
+                        "/auth/reset-password/**",
                         "/account/register/**")
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll())
