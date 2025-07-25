@@ -163,18 +163,34 @@ public class UserCommandService {
         String username = profileDTO.userInfo().username().toLowerCase();
         String email = profileDTO.userInfo().email().toLowerCase();
 
-        userDAO.findByUsername(username).ifPresent(existingUser -> {
-            if (!existingUser.getId().equals(user.getId())) {
-                throw new UserAlreadyExists("Username already exists: " + username);
-            }
-        });
-        // colocar verificação de email se existe no bancco ou username, criar exceção pra isso, ajustar advice
+        validateDataUpdate(username, email, user, profile, profileDTO);
 
         user.setUsername(username);
         user.setEmail(email);
         profileMapper.updateEntityFromDto(profileDTO, profile);
 
+        profileDAO.save(profile);
+        userDAO.save(user);
         return profileMapper.toDTO(profile);
+    }
+
+    private void validateDataUpdate(String username, String email, User user, Profile profile, ProfileDTO.ProfileUpdateDTO profileDTO) {
+        userDAO.findByUsername(username).ifPresent(existingUser -> {
+            if (!existingUser.getId().equals(user.getId())) {
+                throw new UserAlreadyExists("Username already exists: " + username);
+            }
+        });
+        userDAO.findByEmail(email).ifPresent(existingUser -> {
+            if (!existingUser.getId().equals(user.getId())) {
+                throw new ConflictException("Email already exists: " + email);
+            }
+        });
+
+        profileDAO.findByPhoneNumber(profileDTO.phoneNumber()).ifPresent(existingUser -> {
+            if (!existingUser.getId().equals(profile.getId())) {
+                throw new ConflictException("Phone number already exists: " + profileDTO.phoneNumber());
+            }
+        });
     }
 
     @Autowired(required = false) @Lazy
