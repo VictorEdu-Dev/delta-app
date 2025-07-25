@@ -49,6 +49,10 @@ public class AccountCMD {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
+    @Deprecated(
+            forRemoval = true,
+            since = "1.0.0"
+    )
     @Operation(
             summary = "Registrar um novo monitor",
             description = "Cria um novo monitor com informações adicionais de perfil.",
@@ -59,7 +63,7 @@ public class AccountCMD {
     )
     @PostMapping(value = "/register/tutor", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> registerTutor(@RequestBody @Valid TutorDTO tutorDTO) {
-        TutorDTO savedTutor = userCommandService.saveTutor(tutorDTO);
+        TutorDTO savedTutor = userCommandService.saveTutor(tutorDTO, authenticatedUser.currentUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTutor);
     }
 
