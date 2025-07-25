@@ -14,6 +14,7 @@ import org.deltacore.delta.domains.activity.model.ActivityType;
 import org.deltacore.delta.domains.activity.servive.ActivitiesSectionService;
 import org.deltacore.delta.domains.activity.servive.ActivityDownloadService;
 import org.deltacore.delta.domains.activity.servive.ActivityQueryService;
+import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
@@ -43,6 +44,7 @@ public class ActivitiesQuery {
     private final ActivitiesSectionService activitiesService;
     private ActivityQueryService activityQueryService;
     private ActivityDownloadService activityDownloadService;
+    private AuthenticatedUserProvider authenticatedUser;
 
     @Autowired
     public ActivitiesQuery(MessageSource messageSource, ActivitiesSectionService activitiesService) {
@@ -67,7 +69,7 @@ public class ActivitiesQuery {
             @RequestParam(value = "size", defaultValue = "20") @Valid @PositiveOrZero int size,
             @Valid @RequestBody ActivityFilterDTO filters) {
 
-        return ResponseEntity.ok(activityQueryService.getFilteredActivities(search, page, size, filters));
+        return ResponseEntity.ok(activityQueryService.getFilteredActivities(search, page, size, filters, authenticatedUser.currentUser()));
     }
 
     @Operation(
@@ -210,5 +212,10 @@ public class ActivitiesQuery {
     @Autowired @Lazy
     private void setActivityDownloadService(ActivityDownloadService activityDownloadService) {
         this.activityDownloadService = activityDownloadService;
+    }
+
+    @Autowired
+    private void setAuthenticatedUserProvider(AuthenticatedUserProvider authenticatedUserProvider) {
+        this.authenticatedUser = authenticatedUserProvider;
     }
 }
