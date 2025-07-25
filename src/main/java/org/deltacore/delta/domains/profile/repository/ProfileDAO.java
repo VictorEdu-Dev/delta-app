@@ -8,4 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface ProfileDAO extends CrudRepository<Profile, Long> {
+    Optional<Profile> findByPhoneNumber(String phoneNumber);
+
 }
