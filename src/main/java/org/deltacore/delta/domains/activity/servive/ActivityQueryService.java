@@ -1,5 +1,8 @@
 package org.deltacore.delta.domains.activity.servive;
 
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.deltacore.delta.domains.activity.dto.ActivityDTO;
 import org.deltacore.delta.domains.activity.dto.ActivityFilterDTO;
 import org.deltacore.delta.domains.activity.dto.ActivityMapper;
@@ -7,12 +10,13 @@ import org.deltacore.delta.domains.activity.model.Activity;
 import org.deltacore.delta.domains.activity.model.ActivityStatus;
 import org.deltacore.delta.domains.activity.model.ActivityType;
 import org.deltacore.delta.domains.activity.repository.ActivityDAO;
+import org.deltacore.delta.domains.profile.model.User;
+import org.deltacore.delta.domains.tutoring.model.Tutoring;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +27,32 @@ public class ActivityQueryService {
     private ActivityDAO activityDAO;
 
     @Transactional
-    public Page<ActivityDTO> getFilteredActivities(String search, int page, int size, ActivityFilterDTO filter) {
+    public Page<ActivityDTO> getFilteredActivities(String search, int page, int size, ActivityFilterDTO filter, User user) {
         Pageable pageable = PageRequest.of(page, size);
 
         Specification<Activity> spec = buildSpecification(search, filter)
+                // .and(subjectInUserMonitorings(user.getId())) Está aqui para uso futuro - fltra atividades de acordo com as disciplinas das monitorias nas quais o usuário está inscrito
                 .and(orderByCustomStatus())
                 .and(orderByDeadlineAsc());
 
         return activityDAO.findAll(spec, pageable)
                 .map(activityMapper::toDTO);
+    }
+
+    private Specification<Activity> subjectInUserMonitorings(Long userId) {
+        return (root, query, builder) -> {
+            if (query == null) return builder.conjunction();
+
+            Subquery<Long> subquery = query.subquery(Long.class);
+            Root<Tutoring> tutoringRoot = subquery.from(Tutoring.class);
+            Join<Object, Object> usersJoin = tutoringRoot.join("users");
+            Join<Object, Object> subjectJoin = tutoringRoot.join("subject");
+
+            subquery.select(subjectJoin.get("id"))
+                    .where(builder.equal(usersJoin.get("id"), userId));
+
+            return root.get("subject").get("id").in(subquery);
+        };
     }
 
     private Specification<Activity> buildSpecification(String search, ActivityFilterDTO filter) {
