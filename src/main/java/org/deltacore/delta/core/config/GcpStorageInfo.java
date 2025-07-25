@@ -21,4 +21,7 @@ public class GcpStorageInfo {
 
     @Value("${gcp.folder.path.profile}")
     private String folderPathProfile;
+
+    @Value("${gcp.folder.path.tutor.request}")
+    private String folderPathTutorRequest;
 }
