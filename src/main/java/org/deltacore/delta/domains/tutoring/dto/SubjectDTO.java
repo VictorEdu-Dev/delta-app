@@ -15,4 +15,10 @@ public record SubjectDTO(
         @Schema(hidden = true)
         TutoringDTO monitoring
 ) {
+        public record SubjectInfoDTO (
+                Long id,
+                String code,
+                String name,
+                Boolean isActive
+        ) {}
 }
