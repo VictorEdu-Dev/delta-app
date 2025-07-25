@@ -80,13 +80,8 @@ public class UserCommandService {
     }
 
     @Transactional
-    public TutorDTO saveTutor(TutorDTO tutorDTO) {
-        String username = authenticatedUser.current().
-                orElseThrow(() -> new UserNotFoundException("User not authenticated")).username();
-        Optional<Tutor> tutor = tutorDAO.findByUserUsername(username);
-        if (tutor.isPresent()) throw new ConflictException("Tutor already exists for user: " + username);
-        User user = userDAO.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found or invalid with username: " + username));
+    public TutorDTO saveTutor(TutorDTO tutorDTO, User user) {
+        validateNewTutor(user);
 
         user.setRole(Roles.MONITOR);
         UserBasicDTO userBasicDTO = userBasicMapper.toDTO(user);
@@ -100,6 +95,12 @@ public class UserCommandService {
         return savedTutorDTO.toBuilder()
                 .userMonitor(userBasicDTO)
                 .build();
+    }
+
+    private void validateNewTutor(User user) {
+        String username = user.getUsername();
+        Optional<Tutor> tutor = tutorDAO.findByUserUsername(username);
+        if (tutor.isPresent()) throw new ConflictException("Tutor already exists for user: " + username);
     }
 
     @Transactional
@@ -155,25 +156,22 @@ public class UserCommandService {
 
     @Transactional
     public ProfileDTO updateProfile(ProfileDTO.ProfileUpdateDTO profileDTO, User user) {
-        User userA = userDAO.findById(user.getId())
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + user.getId()));
-        Profile profile = userA.getProfile();
-
+        Profile profile = user.getProfile();
         if (profile == null)
-            throw new ProfileNotFoundException("User has no profile to update");
+            throw new ProfileNotFoundException("User has no profile to update. Please create a profile first.");
 
         String username = profileDTO.userInfo().username().toLowerCase();
         String email = profileDTO.userInfo().email().toLowerCase();
 
         userDAO.findByUsername(username).ifPresent(existingUser -> {
-            if (!existingUser.getId().equals(userA.getId())) {
+            if (!existingUser.getId().equals(user.getId())) {
                 throw new UserAlreadyExists("Username already exists: " + username);
             }
         });
+        // colocar verificação de email se existe no bancco ou username, criar exceção pra isso, ajustar advice
 
-        userA.setUsername(username);
-        userA.setEmail(email);
-
+        user.setUsername(username);
+        user.setEmail(email);
         profileMapper.updateEntityFromDto(profileDTO, profile);
 
         return profileMapper.toDTO(profile);
