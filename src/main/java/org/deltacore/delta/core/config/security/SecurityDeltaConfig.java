@@ -140,7 +140,7 @@ public class SecurityDeltaConfig {
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "https://delta-front-sage.vercel.app",
+                "https://delta-front-app.vercel.app",
                 "https://delta-app-410394653851.southamerica-east1.run.app",
                 "https://delta-app-ekp2l6euwq-rj.a.run.app"
         ));
