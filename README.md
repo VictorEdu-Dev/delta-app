@@ -7,6 +7,10 @@
 
 **Delta App** é uma plataforma educacional desenvolvida especialmente para os estudantes do curso de Engenharia de Computação, com foco inicial no campus UFC - Sobral. Este repositório contém a API backend da aplicação, construída em Java com Spring Boot, para fornecer recursos seguros e escaláveis ao frontend e demais consumidores.
 
+**Esta API está sendo consumida atualmente pelo frontend disponível em [Delta Application](https://delta-front-app.vercel.app/).**
+
+**O repositório está em  [Delta App Front](https://github.com/VictorEdu-Dev/delta-app-front)**
+
 ---
 
 ## Índice
