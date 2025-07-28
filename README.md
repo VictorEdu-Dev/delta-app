@@ -15,9 +15,6 @@
 - [Principais Funcionalidades](#principais-funcionalidades)
 - [Tecnologias e Dependências](#tecnologias-e-dependências)
 - [Como Executar Localmente](#como-executar-localmente)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Scripts Maven](#scripts-maven)
-- [Testes](#testes)
 - [Contribuição](#contribuição)
 - [Contato](#contato)
 - [Notas de Versão](CHANGELOG.md)
@@ -75,15 +72,12 @@ A API backend do Delta App provê endpoints RESTful para autenticação, gestão
    ```
 
 2. **Configure as variáveis de ambiente:**  
-   Crie um arquivo `.env` na raiz do projeto e defina as variáveis necessárias no `application.properties` em `src/main/resources/`:
+   Crie um arquivo `.env` na raiz do projeto e defina as variáveis necessárias criando um arquivo `application.properties-dev` em `src/main/resources/` com o seguinte conteúdo:
     ```ini
-    # .env (exemplo de configuração)
-    
-    # === API Externa ===
-    API_KEY_YT_V3=your_youtube_api_key
-    
-    # === Autenticação ===
-    JWT_SECRET=your_jwt_secret_key
+    # .env
+
+    # gmail
+    GMAIL_CLIENT_ID=ABCD EFGH IJKL MNOP
     
     # === Banco de Dados (PostgreSQL) ===
     PG_URL=your_db_host:5432
@@ -91,21 +85,22 @@ A API backend do Delta App provê endpoints RESTful para autenticação, gestão
     PG_PASSWORD=your_db_password
     PG_DATABASE=your_db_name
     
-    # === Serviço de Storage (Google Cloud Storage) ===
+    # === Serviço de Storage - PATHS - (Google Cloud Storage) ===
     GCP_PROJECT_ID=your_gcp_project_id
     GCP_BUCKET_NAME=your_gcp_bucket_name
     GCP_FOLDER_PATH=prod/activities/
     GCP_FOLDER_PATH_DOC=doc/
     GCP_FOLDER_PATH_IMG=img/
+    GCP_FOLDER_PATH_PROFILE=prod/profile/
+    GCP_FOLDER_PATH_TUTOR_REQUEST=prod/tutor_request/
     ```
     ```
-    # application.properties (exemplo de configuração)
-   
+    # application.properties
     spring.application.name=delta-app
     
     # Database
     spring.datasource.driver-class-name=org.postgresql.Driver
-    spring.datasource.url=jdbc:postgresql://${PG_URL}/${PG_DATABASE}?sslmode=require
+    spring.datasource.url=jdbc:postgresql://${PG_URL}/${PG_DATABASE}?sslmode=verify-full
     spring.datasource.username=${PG_USERNAME}
     spring.datasource.password=${PG_PASSWORD}
     
@@ -144,7 +139,7 @@ A API backend do Delta App provê endpoints RESTful para autenticação, gestão
     
     # Servlet Container
     spring.servlet.multipart.max-file-size=5MB
-    spring.servlet.multipart.max-request-size=5MB
+    spring.servlet.multipart.max-request-size=50MB
     
     # Serviço de Storage
     gcp.project.id=${GCP_PROJECT_ID}
@@ -152,74 +147,32 @@ A API backend do Delta App provê endpoints RESTful para autenticação, gestão
     gcp.folder.path=${GCP_FOLDER_PATH}
     gcp.folder.path.doc=${GCP_FOLDER_PATH_DOC}
     gcp.folder.path.img=${GCP_FOLDER_PATH_IMG}
-    
-    # API externa
-    api.key.yt.v3=${API_KEY_YT_V3}
-    
-    # JWT Token
-    jwt.secret=${JWT_SECRET}
-    ```    
 
+    spring.mail.host=smtp.gmail.com
+    spring.mail.port=587
+    spring.mail.username=delta.api@email.com
+    spring.mail.password=${GMAIL_CLIENT_ID}
+    spring.mail.properties.mail.smtp.auth=true
+    spring.mail.properties.mail.smtp.starttls.enable=true
+    ```    
+    - No topo do application.properties existente acrescente a seguinte linha:
+        > spring.profiles.active=dev
     - Configure as credenciais e autenticação do Google Cloud Storage caso utilize upload de arquivos.
 
 3. **Construa o projeto:**
    ```bash
-   ./mvnw clean install
+   ./mvn clean install -DskipTests
    ```
 
 4. **Execute a aplicação:**
    ```bash
    ./mvnw spring-boot:run
    ```
-    - Por padrão, a API estará disponível em `http://localhost:8080/`.
+    - Por padrão, a API estará disponível em `http://localhost:8080/api/v1`.
 
 5. **Acesse a documentação interativa:**
-    - Swagger/OpenAPI: `http://localhost:8080/swagger-ui.html` ou `/swagger-ui/index.html`
+    - Swagger/OpenAPI: `http://localhost:8080/api/v1/swagger-ui.html`.
 
----
-
-## Estrutura do Projeto
-
-```
-delta-app/
-├── src/
-│   ├── main/
-│   │   ├── java/org/deltacore/
-│   │   │   ├── controllers/
-│   │   │   ├── models/
-│   │   │   ├── repositories/
-│   │   │   ├── services/
-│   │   │   └── DeltaAppApplication.java
-│   │   └── resources/
-│   │       ├── application.properties
-│   │       └── db/migration/
-│   └── test/
-│       └── java/org/deltacore/
-├── pom.xml
-├── Dockerfile
-├── CHANGELOG.md
-├── README.en.md
-└── README.md
-```
-
----
-
-## Scripts Maven
-
-- `./mvnw clean install` — Compila e testa o projeto.
-- `./mvnw spring-boot:run` — Executa o servidor localmente.
-- `./mvnw test` — Executa todos os testes automatizados.
-
----
-
-## Testes
-
-Os testes unitários e de integração estão localizados em `src/test/java/org/deltacore/`.  
-Execute-os com:
-
-```bash
-./mvnw test
-```
 
 ---
 
