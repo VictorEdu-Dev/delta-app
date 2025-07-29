@@ -1,9 +1,8 @@
 package org.deltacore.delta.domains.tutoring.servive;
 
-import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
+import org.deltacore.delta.domains.auth.exception.UserNotFoundException;
 import org.deltacore.delta.domains.profile.model.Tutor;
 import org.deltacore.delta.domains.tutoring.dto.*;
-import org.deltacore.delta.domains.tutoring.exception.ConflictException;
 import org.deltacore.delta.domains.tutoring.exception.SubjectNotFoundException;
 import org.deltacore.delta.domains.tutoring.model.DayTimeEntry;
 import org.deltacore.delta.domains.tutoring.model.Tutoring;
@@ -11,6 +10,7 @@ import org.deltacore.delta.domains.tutoring.repository.DayTimeEntryDAO;
 import org.deltacore.delta.domains.tutoring.repository.TutoringDAO;
 import org.deltacore.delta.domains.profile.repository.TutorDAO;
 import org.deltacore.delta.domains.tutoring.repository.SubjectDAO;
+import org.deltacore.delta.shared.exception.ConflictException;
 import org.deltacore.delta.shared.security.AuthenticatedUserProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
