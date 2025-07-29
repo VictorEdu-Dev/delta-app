@@ -18,7 +18,8 @@ public class CorsConfig {
                 "http://localhost:3000",
                 "https://delta-front-app.vercel.app",
                 "https://delta-app-410394653851.southamerica-east1.run.app",
-                "https://delta-app-ekp2l6euwq-rj.a.run.app"
+                "https://delta-app-ekp2l6euwq-rj.a.run.app",
+                "https://nr88d232-8080.brs.devtunnels.ms"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "Cache-Control", "X-Requested-With"));
