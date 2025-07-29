@@ -1,4 +1,4 @@
-package org.deltacore.delta.domains.profile.exception;
+package org.deltacore.delta.shared.exception;
 
 public class FileTooLargeException extends RuntimeException {
     public FileTooLargeException(String message) {
