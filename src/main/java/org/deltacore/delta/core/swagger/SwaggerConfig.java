@@ -60,14 +60,14 @@ public class SwaggerConfig {
                         .license(new License().name(licenseName).url(licenseUrl)))
                 .addServersItem(new Server().url(prodUrl).description(prodDesc))
                 .addServersItem(new Server().url(localUrl).description(localDesc))
-
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
-                .components(new Components().addSecuritySchemes("bearerAuth",
-                        new SecurityScheme()
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")
-                ));
+                .components(new Components()
+                        .addSecuritySchemes("bearerAuth",
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
+                        ));
     }
 
     @Bean
