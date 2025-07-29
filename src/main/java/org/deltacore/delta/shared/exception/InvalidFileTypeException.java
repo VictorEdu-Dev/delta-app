@@ -1,4 +1,4 @@
-package org.deltacore.delta.domains.profile.exception;
+package org.deltacore.delta.shared.exception;
 
 public class InvalidFileTypeException extends IllegalArgumentException {
     private static final Throwable cause = new Throwable("Invalid file type provided for upload.");
