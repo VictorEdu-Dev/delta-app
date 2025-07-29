@@ -6,7 +6,7 @@ import org.deltacore.delta.domains.auth.dto.RefreshTokenMapper;
 import org.deltacore.delta.domains.auth.dto.TokenInfoDTO;
 import org.deltacore.delta.domains.profile.dto.UserBasicDTO;
 import org.deltacore.delta.domains.profile.dto.UserBasicMapper;
-import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
+import org.deltacore.delta.domains.auth.exception.UserNotFoundException;
 import org.deltacore.delta.domains.auth.model.RefreshToken;
 import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.domains.auth.repository.RefreshTokenDAO;
