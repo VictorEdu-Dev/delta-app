@@ -1,13 +1,9 @@
 package org.deltacore.delta.domains.profile.exception;
 
-import org.deltacore.delta.domains.activity.exception.LargeFileException;
+import org.deltacore.delta.shared.exception.FileTooLargeException;
 
-public class ProfileImageTooLargeException extends LargeFileException {
+public class ProfileImageTooLargeException extends FileTooLargeException {
     public ProfileImageTooLargeException(String message) {
         super(message);
-    }
-
-    public ProfileImageTooLargeException(String message, Throwable cause) {
-        super(message, cause);
     }
 }
