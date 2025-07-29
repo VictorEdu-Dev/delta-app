@@ -6,7 +6,7 @@ import org.deltacore.delta.core.config.GcpStorageInfo;
 import org.deltacore.delta.domains.activity.dto.ActivityFilesDTO;
 import org.deltacore.delta.domains.activity.dto.ActivityFilesMapper;
 import org.deltacore.delta.domains.activity.dto.ActivityMapper;
-import org.deltacore.delta.domains.activity.exception.LargeFileException;
+import org.deltacore.delta.shared.exception.FileTooLargeException;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
 import org.deltacore.delta.domains.activity.model.Activity;
 import org.deltacore.delta.domains.activity.model.ActivityFiles;
@@ -32,7 +32,6 @@ public class ActivityUploadService {
     private final ActivityFilesDAO activityFilesDAO;
     private final ActivityDAO activityDAO;
     private final ActivityFilesMapper activityFilesMapper;
-    private final ActivityMapper activityMapper;
     private final Storage storage;
 
     @Autowired
@@ -46,7 +45,6 @@ public class ActivityUploadService {
         this.activityFilesDAO = activityFilesDAO;
         this.activityFilesMapper = activityFilesMapper;
         this.activityDAO = activityDAO;
-        this.activityMapper = activityMapper;
         this.storage = storage;
 
         this.BUCKET_NAME = gcpStorageInfo.getBucketName();
@@ -67,7 +65,7 @@ public class ActivityUploadService {
             if (activityFiles.isPresent()) continue;
 
             if(file.getSize() > MAX_FILE_SIZE) {
-                throw new LargeFileException("File size exceeds the limit of 5 MB: " + file.getOriginalFilename());
+                throw new FileTooLargeException("File size exceeds the limit of 5 MB: " + file.getOriginalFilename());
             }
 
             ActivityFilesDTO dto = processAndUploadFile(file);
