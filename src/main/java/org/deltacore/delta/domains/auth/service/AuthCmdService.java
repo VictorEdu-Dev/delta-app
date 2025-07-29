@@ -11,7 +11,7 @@ import org.deltacore.delta.domains.auth.exception.InvalidRecoveryCodeException;
 import org.deltacore.delta.domains.auth.exception.InvalidTokenException;
 import org.deltacore.delta.domains.auth.model.RecoveryCode;
 import org.deltacore.delta.domains.auth.repository.RecoveryCodeDAO;
-import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
+import org.deltacore.delta.domains.auth.exception.UserNotFoundException;
 import org.deltacore.delta.domains.auth.model.RefreshToken;
 import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.domains.auth.repository.RefreshTokenDAO;
