@@ -1,11 +1,8 @@
 package org.deltacore.delta.domains.profile.servive;
 
-import org.deltacore.delta.domains.auth.exception.UserAlreadyExists;
 import org.deltacore.delta.domains.profile.dto.*;
-import org.deltacore.delta.domains.profile.exception.ConflictException;
-import org.deltacore.delta.domains.profile.exception.IllegalArgumentException;
+import org.deltacore.delta.shared.exception.ConflictException;
 import org.deltacore.delta.domains.profile.exception.ProfileNotFoundException;
-import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
 import org.deltacore.delta.domains.profile.model.Profile;
 import org.deltacore.delta.domains.profile.model.Tutor;
 import org.deltacore.delta.domains.profile.repository.ProfileDAO;
@@ -52,7 +49,7 @@ public class UserCommandService {
         String username = userDTO.username().toLowerCase();
         User user = userDAO.findByUsername(username).orElse(null);
         if (user != null && userDTO.id() == null)
-            throw new UserAlreadyExists(username);
+            throw new ConflictException(username);
 
         boolean isNewUser = userDTO.id() == null || userDTO.id() == 0;
 
@@ -177,7 +174,7 @@ public class UserCommandService {
     private void validateDataUpdate(String username, String email, User user, Profile profile, ProfileDTO.ProfileUpdateDTO profileDTO) {
         userDAO.findByUsername(username).ifPresent(existingUser -> {
             if (!existingUser.getId().equals(user.getId())) {
-                throw new UserAlreadyExists("Username already exists: " + username);
+                throw new ConflictException("Username already exists: " + username);
             }
         });
         userDAO.findByEmail(email).ifPresent(existingUser -> {
