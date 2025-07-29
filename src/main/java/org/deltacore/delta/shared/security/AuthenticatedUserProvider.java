@@ -1,6 +1,6 @@
 package org.deltacore.delta.shared.security;
 
-import org.deltacore.delta.domains.profile.exception.UserNotFoundException;
+import org.deltacore.delta.domains.auth.exception.UserNotFoundException;
 import org.deltacore.delta.domains.profile.model.User;
 import org.deltacore.delta.domains.profile.repository.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
