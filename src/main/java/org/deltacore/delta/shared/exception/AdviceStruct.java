@@ -9,13 +9,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class AdviceStruct {
-    protected ResponseEntity<Map<String, Object>> getMapResponseEntity(HttpServletRequest request, String message, HttpStatus status) {
+    protected ResponseEntity<Map<String, Object>> getMapResponseEntity(HttpServletRequest request, String errorCode, String message, HttpStatus status) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", Instant.now().toString());
         body.put("status", status.value());
+        body.put("errorCode", errorCode);
         body.put("message", message);
         body.put("path", request.getRequestURI());
-
         return ResponseEntity.status(status).body(body);
     }
 }
