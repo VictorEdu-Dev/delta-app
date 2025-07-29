@@ -1,4 +1,4 @@
-package org.deltacore.delta.core.config.extern_api;
+package org.deltacore.delta.core.config;
 
 import com.google.api.client.util.Value;
 import com.google.cloud.storage.Storage;
