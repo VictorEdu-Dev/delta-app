@@ -3,8 +3,6 @@ package org.deltacore.delta.domains.activity.servive;
 import org.deltacore.delta.domains.activity.dto.*;
 import org.deltacore.delta.domains.activity.dto.ActivityDTO.ActivityRegister.LinkActivityDTO;
 import org.deltacore.delta.domains.activity.model.ActivityFiles;
-import org.deltacore.delta.domains.activity.model.ActivityStatus;
-import org.deltacore.delta.domains.activity.model.ActivityType;
 import org.deltacore.delta.domains.activity.repository.ActivityFilesDAO;
 import org.deltacore.delta.shared.exception.ConflictException;
 import org.deltacore.delta.shared.exception.ResourceNotFoundException;
@@ -13,56 +11,26 @@ import org.deltacore.delta.domains.activity.repository.ActivityDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ActivitiesSectionService {
-    private static final LocalDateTime DEFAULT_END_DATE = LocalDateTime.of(3000, 12, 31, 23, 59);
-
     private final ActivityMapper activityMapper;
     private final ActivityDAO activityDAO;
     private ActivityFilesDAO activityFilesDAO;
     private ActivityFilesMapper activityFilesMapper;
-    private final PagedResourcesAssembler<Activity> pagedResourcesAssembler;
     private final MessageSource messageSource;
 
     @Autowired
     public ActivitiesSectionService(ActivityDAO activityDAO,
                                     ActivityMapper activityMapper,
-                                    PagedResourcesAssembler<Activity> pagedResourcesAssembler,
                                     MessageSource messageSource) {
         this.activityMapper = activityMapper;
         this.activityDAO = activityDAO;
-        this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.messageSource = messageSource;
-    }
-
-    public PagedModel<EntityModel<ActivityDTO>> getActivitiesFiltered(Pageable pageable, ActivityFilterDTO filters) {
-        Page<Activity> activities = activityDAO.findActivitiesByFilters(
-                ActivityStatus.valueOf(filters.status()),
-                ActivityType.valueOf(filters.activityType()),
-                pageable);
-
-        if (activities.isEmpty()) return PagedModel.empty();
-
-        return pagedResourcesAssembler
-                .toModel(activities, activity -> EntityModel.of(activityMapper.toDTO(activity)));
     }
 
     @Transactional
