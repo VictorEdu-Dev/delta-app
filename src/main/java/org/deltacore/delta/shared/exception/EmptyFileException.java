@@ -1,6 +1,6 @@
-package org.deltacore.delta.domains.profile.exception;
+package org.deltacore.delta.shared.exception;
 
-public class EmptyFileException extends IllegalArgumentException {
+public class EmptyFileException extends RuntimeException {
     public EmptyFileException(String message) {
         super(message);
     }
