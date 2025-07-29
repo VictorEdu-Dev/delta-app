@@ -36,4 +36,8 @@ public class RefreshToken extends GeneralData {
 
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
+
+    public void setRevokedOverdueToken() {
+        this.revoked = this.expiresAt != null && Instant.now().isAfter(this.expiresAt);
+    }
 }
