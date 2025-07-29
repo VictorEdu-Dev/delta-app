@@ -72,32 +72,6 @@ public class ActivitiesQuery {
         return ResponseEntity.ok(activityQueryService.getFilteredActivities(search, page, size, filters, authenticatedUser.currentUser()));
     }
 
-    @Operation(
-            summary = "Listar atividades com filtros e paginação",
-            description = "Retorna uma lista paginada de atividades de acordo com os filtros aplicados",
-            parameters = {
-                    @Parameter(name = "page", description = "Número da página (0-baseado)", example = "0"),
-                    @Parameter(name = "size", description = "Quantidade de itens por página", example = "20"),
-                    @Parameter(name = "status", description = "Status da atividade", schema = @Schema(implementation = ActivityStatus.class)),
-                    @Parameter(name = "activityType", description = "Categoria da atividade", schema = @Schema(implementation = ActivityType.class)),
-                    @Parameter(name = "startDate", description = "Data de início da atividade (formato: yyyy-MM-dd)", example = "2025-01-01"),
-                    @Parameter(name = "endDate", description = "Data de término da atividade (formato: yyyy-MM-dd)", example = "2025-12-31")
-            },
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Lista paginada de atividades filtradas"),
-                    @ApiResponse(responseCode = "400", description = "Parâmetros inválidos")
-            }
-    )
-    @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getFilteredActivities(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size,
-            @Valid @RequestBody ActivityFilterDTO filters) {
-
-        return handlePagedRequest(page, size, filters, pageable ->
-                activitiesService.getActivitiesFiltered(pageable, filters));
-    }
-
     private ResponseEntity<?> handlePagedRequest(
             int page,
             int size,
